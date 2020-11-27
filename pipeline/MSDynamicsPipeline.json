@@ -1,0 +1,685 @@
+{
+	"name": "MSDynamicsPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Ingest into VoucherServicesStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DynamicsAXSource",
+						"httpRequestTimeout": "00:05:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "MSDynamicsVoucherServices",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "VoucherServicesStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Ingest into VoucherServices",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Ingest into VoucherServicesStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "VoucherServicesDataFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Ingest Into BudgetServicesStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DynamicsAXSource",
+						"httpRequestTimeout": "00:05:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "MSDynamicsBudgetServices",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "BudgetServicesStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Cleanup Tables",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spCleanUpMSDynamicsTables]"
+				},
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest into BudgetServices",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Ingest Into BudgetServicesStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "BudgetServicesDataFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Populate MSDynamicsLedger",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Ingest into VoucherServices",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Ingest into BudgetServices",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spInsertIntoMSDynamicsLedger]"
+				},
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest into ProdMSDynamicsLedger",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Populate MSDynamicsLedger",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "delete from prod.MSDynamicsLedger",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Type",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Type",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Header",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Header",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Year",
+									"type": "Int16",
+									"physicalType": "smallint"
+								},
+								"sink": {
+									"name": "Year",
+									"type": "Int16",
+									"physicalType": "smallint"
+								}
+							},
+							{
+								"source": {
+									"name": "January",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "January",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "February",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "February",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "March",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "March",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "April",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "April",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "May",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "May",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "June",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "June",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "July",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "July",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "August",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "August",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "September",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "September",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "October",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "October",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "November",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "November",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "December",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "December",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "JanuaryTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "JanuaryTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "FebruaryTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "FebruaryTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "MarchTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "MarchTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "AprilTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "AprilTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "MayTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "MayTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "JuneTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "JuneTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "JulyTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "JulyTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "AugustTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "AugustTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "SeptemberTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "SeptemberTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "OctoberTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "OctoberTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "NovemberTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "NovemberTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "DecemberTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								},
+								"sink": {
+									"name": "DecemberTarget",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "MSDynamicsLedger",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ProdMSDynamicsLedger",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2020-11-11T05:10:46Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,89 @@
+{
+	"name": "TwitterWebSiteCardStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "WebsiteShortenedUrl",
+				"type": "varchar"
+			},
+			{
+				"name": "ImageDisplayHeight",
+				"type": "varchar"
+			},
+			{
+				"name": "MediaUrl",
+				"type": "varchar"
+			},
+			{
+				"name": "WebsiteDisplayUrl",
+				"type": "varchar"
+			},
+			{
+				"name": "Id",
+				"type": "varchar"
+			},
+			{
+				"name": "WebsiteDestUrl",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "varchar"
+			},
+			{
+				"name": "MediaKey",
+				"type": "varchar"
+			},
+			{
+				"name": "ImageDisplayWidth",
+				"type": "varchar"
+			},
+			{
+				"name": "WebsiteTitle",
+				"type": "varchar"
+			},
+			{
+				"name": "CardUri",
+				"type": "varchar"
+			},
+			{
+				"name": "WebsiteUrl",
+				"type": "varchar"
+			},
+			{
+				"name": "Updated",
+				"type": "varchar"
+			},
+			{
+				"name": "CardType",
+				"type": "varchar"
+			},
+			{
+				"name": "WebsiteDestinationUrl",
+				"type": "varchar"
+			},
+			{
+				"name": "AccountId",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterWebSiteCardStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

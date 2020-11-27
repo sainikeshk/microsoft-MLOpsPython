@@ -1,0 +1,52 @@
+{
+	"name": "LinkedinShareMetrics",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ShareId",
+				"type": "varchar"
+			},
+			{
+				"name": "ShareCount",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "LikeCount",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Engagement",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ClickCount",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ImpressionCount",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "CommentCount",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "LinkedinShareMetrics"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

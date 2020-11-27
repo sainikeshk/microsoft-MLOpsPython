@@ -1,0 +1,2099 @@
+{
+	"name": "HubspotPipelineGetAll",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Bearer Token",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "GetHubspotBearerToken",
+					"method": "POST",
+					"headers": {
+						"client_id": {
+							"value": "@variables('client_id')",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@variables('client_secret')",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@variables('refresh_token')",
+							"type": "Expression"
+						}
+					},
+					"body": {
+						"from": "Pipeline"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "GetHubspotBearerToken",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Until Contacts HasMore is False",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Get Bearer Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('ContactsHasMore'), false)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Ingest Into HubspotContactStage",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Authorization": {
+											"value": "@activity('Get Bearer Token').output.AccessTokenValue",
+											"type": "Expression"
+										}
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"dataIntegrationUnits": {
+									"value": "@pipeline().globalParameters.DIUCount",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['properties']['age']['value']"
+											},
+											"sink": {
+												"name": "age",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['ip_country']['value']"
+											},
+											"sink": {
+												"name": "ip_country",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['age_range']['value']"
+											},
+											"sink": {
+												"name": "age_range",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['days_to_close']['value']"
+											},
+											"sink": {
+												"name": "days_to_close",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['source_of_sign_up']['value']"
+											},
+											"sink": {
+												"name": "source_of_sign_up",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_customer_date']['value']"
+											},
+											"sink": {
+												"name": "hs_lifecyclestage_customer_date",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_opportunity_date']['value']"
+											},
+											"sink": {
+												"name": "hs_lifecyclestage_opportunity_date",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['gender']['value']"
+											},
+											"sink": {
+												"name": "gender",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['on24utm']['value']"
+											},
+											"sink": {
+												"name": "on24utm",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['active_sal_or_not']['value']"
+											},
+											"sink": {
+												"name": "active_sal_or_not",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['work_email']['value']"
+											},
+											"sink": {
+												"name": "work_email",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['meeting_booked']['value']"
+											},
+											"sink": {
+												"name": "meeting_booked",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['assigned_to']['value']"
+											},
+											"sink": {
+												"name": "assigned_to",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['assigned_rm']['value']"
+											},
+											"sink": {
+												"name": "assigned_rm",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_salesqualifiedlead_date']['value']"
+											},
+											"sink": {
+												"name": "hs_lifecyclestage_salesqualifiedlead_date",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['detailed_source']['value']"
+											},
+											"sink": {
+												"name": "detailed_source",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['date_of_birth']['value']"
+											},
+											"sink": {
+												"name": "date_of_birth",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['num_notes']['value']"
+											},
+											"sink": {
+												"name": "num_notes",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['num_contacted_notes']['value']"
+											},
+											"sink": {
+												"name": "num_contacted_notes",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['recent_deal_amount']['value']"
+											},
+											"sink": {
+												"name": "recent_deal_amount",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['num_associated_deals']['value']"
+											},
+											"sink": {
+												"name": "num_associated_deals",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['closedate']['value']"
+											},
+											"sink": {
+												"name": "closedate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['recent_deal_close_date']['value']"
+											},
+											"sink": {
+												"name": "recent_deal_close_date",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['country']['value']"
+											},
+											"sink": {
+												"name": "country",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['questions_embed_url_utm_medium']['value']"
+											},
+											"sink": {
+												"name": "questions_embed_url_utm_medium",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['lastmodifieddate']['value']"
+											},
+											"sink": {
+												"name": "updated",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['brighttalk_webcast_title']['value']"
+											},
+											"sink": {
+												"name": "brighttalk_webcast_title",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['questions_embed_url_utm_source']['value']"
+											},
+											"sink": {
+												"name": "questions_embed_url_utm_source",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['channel']['value']"
+											},
+											"sink": {
+												"name": "channel",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['createdate']['value']"
+											},
+											"sink": {
+												"name": "created",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_marketingqualifiedlead_date']['value']"
+											},
+											"sink": {
+												"name": "hs_lifecyclestage_marketingqualifiedlead_date",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['webcast_activity']['value']"
+											},
+											"sink": {
+												"name": "webcast_activity",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['acquistion_date_from_import']['value']"
+											},
+											"sink": {
+												"name": "acquistion_date_from_import",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_source']['value']"
+											},
+											"sink": {
+												"name": "hs_analytics_source",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_persona']['value']"
+											},
+											"sink": {
+												"name": "hs_persona",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_object_id']['value']"
+											},
+											"sink": {
+												"name": "hs_object_id",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_source_data_2']['value']"
+											},
+											"sink": {
+												"name": "hs_analytics_source_data_2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_source_data_1']['value']"
+											},
+											"sink": {
+												"name": "hs_analytics_source_data_1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['lifecyclestage']['value']"
+											},
+											"sink": {
+												"name": "lifecyclestage",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['lifecycle_stage_status']['value']"
+											},
+											"sink": {
+												"name": "lifecycle_stage_status",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['recent_conversion_event_name']['value']"
+											},
+											"sink": {
+												"name": "recent_conversion_event_name",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['is_this_lead_already_found_in_an_internal_database_']['value']"
+											},
+											"sink": {
+												"name": "is_this_lead_already_found_in_an_internal_database",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['contact_type']['value']"
+											},
+											"sink": {
+												"name": "contact_type",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_first_url']['value']"
+											},
+											"sink": {
+												"name": "hs_analytics_first_url",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['firstname']['value']"
+											},
+											"sink": {
+												"name": "firstname",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['lastname']['value']"
+											},
+											"sink": {
+												"name": "lastname",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['mobilephone']['value']"
+											},
+											"sink": {
+												"name": "mobilephone",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['phone']['value']"
+											},
+											"sink": {
+												"name": "phone",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['fax']['value']"
+											},
+											"sink": {
+												"name": "fax",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['address_line_1']['value']"
+											},
+											"sink": {
+												"name": "address_line_1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['address_line_2']['value']"
+											},
+											"sink": {
+												"name": "address_line_2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['city']['value']"
+											},
+											"sink": {
+												"name": "city",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['state']['value']"
+											},
+											"sink": {
+												"name": "state",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hubspot_owner_id']['value']"
+											},
+											"sink": {
+												"name": "hubspot_owner_id",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['has-more']"
+											},
+											"sink": {
+												"name": "hasMore",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['vid-offset']"
+											},
+											"sink": {
+												"name": "VidOffset",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['time-offset']"
+											},
+											"sink": {
+												"name": "time-offset",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['contacts']"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DynamicRESTDataSet",
+									"type": "DatasetReference",
+									"parameters": {
+										"Url": {
+											"value": "@replace(variables('ContactsUrl'),'VidOffSetPlaceHolder',variables('NextVidOffset'))",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "HubspotContactStage",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Wait 1 Second",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "Ingest Into HubspotContactStage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						},
+						{
+							"name": "Set ContactsHasMore false",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Ingest Into HubspotContactStage",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "ContactsHasMore",
+								"value": {
+									"value": "@bool('false')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Get latest VidOffset and HasMore values",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Wait 1 Second",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('Select top 1 lower(HasMore) as HasMore , VidOffset, dbo.[GetHasMore]([time-offset],''', variables('StartDate'),'''', ') as ContactsHasMore from HubspotContactStage  order by InsertedDate desc')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "HubspotContactStage",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Set NextVidOffset",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get latest VidOffset and HasMore values",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "NextVidOffset",
+								"value": {
+									"value": "@activity('Get latest VidOffset and HasMore values').output.firstRow.VidOffset",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Check Differential Inside Contacts",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get latest VidOffset and HasMore values",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(variables('Differential'), true)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Set ContactsHasMore",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "ContactsHasMore",
+											"value": {
+												"value": "@bool(activity('Get latest VidOffset and HasMore values').output.firstRow.HasMore)",
+												"type": "Expression"
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Set ContactsHasMore Differential",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "ContactsHasMore",
+											"value": {
+												"value": "@bool(activity('Get latest VidOffset and HasMore values').output.firstRow.ContactsHasMore)",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "Until DealsHasMore is False",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Get Bearer Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('DealsHasMore'), false)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Ingest into HubspotDealStage",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Authorization": {
+											"value": "@activity('Get Bearer Token').output.AccessTokenValue",
+											"type": "Expression"
+										}
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"dataIntegrationUnits": {
+									"value": "@pipeline().globalParameters.DIUCount",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['properties']['hs_lead_status']['value']"
+											},
+											"sink": {
+												"name": "hs_lead_status",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['createdate']['value']"
+											},
+											"sink": {
+												"name": "createdate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['lifecyclestage']['value']"
+											},
+											"sink": {
+												"name": "lifecyclestage",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['pipeline']['value']"
+											},
+											"sink": {
+												"name": "pipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['amount_source']['value']"
+											},
+											"sink": {
+												"name": "amount_source",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lastmodifieddate']['value']"
+											},
+											"sink": {
+												"name": "hs_lastmodifieddate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['closed_lost_reason']['value']"
+											},
+											"sink": {
+												"name": "closed_lost_reason",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['lead_status_status']['value']"
+											},
+											"sink": {
+												"name": "lead_status_status",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['amount']['value']"
+											},
+											"sink": {
+												"name": "amount",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['dealtype']['value']"
+											},
+											"sink": {
+												"name": "dealtype",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['closedate']['value']"
+											},
+											"sink": {
+												"name": "closedate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hubspot_owner_id']['value']"
+											},
+											"sink": {
+												"name": "hubspot_owner_id",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['num_contacted_notes']['value']"
+											},
+											"sink": {
+												"name": "num_contacted_notes",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['dealstage']['value']"
+											},
+											"sink": {
+												"name": "dealstage",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_object_id']['value']"
+											},
+											"sink": {
+												"name": "hs_object_id",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['num_notes']['value']"
+											},
+											"sink": {
+												"name": "num_notes",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['associations']['associatedVids']"
+											},
+											"sink": {
+												"name": "associatedVids",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['hasMore']"
+											},
+											"sink": {
+												"name": "HasMore",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['offset']"
+											},
+											"sink": {
+												"name": "Offset",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['deals']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DynamicRESTDataSet",
+									"type": "DatasetReference",
+									"parameters": {
+										"Url": {
+											"value": "@replace(variables('DealsUrl'),'offsetPlaceHolder',variables('DealsOffSet'))",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "HubspotDealStage",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Wait For Sec Deals",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "Ingest into HubspotDealStage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						},
+						{
+							"name": "Set DealsHasMore False",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Ingest into HubspotDealStage",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "DealsHasMore",
+								"value": {
+									"value": "@bool('false')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Get latest Offset and HasMore values",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Wait For Sec Deals",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": "Select top 1 lower(HasMore) as HasMore, Offset from HubspotDealStage order by InsertedDate desc",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "HubspotDealStage",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Set DealsOffset",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get latest Offset and HasMore values",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "DealsOffSet",
+								"value": {
+									"value": "@activity('Get latest Offset and HasMore values').output.firstRow.Offset",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set DealsHasMore Value",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get latest Offset and HasMore values",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "DealsHasMore",
+								"value": {
+									"value": "@bool(activity('Get latest Offset and HasMore values').output.firstRow.HasMore)",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "Ingest into HubspotDeal",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Until DealsHasMore is False",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DealsDataFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Ingest into HubspotContact",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Until Contacts HasMore is False",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "ContactsDataFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Until EngagementsHasMore is False",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Get Bearer Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('EngagementsHasMore'), false)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Ingest into HubspotEngagementStage",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Authorization": {
+											"value": "@activity('Get Bearer Token').output.AccessTokenValue",
+											"type": "Expression"
+										}
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"dataIntegrationUnits": {
+									"value": "@pipeline().globalParameters.DIUCount",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['engagement']['id']"
+											},
+											"sink": {
+												"name": "EngagementId",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['bodyPreview']"
+											},
+											"sink": {
+												"name": "bodyPreview",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['portalId']"
+											},
+											"sink": {
+												"name": "portalId",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['active']"
+											},
+											"sink": {
+												"name": "active",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['createdAt']"
+											},
+											"sink": {
+												"name": "createdAt",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['lastUpdated']"
+											},
+											"sink": {
+												"name": "lastUpdated",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['createdBy']"
+											},
+											"sink": {
+												"name": "createdBy",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['modifiedBy']"
+											},
+											"sink": {
+												"name": "modifiedBy",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['ownerId']"
+											},
+											"sink": {
+												"name": "ownerId",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['type']"
+											},
+											"sink": {
+												"name": "type",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['timestamp']"
+											},
+											"sink": {
+												"name": "timestamp",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['teamId']"
+											},
+											"sink": {
+												"name": "teamId",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['source']"
+											},
+											"sink": {
+												"name": "source",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['sourceId']"
+											},
+											"sink": {
+												"name": "sourceId",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['engagement']['allAccessibleTeamIds']"
+											},
+											"sink": {
+												"name": "allAccessibleTeamIds",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['associations']['contactIds']"
+											},
+											"sink": {
+												"name": "contactAssosications",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['hasMore']"
+											},
+											"sink": {
+												"name": "HasMore",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['offset']"
+											},
+											"sink": {
+												"name": "Offset",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['results']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DynamicRESTDataSet",
+									"type": "DatasetReference",
+									"parameters": {
+										"Url": {
+											"value": "@replace(variables('EngagementsUrl'),'EngagementsOffSetPlaceHolder',variables('EngagementsOffSet'))",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "HubspotEngagementStage",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Wait For Sec Engagements",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "Ingest into HubspotEngagementStage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						},
+						{
+							"name": "Get latest Offset and HasMore Engagement",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Wait For Sec Engagements",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": "Select top 1 lower(HasMore) as HasMore, Offset from HubspotEngagementStage order by InsertedDate desc",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "HubspotEngagementStage",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Set EngagementsOffset",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get latest Offset and HasMore Engagement",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "EngagementsOffSet",
+								"value": {
+									"value": "@activity('Get latest Offset and HasMore Engagement').output.firstRow.Offset",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set EngagementsHasMore",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get latest Offset and HasMore Engagement",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "EngagementsHasMore",
+								"value": {
+									"value": "@bool(activity('Get latest Offset and HasMore Engagement').output.firstRow.HasMore)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set EngagementsHasMore False From Engagements",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Ingest into HubspotEngagementStage",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "EngagementsHasMore",
+								"value": {
+									"value": "@bool('false')",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "Ingest into HubspotEngagement",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Until EngagementsHasMore is False",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "EngagementDataFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Cleanup Tables",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Check if Differential",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spCleanUpHubspotTables]"
+				},
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest into HubspotOwnerStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Get Bearer Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@activity('Get Bearer Token').output.AccessTokenValue",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": {
+						"value": "@pipeline().globalParameters.DIUCount",
+						"type": "Expression"
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['ownerId']"
+								},
+								"sink": {
+									"name": "OwnerId",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['firstName']"
+								},
+								"sink": {
+									"name": "firstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['lastName']"
+								},
+								"sink": {
+									"name": "lastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['email']"
+								},
+								"sink": {
+									"name": "email",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['createdAt']"
+								},
+								"sink": {
+									"name": "createdAt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['updatedAt']"
+								},
+								"sink": {
+									"name": "updatedAt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['hasContactsAccess']"
+								},
+								"sink": {
+									"name": "hasContactsAccess",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['activeUserId']"
+								},
+								"sink": {
+									"name": "activeUserId",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['activeSalesforceId']"
+								},
+								"sink": {
+									"name": "activeSalesforceId",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['isActive']"
+								},
+								"sink": {
+									"name": "isActive",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "",
+						"mapComplexValuesToString": true
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DynamicRESTDataSet",
+						"type": "DatasetReference",
+						"parameters": {
+							"Url": "https://api.hubapi.com/owners/v2/owners"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "HubspotOwnerStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Ingest into HubspotOwner",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Ingest into HubspotOwnerStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "OwnerDataFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Check if Differential",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('Differential'), true)\n\n ",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Set ContactUrl",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "ContactsUrl",
+								"value": {
+									"value": "@variables('ContactsDiffUrl')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set StartDate",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set ContactUrl",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "StartDate",
+								"value": {
+									"value": "@formatDateTime(adddays(utcnow(),-2),'yyyy-MM-dd')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set EngagementsUrl",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "EngagementsUrl",
+								"value": {
+									"value": "@variables('EngagementsDiffUrl')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Tables list to Copy",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Ingest into HubspotDeal",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Ingest into HubspotOwner",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select 'HubspotDeal' as TblName\nunion\nselect 'HubspotOwner' as TblName\n\n",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "HubspotContact",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Copy Each Table to Prod",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Tables list to Copy",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Tables list to Copy').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Ingest into Prod Tables",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@{concat('select * from dbo.',item().TblName)}",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"preCopyScript": {
+										"value": "@{concat('delete from prod.',item().TblName)}",
+										"type": "Expression"
+									},
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"dataIntegrationUnits": {
+									"value": "@pipeline().globalParameters.DIUCount",
+									"type": "Expression"
+								},
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DynamicDataSet",
+									"type": "DatasetReference",
+									"parameters": {
+										"TblName": "@item().TblName"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DynamicDataSet",
+									"type": "DatasetReference",
+									"parameters": {
+										"TblName": {
+											"value": "@item().TblName",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Update Prod Contact And Engagement",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Ingest into HubspotEngagement",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Ingest into HubspotContact",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spInsertProdHubspotContactAndEngagement]",
+					"storedProcedureParameters": {
+						"differential": {
+							"value": {
+								"value": "@string(variables('Differential'))",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"client_id": {
+				"type": "String",
+				"defaultValue": "40e36a99-4eb4-43c4-b7e3-7ed19258a627"
+			},
+			"client_secret": {
+				"type": "String",
+				"defaultValue": "425bf073-2d5f-4ed5-9151-2f8191f3bd18"
+			},
+			"refresh_token": {
+				"type": "String",
+				"defaultValue": "c3c1911c-15a7-43c3-af3a-ae779558878c"
+			},
+			"NextVidOffset": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"ContactsHasMore": {
+				"type": "Boolean",
+				"defaultValue": true
+			},
+			"ContactsUrl": {
+				"type": "String",
+				"defaultValue": "https://api.hubapi.com/contacts/v1/lists/all/contacts/all?count=100&propertyMode=value_only&vidOffset=VidOffSetPlaceHolder&property=hs_object_id&property=channel&property=acquistion_date_from_import&property=recent_deal_close_date&property=hs_lifecyclestage_marketingqualifiedlead_date&property=closedate&property=num_associated_deals&property=recent_deal_amount&property=num_contacted_notes&property=num_notes&property=date_of_birth&property=hs_analytics_source&property=lead_is_probably_relevant_for_dfo_and_a_rm_should_talk_to_him_first_assessment_of_lead_status&property=detailed_source&property=createdate&property=hs_lifecyclestage_salesqualifiedlead_date&property=assigned_rm&property=assigned_to&property=meeting_booked&property=work_email&property=questions_embed_url_utm_medium&property=active_sal_or_not&property=hs_lifecyclestage_opportunity_date&property=hs_analytics_source_data_1&property=brighttalk_webcast_title&property=hs_analytics_source_data_2&property=lifecyclestage&property=questions_embed_url_utm_source&property=is_this_lead_already_found_in_an_internal_database_&property=country&property=hs_persona&property=hs_lifecyclestage_customer_date&property=source_of_sign_up&property=webcast_activity&property=days_to_close&property=age_range&property=ip_country&property=age&property=hs_analytics_first_url&property=contact_type&property=gender&property=on24utm&property=firstname&property=lastname&property=mobilephone&property=phone&property=fax&property=address_line_1&property=address_line_2&property=city&property=state&property=hubspot_owner_id&property=lifecycle_stage_status&property=recent_conversion_event_name"
+			},
+			"DealsOffSet": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"DealsHasMore": {
+				"type": "Boolean",
+				"defaultValue": true
+			},
+			"DealsUrl": {
+				"type": "String",
+				"defaultValue": "https://api.hubapi.com/deals/v1/deal/paged?limit=250&properties=hs_object_id&properties=closedate&properties=dealtype&properties=num_contacted_notes&properties=num_notes&properties=hubspot_owner_id&properties=dealstage&properties=amount&properties=lead_status_status&properties=closed_lost_reason&properties=hs_lastmodifieddate&properties=amount_source&properties=pipeline&properties=lifecyclestage&properties=createdate&properties=hs_lead_status&includeAssociations=true&offset=offsetPlaceHolder"
+			},
+			"EngagementsUrl": {
+				"type": "String",
+				"defaultValue": "https://api.hubapi.com/engagements/v1/engagements/paged?offset=EngagementsOffSetPlaceHolder&limit=250"
+			},
+			"EngagementsHasMore": {
+				"type": "Boolean",
+				"defaultValue": true
+			},
+			"EngagementsOffSet": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"Differential": {
+				"type": "Boolean"
+			},
+			"ContactsDiffUrl": {
+				"type": "String",
+				"defaultValue": "https://api.hubapi.com/contacts/v1/lists/recently_updated/contacts/recent?count=100&propertyMode=value_only&vidOffset=VidOffSetPlaceHolder&property=hs_object_id&property=channel&property=acquistion_date_from_import&property=recent_deal_close_date&property=hs_lifecyclestage_marketingqualifiedlead_date&property=closedate&property=num_associated_deals&property=recent_deal_amount&property=num_contacted_notes&property=num_notes&property=date_of_birth&property=hs_analytics_source&property=lead_is_probably_relevant_for_dfo_and_a_rm_should_talk_to_him_first_assessment_of_lead_status&property=detailed_source&property=createdate&property=hs_lifecyclestage_salesqualifiedlead_date&property=assigned_rm&property=assigned_to&property=meeting_booked&property=work_email&property=questions_embed_url_utm_medium&property=active_sal_or_not&property=hs_lifecyclestage_opportunity_date&property=hs_analytics_source_data_1&property=brighttalk_webcast_title&property=hs_analytics_source_data_2&property=lifecyclestage&property=questions_embed_url_utm_source&property=is_this_lead_already_found_in_an_internal_database_&property=country&property=hs_persona&property=hs_lifecyclestage_customer_date&property=source_of_sign_up&property=webcast_activity&property=days_to_close&property=age_range&property=ip_country&property=age&property=hs_analytics_first_url&property=contact_type&property=gender&property=on24utm&property=firstname&property=lastname&property=mobilephone&property=phone&property=fax&property=address_line_1&property=address_line_2&property=city&property=state&property=hubspot_owner_id&property=lifecycle_stage_status&property=recent_conversion_event_name"
+			},
+			"StartDate": {
+				"type": "String"
+			},
+			"EngagementsDiffUrl": {
+				"type": "String",
+				"defaultValue": "https://api.hubapi.com/engagements/v1/engagements/recent/modified?count=100&offset=EngagementsOffSetPlaceHolder"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-11-11T05:10:46Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

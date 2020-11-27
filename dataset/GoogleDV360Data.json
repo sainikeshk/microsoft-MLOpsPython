@@ -1,0 +1,17 @@
+{
+	"name": "GoogleDV360Data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "GoogleDV360Data"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

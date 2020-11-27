@@ -1,0 +1,34 @@
+{
+	"name": "GoogleDV360QueryFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DV360"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "QueryId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "StoragePath",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "GoogleDV360QueryFile"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

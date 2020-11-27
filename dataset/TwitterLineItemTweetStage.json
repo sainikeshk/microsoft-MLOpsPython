@@ -1,0 +1,45 @@
+{
+	"name": "TwitterLineItemTweetStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TweetId",
+				"type": "varchar"
+			},
+			{
+				"name": "LineItemId",
+				"type": "varchar"
+			},
+			{
+				"name": "created_at",
+				"type": "varchar"
+			},
+			{
+				"name": "updated_at",
+				"type": "varchar"
+			},
+			{
+				"name": "entity_status",
+				"type": "varchar"
+			},
+			{
+				"name": "approval_status",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterLineItemTweetStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

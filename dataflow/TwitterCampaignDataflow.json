@@ -1,0 +1,58 @@
+{
+	"name": "TwitterCampaignDataflow",
+	"properties": {
+		"folder": {
+			"name": "Twitter"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TwitterCampaignStage",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterCampaignStage"
+				},
+				{
+					"dataset": {
+						"referenceName": "Currency",
+						"type": "DatasetReference"
+					},
+					"name": "Currency"
+				},
+				{
+					"dataset": {
+						"referenceName": "CampaignStatus",
+						"type": "DatasetReference"
+					},
+					"name": "CampaignStatus"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TwitterCampaign",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterCampaign"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinCurrency"
+				},
+				{
+					"name": "JoinStatus"
+				},
+				{
+					"name": "PrepareColumns"
+				},
+				{
+					"name": "SelectCampaignColumns"
+				}
+			],
+			"script": "source(output(\n\t\tAccountId as string,\n\t\tCampaignId as string,\n\t\tName as string,\n\t\tCreated as string,\n\t\tModified as string,\n\t\tStatus as string,\n\t\tCurrency as string,\n\t\tTotalBudgetAmount as string,\n\t\tDailyBudgetAmount as string,\n\t\tServable as string,\n\t\tStartDate as string,\n\t\tEndDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterCampaignStage\nsource(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nsource(output(\n\t\tCampaignStatusID as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignStatus\nJoinStatus, Currency join(Currency == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCurrency\nTwitterCampaignStage, CampaignStatus join(Status == CampaignStatus@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinStatus\nJoinCurrency derive(Created = toTimestamp(Created, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tModified = toTimestamp(Modified, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tStartDate = toTimestamp(StartDate, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tEndDate = toTimestamp(EndDate, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3')) ~> PrepareColumns\nPrepareColumns select(mapColumn(\n\t\tAccountId,\n\t\tCampaignId,\n\t\tName = TwitterCampaignStage@Name,\n\t\tCreated,\n\t\tModified,\n\t\tStatus,\n\t\tCurrency,\n\t\tTotalBudgetAmount,\n\t\tDailyBudgetAmount,\n\t\tServable,\n\t\tStartDate,\n\t\tEndDate,\n\t\tCampaignStatusID,\n\t\tCurrencyId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCampaignColumns\nSelectCampaignColumns sink(input(\n\t\tAccountId as string,\n\t\tCampaignId as string,\n\t\tName as string,\n\t\tCreated as timestamp,\n\t\tModified as timestamp,\n\t\tStatusId as integer,\n\t\tCurrencyID as integer,\n\t\tTotalBudgetAmount as long,\n\t\tDailyBudgetAmount as long,\n\t\tServable as boolean,\n\t\tStartDate as timestamp,\n\t\tEndDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAccountId,\n\t\tCampaignId,\n\t\tName,\n\t\tCreated,\n\t\tModified,\n\t\tStatusId = CampaignStatusID,\n\t\tCurrencyID = CurrencyId,\n\t\tTotalBudgetAmount,\n\t\tDailyBudgetAmount,\n\t\tServable,\n\t\tStartDate,\n\t\tEndDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterCampaign"
+		}
+	}
+}

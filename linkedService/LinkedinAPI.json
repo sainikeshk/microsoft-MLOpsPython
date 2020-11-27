@@ -1,0 +1,22 @@
+{
+	"name": "LinkedinAPI",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"Url": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "@{linkedService().Url}",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		},
+		"connectVia": {
+			"referenceName": "HighPerformanceIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

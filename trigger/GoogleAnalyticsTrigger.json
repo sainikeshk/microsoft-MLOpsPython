@@ -1,0 +1,24 @@
+{
+	"name": "GoogleAnalyticsTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "GoogleAnalyticsPipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 3,
+				"startTime": "2020-11-06T07:55:00",
+				"timeZone": "Arab Standard Time"
+			}
+		}
+	}
+}

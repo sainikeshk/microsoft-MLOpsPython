@@ -1,0 +1,105 @@
+{
+	"name": "HubspotEngagementStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Hubspot"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EngagementId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "createdAt",
+				"type": "varchar"
+			},
+			{
+				"name": "lastUpdated",
+				"type": "varchar"
+			},
+			{
+				"name": "ownerId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "type",
+				"type": "varchar"
+			},
+			{
+				"name": "timestamp",
+				"type": "varchar"
+			},
+			{
+				"name": "teamId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "source",
+				"type": "varchar"
+			},
+			{
+				"name": "sourceId",
+				"type": "varchar"
+			},
+			{
+				"name": "allAccessibleTeamIds",
+				"type": "varchar"
+			},
+			{
+				"name": "bodyPreview",
+				"type": "varchar"
+			},
+			{
+				"name": "createdBy",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "modifiedBy",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "portalId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "active",
+				"type": "varchar"
+			},
+			{
+				"name": "contactAssosications",
+				"type": "varchar"
+			},
+			{
+				"name": "HasMore",
+				"type": "varchar"
+			},
+			{
+				"name": "Offset",
+				"type": "varchar"
+			},
+			{
+				"name": "InsertedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HubspotEngagementStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

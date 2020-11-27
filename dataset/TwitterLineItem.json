@@ -1,0 +1,134 @@
+{
+	"name": "TwitterLineItem",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountId",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "BidTypeId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "AdvertiserUserId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "StartDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "BidAmountLocalMicro",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "AutomaticallySelectBid",
+				"type": "bit"
+			},
+			{
+				"name": "AdvertiserDomain",
+				"type": "varchar"
+			},
+			{
+				"name": "TargetCPALocalMicro",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "PrimaryWebEventTag",
+				"type": "varchar"
+			},
+			{
+				"name": "ChargeById",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "ProductTypeId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "EndDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "BidUnitId",
+				"type": "varchar"
+			},
+			{
+				"name": "TotalBudgetAmountLocalMicro",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "TwitterObjectiveId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Id",
+				"type": "varchar"
+			},
+			{
+				"name": "EntityStatusId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Optimization",
+				"type": "varchar"
+			},
+			{
+				"name": "CurrencyId",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Updated",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "CreativeSource",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignId",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterLineItem"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

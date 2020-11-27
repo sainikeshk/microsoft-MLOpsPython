@@ -1,0 +1,83 @@
+{
+	"name": "Advertisment",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AdvertismentId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "AdvertismentGroupId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "StatusId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Headline",
+				"type": "varchar"
+			},
+			{
+				"name": "IntroductionText",
+				"type": "varchar"
+			},
+			{
+				"name": "Url",
+				"type": "varchar"
+			},
+			{
+				"name": "Line",
+				"type": "varchar"
+			},
+			{
+				"name": "SponsoredUpdateType",
+				"type": "varchar"
+			},
+			{
+				"name": "DSCName",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TypeId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Modified",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Advertisment"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

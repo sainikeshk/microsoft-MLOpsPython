@@ -1,0 +1,77 @@
+{
+	"name": "AdvertismentStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AdvertismentId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Status",
+				"type": "varchar"
+			},
+			{
+				"name": "AdvertismentGroup",
+				"type": "varchar"
+			},
+			{
+				"name": "Headline",
+				"type": "varchar"
+			},
+			{
+				"name": "IntroductionText",
+				"type": "varchar"
+			},
+			{
+				"name": "Url",
+				"type": "varchar"
+			},
+			{
+				"name": "Line",
+				"type": "varchar"
+			},
+			{
+				"name": "SponsoredUpdateType",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignId",
+				"type": "varchar"
+			},
+			{
+				"name": "Type",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Modified",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "DSCName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AdvertismentStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

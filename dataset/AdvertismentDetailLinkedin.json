@@ -1,0 +1,360 @@
+{
+	"name": "AdvertismentDetailLinkedin",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AdvertismentId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AdvertismentStartDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "AdvertismentEndDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "TotalSpent",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ActionClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AdUnitClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ApproximateUniqueImpressions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CardClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CardImpressions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Clicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CommentLikes",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Comments",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CompanyPageClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ConversionValueInLocalCurrency",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CostInLocalCurrency",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "CostInUsd",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ExternalWebsiteConversions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ExternalWebsitePostClickConversions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ExternalWebsitePostViewConversions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Follows",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FullScreenPlays",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Impressions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "LandingPageClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "LeadGenerationMailContactInfoShares",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "LeadGenerationMailInterestedClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Likes",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OneClickLeadFormOpens",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OneClickLeads",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Opens",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OtherEngagements",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ReturnOnAreactionsdSpend",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Sends",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Shares",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TextUrlClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TotalEngagements",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VideoCompletions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VideoFirstQuartileCompletions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VideoMidpointCompletions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VideoStarts",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VideoThirdQuartileCompletions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VideoViews",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralCardClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralCardImpressions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralCommentLikes",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralComments",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralCompanyPageClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralExternalWebsiteConversions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralExternalWebsitePostClickConversions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralExternalWebsitePostViewConversions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralFollows",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralFullScreenPlays",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralImpressions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralLandingPageClicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralLikes",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralOneClickLeadFormOpens",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralOneClickLeads",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralOtherEngagements",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralReactions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralShares",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralTotalEngagements",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralVideoCompletions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralVideoFirstQuartileCompletions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralVideoMidpointCompletions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralVideoStarts",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralVideoThirdQuartileCompletions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ViralVideoViews",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Reactions",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AdvertismentDetailLinkedin"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

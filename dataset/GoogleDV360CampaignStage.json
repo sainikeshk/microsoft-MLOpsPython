@@ -1,0 +1,97 @@
+{
+	"name": "GoogleDV360CampaignStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DV360"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CampaignId",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignName",
+				"type": "varchar"
+			},
+			{
+				"name": "Creative",
+				"type": "varchar"
+			},
+			{
+				"name": "Date",
+				"type": "varchar"
+			},
+			{
+				"name": "Impressions",
+				"type": "varchar"
+			},
+			{
+				"name": "Clicks",
+				"type": "varchar"
+			},
+			{
+				"name": "ClickRate",
+				"type": "varchar"
+			},
+			{
+				"name": "TotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "ClickThroughConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "TfocoComDetailSubmitTotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "NewTfocoComGlobalTagTotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "NewTfocoComHomePageVisitTotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "NewTfocoComInvestmentPlannerVisitTotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "NewTfocoComPortfolioPlannerVisitTotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "NewTfocoComWebinarSignupTotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "NewTfocoComDetailSubmitTotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "TfocoComHomePageVisitTotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "TfocoComWealthPlanningTotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "TfocoComWhoWeAreTotalConversions",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "GoogleDV360CampaignStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,35 @@
+{
+	"name": "TwitterTweetDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Twitter"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TwitterTweetStage",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterTweetStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TwitterTweet",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterTweet"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareColumn"
+				}
+			],
+			"script": "source(output(\n\t\taccount_id as string,\n\t\ttweet_type as string,\n\t\thashtags as string,\n\t\tin_reply_to_status_id_str as string,\n\t\tgeo as string,\n\t\tin_reply_to_user_id as string,\n\t\tcreated_at as string,\n\t\tfull_text as string,\n\t\tcard_uri as string,\n\t\tretweet_count as string,\n\t\tin_reply_to_screen_name as string,\n\t\ttweet_id as string,\n\t\tsource as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterTweetStage\nTwitterTweetStage derive(created_at = toDate(trim(concat(substring(substring(replace(created_at, '+0000', ''),4),1,7), substring(substring(replace(created_at, '+0000', ''),4),17))),'MMM dd yyyy')) ~> PrepareColumn\nPrepareColumn sink(input(\n\t\tTweetId as string,\n\t\tAccountId as string,\n\t\tFullText as string,\n\t\tTweetType as string,\n\t\tHashtags as string,\n\t\tInReplyToStatusIdStr as string,\n\t\tGeo as string,\n\t\tInReplyToUserId as string,\n\t\tCreated as timestamp,\n\t\tCardUri as string,\n\t\tRetweetCount as string,\n\t\tInReplyToScreenName as string,\n\t\tSource as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tTweetId = tweet_id,\n\t\tAccountId = account_id,\n\t\tFullText = full_text,\n\t\tTweetType = tweet_type,\n\t\tHashtags = hashtags,\n\t\tInReplyToStatusIdStr = in_reply_to_status_id_str,\n\t\tGeo = geo,\n\t\tInReplyToUserId = in_reply_to_status_id_str,\n\t\tCreated = created_at,\n\t\tCardUri = card_uri,\n\t\tRetweetCount = retweet_count,\n\t\tInReplyToScreenName = in_reply_to_screen_name,\n\t\tSource = source\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterTweet"
+		}
+	}
+}

@@ -1,0 +1,2213 @@
+{
+	"name": "TwitterPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Twitter Authentication Header For Accounts",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Twitter Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "GetTwitterAuthenticationHeader",
+					"method": "GET",
+					"headers": {
+						"ConsumerKey": {
+							"value": "@variables('ConsumerKey')",
+							"type": "Expression"
+						},
+						"ConsumerKeySecret": {
+							"value": "@variables('ConsumerKeySecret')",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@variables('AccessToken')",
+							"type": "Expression"
+						},
+						"AccessTokenSecret": {
+							"value": "@variables('AccessTokenSecret')",
+							"type": "Expression"
+						},
+						"APIUrl": {
+							"value": "@replace(variables('AccountUrl'),'AccountIdPlaceHolder', variables('AccountId'))",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "GetTwitterAuthenticationHeader",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest Into TwitterAccountStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Get Twitter Authentication Header For Accounts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@activity('Get Twitter Authentication Header For Accounts').output.AccessTokenValue",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['data']['name']"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['business_name']"
+								},
+								"sink": {
+									"name": "BusinessName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['id']"
+								},
+								"sink": {
+									"name": "AccountId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['created_at']"
+								},
+								"sink": {
+									"name": "Created",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['updated_at']"
+								},
+								"sink": {
+									"name": "Updated",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['industry_type']"
+								},
+								"sink": {
+									"name": "IndustryType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['approval_status']"
+								},
+								"sink": {
+									"name": "ApprovalStatus",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DynamicRESTDataSet",
+						"type": "DatasetReference",
+						"parameters": {
+							"Url": {
+								"value": "@replace(variables('AccountUrl'),'AccountIdPlaceHolder', variables('AccountId'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TwitterAccountStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Ingest Into TwitterAccount",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Ingest Into TwitterAccountStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "TwitterAccountDataFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Get Twitter Authentication Header For Campaigns",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Twitter Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "GetTwitterAuthenticationHeader",
+					"method": "GET",
+					"headers": {
+						"ConsumerKey": {
+							"value": "@variables('ConsumerKey')",
+							"type": "Expression"
+						},
+						"ConsumerKeySecret": {
+							"value": "@variables('ConsumerKeySecret')",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@variables('AccessToken')",
+							"type": "Expression"
+						},
+						"AccessTokenSecret": {
+							"value": "@variables('AccessTokenSecret')",
+							"type": "Expression"
+						},
+						"APIUrl": {
+							"value": "@replace(variables('CampaignUrl'),'AccountIdPlaceHolder', variables('AccountId'))",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "GetTwitterAuthenticationHeader",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest Into TwitterCampaignStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Get Twitter Authentication Header For Campaigns",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@activity('Get Twitter Authentication Header For Campaigns').output.AccessTokenValue\n",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['name']"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['start_time']"
+								},
+								"sink": {
+									"name": "StartDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['servable']"
+								},
+								"sink": {
+									"name": "Servable",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['daily_budget_amount_local_micro']"
+								},
+								"sink": {
+									"name": "DailyBudgetAmount",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['end_time']"
+								},
+								"sink": {
+									"name": "EndDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['total_budget_amount_local_micro']"
+								},
+								"sink": {
+									"name": "TotalBudgetAmount",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"name": "CampaignId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['entity_status']"
+								},
+								"sink": {
+									"name": "Status",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['currency']"
+								},
+								"sink": {
+									"name": "Currency",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['created_at']"
+								},
+								"sink": {
+									"name": "Created",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['updated_at']"
+								},
+								"sink": {
+									"name": "Modified",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['request']['params']['account_id']"
+								},
+								"sink": {
+									"name": "AccountId",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['data']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DynamicRESTDataSet",
+						"type": "DatasetReference",
+						"parameters": {
+							"Url": {
+								"value": "@replace(variables('CampaignUrl'),'AccountIdPlaceHolder', variables('AccountId'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TwitterCampaignStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Get Twitter Authentication Header For LineItems",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Twitter Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "GetTwitterAuthenticationHeader",
+					"method": "GET",
+					"headers": {
+						"ConsumerKey": {
+							"value": "@variables('ConsumerKey')",
+							"type": "Expression"
+						},
+						"ConsumerKeySecret": {
+							"value": "@variables('ConsumerKeySecret')",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@variables('AccessToken')",
+							"type": "Expression"
+						},
+						"AccessTokenSecret": {
+							"value": "@variables('AccessTokenSecret')",
+							"type": "Expression"
+						},
+						"APIUrl": {
+							"value": "@replace(variables('LineItemUrl'),'AccountIdPlaceHolder', variables('AccountId'))",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "GetTwitterAuthenticationHeader",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest Into TwitterLineItemStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Get Twitter Authentication Header For LineItems",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@activity('Get Twitter Authentication Header For LineItems').output.AccessTokenValue",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['request']['params']['account_id']"
+								},
+								"sink": {
+									"name": "AccountId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['bid_type']"
+								},
+								"sink": {
+									"name": "BidType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['advertiser_user_id']"
+								},
+								"sink": {
+									"name": "AdvertiserUserId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['name']"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['start_time']"
+								},
+								"sink": {
+									"name": "StartDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['bid_amount_local_micro']"
+								},
+								"sink": {
+									"name": "BidAmountLocalMicro",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['automatically_select_bid']"
+								},
+								"sink": {
+									"name": "AutomaticallySelectBid",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['advertiser_domain']"
+								},
+								"sink": {
+									"name": "AdvertiserDomain",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['target_cpa_local_micro']"
+								},
+								"sink": {
+									"name": "TargetCPALocalMicro",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['primary_web_event_tag']"
+								},
+								"sink": {
+									"name": "PrimaryWebEventTag",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['charge_by']"
+								},
+								"sink": {
+									"name": "ChargeBy",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['product_type']"
+								},
+								"sink": {
+									"name": "ProductType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['end_time']"
+								},
+								"sink": {
+									"name": "EndDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['bid_unit']"
+								},
+								"sink": {
+									"name": "BidUnit",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['total_budget_amount_local_micro']"
+								},
+								"sink": {
+									"name": "TotalBudgetAmountLocalMicro",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['objective']"
+								},
+								"sink": {
+									"name": "Objective",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"name": "Id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['entity_status']"
+								},
+								"sink": {
+									"name": "EntityStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['optimization']"
+								},
+								"sink": {
+									"name": "Optimization",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['currency']"
+								},
+								"sink": {
+									"name": "Currency",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['created_at']"
+								},
+								"sink": {
+									"name": "Created",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['updated_at']"
+								},
+								"sink": {
+									"name": "Updated",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['campaign_id']"
+								},
+								"sink": {
+									"name": "CampaignId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['creative_source']"
+								},
+								"sink": {
+									"name": "CreativeSource",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['data']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DynamicRESTDataSet",
+						"type": "DatasetReference",
+						"parameters": {
+							"Url": {
+								"value": "@replace(variables('LineItemUrl'),'AccountIdPlaceHolder', variables('AccountId'))\n",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TwitterLineItemStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Get Twitter Authentication Header For WebSiteCards",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Twitter Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "GetTwitterAuthenticationHeader",
+					"method": "GET",
+					"headers": {
+						"ConsumerKey": {
+							"value": "@variables('ConsumerKey')",
+							"type": "Expression"
+						},
+						"ConsumerKeySecret": {
+							"value": "@variables('ConsumerKeySecret')",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@variables('AccessToken')",
+							"type": "Expression"
+						},
+						"AccessTokenSecret": {
+							"value": "@variables('AccessTokenSecret')",
+							"type": "Expression"
+						},
+						"APIUrl": {
+							"value": "@replace(variables('CardUrl'),'AccountIdPlaceHolder', variables('AccountId'))",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "GetTwitterAuthenticationHeader",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest Into TwitterWebSiteCardStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Get Twitter Authentication Header For WebSiteCards",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@activity('Get Twitter Authentication Header For WebSiteCards').output.AccessTokenValue",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['name']"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['website_shortened_url']"
+								},
+								"sink": {
+									"name": "WebsiteShortenedUrl",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['image_display_height']"
+								},
+								"sink": {
+									"name": "ImageDisplayHeight",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['media_url']"
+								},
+								"sink": {
+									"name": "MediaUrl",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['website_display_url']"
+								},
+								"sink": {
+									"name": "WebsiteDisplayUrl",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"name": "Id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['website_dest_url']"
+								},
+								"sink": {
+									"name": "WebsiteDestUrl",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['media_key']"
+								},
+								"sink": {
+									"name": "MediaKey",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['created_at']"
+								},
+								"sink": {
+									"name": "Created",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['image_display_width']"
+								},
+								"sink": {
+									"name": "ImageDisplayWidth",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['website_title']"
+								},
+								"sink": {
+									"name": "WebsiteTitle",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['card_uri']"
+								},
+								"sink": {
+									"name": "CardUri",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['website_url']"
+								},
+								"sink": {
+									"name": "WebsiteUrl",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['updated_at']"
+								},
+								"sink": {
+									"name": "Updated",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['card_type']"
+								},
+								"sink": {
+									"name": "CardType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['request']['params']['account_id']"
+								},
+								"sink": {
+									"name": "AccountId",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['data']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DynamicRESTDataSet",
+						"type": "DatasetReference",
+						"parameters": {
+							"Url": "@replace(variables('CardUrl'),'AccountIdPlaceHolder', variables('AccountId'))"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TwitterWebSiteCardStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Cleanup Twitter Tables",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Check if Differential",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spCleanUpTwitterTables]"
+				},
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Get LineItemsString",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Populate TwitterLineItemString",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select  LineItemString from [dbo].[TwitterLineItemString]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "TwitterLineItemString",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Populate TwitterLineItemString",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Ingest Into TwitterLineItemStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spPopulateTwitterLineItemString]"
+				},
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ForEach LineItemString",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get LineItemsString",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get LineItemsString').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Execute EngagementsMetricsPipeline",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "TwitterEngagementsMetricsPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"LineItemString": {
+										"value": "@item().LineItemString",
+										"type": "Expression"
+									},
+									"ConsumerKey": {
+										"value": "@variables('ConsumerKey')",
+										"type": "Expression"
+									},
+									"ConsumerKeySecret": {
+										"value": "@variables('ConsumerKeySecret')",
+										"type": "Expression"
+									},
+									"AccessToken": {
+										"value": "@variables('AccessToken')",
+										"type": "Expression"
+									},
+									"AccessTokenSecret": {
+										"value": "@variables('AccessTokenSecret')",
+										"type": "Expression"
+									},
+									"AccountId": {
+										"value": "@variables('AccountId')",
+										"type": "Expression"
+									},
+									"StartDate": {
+										"value": "@variables('StartDate')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Ingest into TwitterEnagagementMetrics",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ForEach LineItemString",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spInsertTwitterEngagementData]"
+				},
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Get Twitter Authentication Header For Tweets",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Twitter Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "GetTwitterAuthenticationHeader",
+					"method": "GET",
+					"headers": {
+						"ConsumerKey": {
+							"value": "@variables('ConsumerKey')",
+							"type": "Expression"
+						},
+						"ConsumerKeySecret": {
+							"value": "@variables('ConsumerKeySecret')",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@variables('AccessToken')",
+							"type": "Expression"
+						},
+						"AccessTokenSecret": {
+							"value": "@variables('AccessTokenSecret')",
+							"type": "Expression"
+						},
+						"APIUrl": {
+							"value": "@replace(variables('TweetUrl'),'AccountIdPlaceHolder', variables('AccountId'))",
+							"type": "Expression"
+						},
+						"UrlParams": "tweet_type=PUBLISHED"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "GetTwitterAuthenticationHeader",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest Into TwitterTweetStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Get Twitter Authentication Header For Tweets",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@activity('Get Twitter Authentication Header For Tweets').output.AccessTokenValue",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['source']"
+								},
+								"sink": {
+									"name": "source",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['entities']['hashtags'][0]['text']"
+								},
+								"sink": {
+									"name": "hashtags",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['in_reply_to_status_id_str']"
+								},
+								"sink": {
+									"name": "in_reply_to_status_id_str",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['geo']"
+								},
+								"sink": {
+									"name": "geo",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['in_reply_to_user_id']"
+								},
+								"sink": {
+									"name": "in_reply_to_user_id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['retweet_count']"
+								},
+								"sink": {
+									"name": "retweet_count",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['created_at']"
+								},
+								"sink": {
+									"name": "created_at",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['tweet_type']"
+								},
+								"sink": {
+									"name": "tweet_type",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['card_uri']"
+								},
+								"sink": {
+									"name": "card_uri",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['full_text']"
+								},
+								"sink": {
+									"name": "full_text",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['in_reply_to_screen_name']"
+								},
+								"sink": {
+									"name": "in_reply_to_screen_name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['tweet_id']"
+								},
+								"sink": {
+									"name": "tweet_id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['request']['params']['account_id']"
+								},
+								"sink": {
+									"name": "account_id",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['data']",
+						"mapComplexValuesToString": true
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DynamicRESTDataSet",
+						"type": "DatasetReference",
+						"parameters": {
+							"Url": {
+								"value": "@concat(replace(variables('TweetUrl'),'AccountIdPlaceHolder', variables('AccountId')),'?','tweet_type=PUBLISHED')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TwitterTweetStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Ingest into TwitterCampaign",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Ingest Into TwitterCampaignStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "TwitterCampaignDataflow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Ingest into TwitterLineItem",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Ingest Into TwitterLineItemStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "TwitterLineItemDataFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Get Twitter Authentication Header For Promoted Tweets",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Twitter Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "GetTwitterAuthenticationHeader",
+					"method": "GET",
+					"headers": {
+						"ConsumerKey": {
+							"value": "@variables('ConsumerKey')",
+							"type": "Expression"
+						},
+						"ConsumerKeySecret": {
+							"value": "@variables('ConsumerKeySecret')",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@variables('AccessToken')",
+							"type": "Expression"
+						},
+						"AccessTokenSecret": {
+							"value": "@variables('AccessTokenSecret')",
+							"type": "Expression"
+						},
+						"APIUrl": {
+							"value": "@replace(variables('PromotedTweetUrl'),'AccountIdPlaceHolder', variables('AccountId'))",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "GetTwitterAuthenticationHeader",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest Into TwitterLineItemTweetStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Get Twitter Authentication Header For Promoted Tweets",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@activity('Get Twitter Authentication Header For Promoted Tweets').output.AccessTokenValue",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['line_item_id']"
+								},
+								"sink": {
+									"name": "LineItemId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['entity_status']"
+								},
+								"sink": {
+									"name": "entity_status",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['created_at']"
+								},
+								"sink": {
+									"name": "created_at",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['updated_at']"
+								},
+								"sink": {
+									"name": "updated_at",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['approval_status']"
+								},
+								"sink": {
+									"name": "approval_status",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['tweet_id']"
+								},
+								"sink": {
+									"name": "TweetId",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['data']",
+						"mapComplexValuesToString": true
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DynamicRESTDataSet",
+						"type": "DatasetReference",
+						"parameters": {
+							"Url": {
+								"value": "@replace(variables('PromotedTweetUrl'),'AccountIdPlaceHolder', variables('AccountId'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TwitterLineItemTweetStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Ingest into TwitterTweet",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Ingest Into TwitterTweetStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "TwitterTweetDataFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Ingest into TwitterLineItemTweet",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Ingest Into TwitterLineItemTweetStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "TwitterLineItemTweetDataflow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Tables list to Copy",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Ingest into TwitterEnagagementMetrics",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Ingest into TwitterCampaign",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Ingest into TwitterTweet",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Ingest into TwitterLineItemTweet",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Ingest into TwitterLineItem",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select 'TwitterLineItem' as TblName\nunion\nselect 'TwitterCampaign' as TblName\nunion\nselect 'TwitterLineItemTweet' as TblName\nunion\nselect 'TwitterTweet' as TblName",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "HubspotContact",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Copy Each Table to Prod",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Tables list to Copy",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Tables list to Copy').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Ingest into Prod Tables",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@{concat('select * from dbo.',item().TblName)}",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"preCopyScript": {
+										"value": "@{concat('delete from prod.',item().TblName)}",
+										"type": "Expression"
+									},
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DynamicDataSet",
+									"type": "DatasetReference",
+									"parameters": {
+										"TblName": "@item().TblName"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DynamicDataSet",
+									"type": "DatasetReference",
+									"parameters": {
+										"TblName": {
+											"value": "@item().TblName",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Copy Recent Metrics",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Copy Each Table to Prod",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": {
+							"value": "@{concat('Delete from prod.TwitterEnagagementMetrics where MetricDate >''',variables('StartDate'),'''')}",
+							"type": "Expression"
+						},
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "LineItemId",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "LineItemId",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "MetricDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "MetricDate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "Impressions",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Impressions",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "TweetsSend",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "TweetsSend",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "QualifiedImpressions",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "QualifiedImpressions",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "Follows",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Follows",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "AppClicks",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "AppClicks",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "Retweets",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Retweets",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "Unfollows",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Unfollows",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "Likes",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Likes",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "Engagements",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Engagements",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "Clicks",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Clicks",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "CardEngagements",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "CardEngagements",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "PollCardVote",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "PollCardVote",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "Replies",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Replies",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "BilledChargeLocalMicro",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "BilledChargeLocalMicro",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "BilledEngagements",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "BilledEngagements",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "TwitterEnagagementMetrics",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ProdTwitterEnagagementMetrics",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Check if Differential",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('Differential'), true)\n\n ",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Set StartDate",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "StartDate",
+								"value": {
+									"value": "@formatDateTime(adddays(utcnow(),-2),'yyyy-MM-dd')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"ConsumerKey": {
+				"type": "String",
+				"defaultValue": "0bNbRmwfcwUylurWUlMLXVw6s"
+			},
+			"ConsumerKeySecret": {
+				"type": "String",
+				"defaultValue": "tTrmn64h8rvHSNfnqYzKk6TOdug8lUIT9m1lu4wLWh7cSKt7IS"
+			},
+			"AccessToken": {
+				"type": "String",
+				"defaultValue": "1247510171749883906-Mw7rz6qlwk38ZIAdnzD0RmUPQSqw78"
+			},
+			"AccessTokenSecret": {
+				"type": "String",
+				"defaultValue": "lxDxAxy1H6EhHniLrNyBxwEIwmZbGeOLXgaNXrUmsRDew"
+			},
+			"AccountUrl": {
+				"type": "String",
+				"defaultValue": "https://ads-api.twitter.com/8/accounts/AccountIdPlaceHolder"
+			},
+			"AccountId": {
+				"type": "String",
+				"defaultValue": "18ce554fqwc"
+			},
+			"CampaignUrl": {
+				"type": "String",
+				"defaultValue": "https://ads-api.twitter.com/8/accounts/AccountIdPlaceHolder/campaigns"
+			},
+			"LineItemUrl": {
+				"type": "String",
+				"defaultValue": "https://ads-api.twitter.com/8/accounts/AccountIdPlaceHolder/line_items"
+			},
+			"AnalyticsUrl": {
+				"type": "String",
+				"defaultValue": "https://ads-api.twitter.com/8/stats/accounts/AccountIdPlaceHolder"
+			},
+			"StartDate": {
+				"type": "String",
+				"defaultValue": "2020-01-01"
+			},
+			"CardUrl": {
+				"type": "String",
+				"defaultValue": "https://ads-api.twitter.com/8/accounts/AccountIdPlaceHolder/cards/website"
+			},
+			"TweetUrl": {
+				"type": "String",
+				"defaultValue": "https://ads-api.twitter.com/8/accounts/AccountIdPlaceHolder/tweets"
+			},
+			"PromotedTweetUrl": {
+				"type": "String",
+				"defaultValue": "https://ads-api.twitter.com/8/accounts/AccountIdPlaceHolder/promoted_tweets"
+			},
+			"OrganicTweetUrl": {
+				"type": "String",
+				"defaultValue": "https://ads-api.twitter.com/8/accounts/AccountIdPlaceHolder/tweets"
+			},
+			"Differential": {
+				"type": "Boolean",
+				"defaultValue": true
+			}
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-11-11T05:10:46Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

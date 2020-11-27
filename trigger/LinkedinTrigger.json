@@ -1,0 +1,24 @@
+{
+	"name": "LinkedinTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "LinkedinPipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 3,
+				"startTime": "2020-11-06T07:30:00",
+				"timeZone": "Arab Standard Time"
+			}
+		}
+	}
+}

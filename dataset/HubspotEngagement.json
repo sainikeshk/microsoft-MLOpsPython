@@ -1,0 +1,98 @@
+{
+	"name": "HubspotEngagement",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Hubspot"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EngagementId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Type",
+				"type": "varchar"
+			},
+			{
+				"name": "TimeStamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "TeamId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Updated",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "OwnerId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Source",
+				"type": "varchar"
+			},
+			{
+				"name": "SourceId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "AllAccessibleTeamIds",
+				"type": "varchar"
+			},
+			{
+				"name": "BodyPreview",
+				"type": "varchar"
+			},
+			{
+				"name": "CreatedBy",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "ModifiedBy",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "PortalId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Active",
+				"type": "bit"
+			},
+			{
+				"name": "ContactAssociations",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HubspotEngagement"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

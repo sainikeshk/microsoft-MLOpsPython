@@ -1,0 +1,108 @@
+{
+	"name": "TwitterLineItemDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Twitter"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TwitterLineItemStage",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterLineItemStage"
+				},
+				{
+					"dataset": {
+						"referenceName": "BidType",
+						"type": "DatasetReference"
+					},
+					"name": "BidType"
+				},
+				{
+					"dataset": {
+						"referenceName": "ChargeBy",
+						"type": "DatasetReference"
+					},
+					"name": "ChargeBy"
+				},
+				{
+					"dataset": {
+						"referenceName": "ProductType",
+						"type": "DatasetReference"
+					},
+					"name": "ProductType"
+				},
+				{
+					"dataset": {
+						"referenceName": "EntityStatus",
+						"type": "DatasetReference"
+					},
+					"name": "EntityStatus"
+				},
+				{
+					"dataset": {
+						"referenceName": "BidUnit",
+						"type": "DatasetReference"
+					},
+					"name": "BidUnit"
+				},
+				{
+					"dataset": {
+						"referenceName": "TwitterObjective",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterObjetive"
+				},
+				{
+					"dataset": {
+						"referenceName": "Currency",
+						"type": "DatasetReference"
+					},
+					"name": "Currency"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TwitterLineItem",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterLineItem"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinBidType"
+				},
+				{
+					"name": "JoinChargeBy"
+				},
+				{
+					"name": "JoinProductType"
+				},
+				{
+					"name": "JoinEntityStatus"
+				},
+				{
+					"name": "JoinBidUnit"
+				},
+				{
+					"name": "JoinObjective"
+				},
+				{
+					"name": "JoinCurrency"
+				},
+				{
+					"name": "SelectColumns"
+				},
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\tAccountId as string,\n\t\tName as string,\n\t\tBidType as string,\n\t\tAdvertiserUserId as string,\n\t\tStartDate as string,\n\t\tBidAmountLocalMicro as string,\n\t\tAutomaticallySelectBid as string,\n\t\tAdvertiserDomain as string,\n\t\tTargetCPALocalMicro as string,\n\t\tPrimaryWebEventTag as string,\n\t\tChargeBy as string,\n\t\tProductType as string,\n\t\tEndDate as string,\n\t\tBidUnit as string,\n\t\tTotalBudgetAmountLocalMicro as string,\n\t\tObjective as string,\n\t\tId as string,\n\t\tEntityStatus as string,\n\t\tOptimization as string,\n\t\tCurrency as string,\n\t\tCreated as string,\n\t\tUpdated as string,\n\t\tCreativeSource as string,\n\t\tCampaignId as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterLineItemStage\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> BidType\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ChargeBy\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ProductType\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> EntityStatus\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> BidUnit\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterObjetive\nsource(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nJoinChargeBy, BidType join(BidType == BidType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinBidType\nJoinProductType, ChargeBy join(ChargeBy == ChargeBy@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinChargeBy\nJoinEntityStatus, ProductType join(ProductType == ProductType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinProductType\nJoinBidUnit, EntityStatus join(EntityStatus == EntityStatus@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinEntityStatus\nJoinObjective, BidUnit join(BidUnit == BidUnit@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinBidUnit\nJoinCurrency, TwitterObjetive join(Objective == TwitterObjetive@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinObjective\nTwitterLineItemStage, Currency join(Currency == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCurrency\nJoinBidType select(mapColumn(\n\t\tAccountId,\n\t\tName = TwitterLineItemStage@Name,\n\t\tBidType,\n\t\tAdvertiserUserId,\n\t\tStartDate,\n\t\tBidAmountLocalMicro,\n\t\tAutomaticallySelectBid,\n\t\tAdvertiserDomain,\n\t\tTargetCPALocalMicro,\n\t\tPrimaryWebEventTag,\n\t\tChargeBy,\n\t\tProductType,\n\t\tEndDate,\n\t\tBidUnit,\n\t\tTotalBudgetAmountLocalMicro,\n\t\tObjective,\n\t\tId = TwitterLineItemStage@Id,\n\t\tEntityStatus,\n\t\tOptimization,\n\t\tCurrency,\n\t\tCreated,\n\t\tUpdated,\n\t\tCreativeSource,\n\t\tCampaignId,\n\t\tCurrencyId,\n\t\tName = Currency@Name,\n\t\tDisplayName = Currency@DisplayName,\n\t\tTwitterObjectiveId = TwitterObjetive@Id,\n\t\tBidUnitId = BidUnit@Id,\n\t\tEntityStatusId = EntityStatus@Id,\n\t\tProductTypeId = ProductType@Id,\n\t\tChargeById = ChargeBy@Id,\n\t\tBidTypeId = BidType@Id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectColumns\nSelectColumns derive(StartDate = toTimestamp(StartDate, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tEndDate = toTimestamp(EndDate, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tCreated = toTimestamp(Created, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tUpdated = toTimestamp(Updated, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tAccountId as string,\n\t\tName as string,\n\t\tBidTypeId as integer,\n\t\tAdvertiserUserId as long,\n\t\tStartDate as timestamp,\n\t\tBidAmountLocalMicro as double,\n\t\tAutomaticallySelectBid as boolean,\n\t\tAdvertiserDomain as string,\n\t\tTargetCPALocalMicro as double,\n\t\tPrimaryWebEventTag as string,\n\t\tChargeById as integer,\n\t\tProductTypeId as integer,\n\t\tEndDate as timestamp,\n\t\tBidUnitId as string,\n\t\tTotalBudgetAmountLocalMicro as double,\n\t\tTwitterObjectiveId as integer,\n\t\tId as string,\n\t\tEntityStatusId as integer,\n\t\tOptimization as string,\n\t\tCurrencyId as string,\n\t\tCreated as timestamp,\n\t\tUpdated as timestamp,\n\t\tCreativeSource as string,\n\t\tCampaignId as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAccountId,\n\t\tName,\n\t\tBidTypeId,\n\t\tAdvertiserUserId,\n\t\tStartDate,\n\t\tBidAmountLocalMicro,\n\t\tAutomaticallySelectBid,\n\t\tAdvertiserDomain,\n\t\tTargetCPALocalMicro,\n\t\tPrimaryWebEventTag,\n\t\tChargeById,\n\t\tProductTypeId,\n\t\tEndDate,\n\t\tBidUnitId,\n\t\tTotalBudgetAmountLocalMicro,\n\t\tTwitterObjectiveId,\n\t\tId,\n\t\tEntityStatusId,\n\t\tOptimization,\n\t\tCurrencyId,\n\t\tCreated,\n\t\tUpdated,\n\t\tCreativeSource,\n\t\tCampaignId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterLineItem"
+		}
+	}
+}

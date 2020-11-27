@@ -1,0 +1,75 @@
+{
+	"name": "DV360CampaignCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "dv360report.csv",
+				"folderPath": "development/dv360",
+				"container": "dashboard"
+			},
+			"columnDelimiter": ",",
+			"rowDelimiter": "\n",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Campaign",
+				"type": "String"
+			},
+			{
+				"name": "Campaign ID",
+				"type": "String"
+			},
+			{
+				"name": "Site (DCM)",
+				"type": "String"
+			},
+			{
+				"name": "Placement",
+				"type": "String"
+			},
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "Impressions",
+				"type": "String"
+			},
+			{
+				"name": "Clicks",
+				"type": "String"
+			},
+			{
+				"name": "Click Rate",
+				"type": "String"
+			},
+			{
+				"name": "Active View: Viewable Impressions",
+				"type": "String"
+			},
+			{
+				"name": "Active View: Measurable Impressions",
+				"type": "String"
+			},
+			{
+				"name": "Active View: Eligible Impressions",
+				"type": "String"
+			},
+			{
+				"name": "Total Conversions",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

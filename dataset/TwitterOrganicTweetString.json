@@ -1,0 +1,30 @@
+{
+	"name": "TwitterOrganicTweetString",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "OrganicTweetString",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterOrganicTweetString"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,35 @@
+{
+	"name": "OwnerDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Hubspot"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "HubspotOwnerStage",
+						"type": "DatasetReference"
+					},
+					"name": "HubspotOwnerStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "HubspotOwner",
+						"type": "DatasetReference"
+					},
+					"name": "HubspotOwner"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\tOwnerId as long,\n\t\tfirstName as string,\n\t\tlastName as string,\n\t\temail as string,\n\t\tcreatedAt as string,\n\t\tupdatedAt as string,\n\t\thasContactsAccess as string,\n\t\tactiveUserId as long,\n\t\tactiveSalesforceId as long,\n\t\tisActive as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> HubspotOwnerStage\nHubspotOwnerStage derive(createdAt = toTimestamp(toLong(createdAt),'yyyy-MM-dd HH:mm:ss'),\n\t\tupdatedAt = toTimestamp(toLong(updatedAt),'yyyy-MM-dd HH:mm:ss')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tOwnerId as long,\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tEmail as string,\n\t\tCreated as timestamp,\n\t\tUpdated as timestamp,\n\t\tHasContactsAccess as boolean,\n\t\tActiveUserId as integer,\n\t\tActiveSalesForceId as string,\n\t\tIsActive as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tOwnerId,\n\t\tFirstName = firstName,\n\t\tLastName = lastName,\n\t\tEmail = email,\n\t\tCreated = createdAt,\n\t\tUpdated = updatedAt,\n\t\tHasContactsAccess = hasContactsAccess,\n\t\tActiveUserId = activeUserId,\n\t\tActiveSalesForceId = activeSalesforceId,\n\t\tIsActive = isActive\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> HubspotOwner"
+		}
+	}
+}

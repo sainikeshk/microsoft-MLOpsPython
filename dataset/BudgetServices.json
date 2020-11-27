@@ -1,0 +1,101 @@
+{
+	"name": "BudgetServices",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MSDynamics"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SerialNumber",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "AccountingCurrencyAmount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "Clients",
+				"type": "varchar"
+			},
+			{
+				"name": "DepartmentId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CurrencyCode",
+				"type": "varchar"
+			},
+			{
+				"name": "Employee",
+				"type": "varchar"
+			},
+			{
+				"name": "MainAccountId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Customer",
+				"type": "varchar"
+			},
+			{
+				"name": "TransactionCurrencyCode",
+				"type": "varchar"
+			},
+			{
+				"name": "TransactionDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "ClassDim",
+				"type": "varchar"
+			},
+			{
+				"name": "ProjectId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Text",
+				"type": "varchar"
+			},
+			{
+				"name": "ReportingCurrencyAmount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "SPV",
+				"type": "varchar"
+			},
+			{
+				"name": "TransactionCurrencyAmount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "Vendor",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "BudgetServices"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

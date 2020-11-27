@@ -1,0 +1,19 @@
+{
+	"name": "MSDynamicsAXLiveService",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "DynamicsAX",
+		"typeProperties": {
+			"url": "https://tfo-live.operations.dynamics.com/data",
+			"tenant": "722fb109-13f1-4aa0-9a39-dd9440082369",
+			"aadResourceId": "https://tfo-live.operations.dynamics.com",
+			"servicePrincipalId": "7d55aa19-d4ad-4447-ac83-e17200bfa898",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlRGT0RGXzFkMmEyMzJjLTU2NDMtNGRhMS04MTg0LWNlNzRhYzAyYWNkNSINCn0="
+		},
+		"connectVia": {
+			"referenceName": "HighPerformanceIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

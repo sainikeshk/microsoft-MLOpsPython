@@ -1,0 +1,86 @@
+{
+	"name": "LinkedinShareStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "owner",
+				"type": "varchar"
+			},
+			{
+				"name": "agent",
+				"type": "varchar"
+			},
+			{
+				"name": "activity",
+				"type": "varchar"
+			},
+			{
+				"name": "subject",
+				"type": "varchar"
+			},
+			{
+				"name": "createdby",
+				"type": "varchar"
+			},
+			{
+				"name": "created",
+				"type": "varchar"
+			},
+			{
+				"name": "id",
+				"type": "varchar"
+			},
+			{
+				"name": "lastModifiedby",
+				"type": "varchar"
+			},
+			{
+				"name": "lastModified",
+				"type": "varchar"
+			},
+			{
+				"name": "text",
+				"type": "varchar"
+			},
+			{
+				"name": "landingPageTitle",
+				"type": "varchar"
+			},
+			{
+				"name": "description",
+				"type": "varchar"
+			},
+			{
+				"name": "entityLocation",
+				"type": "varchar"
+			},
+			{
+				"name": "title",
+				"type": "varchar"
+			},
+			{
+				"name": "landingPageUrl",
+				"type": "varchar"
+			},
+			{
+				"name": "entity",
+				"type": "varchar"
+			},
+			{
+				"name": "shareMediaCategory",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "LinkedinShareStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

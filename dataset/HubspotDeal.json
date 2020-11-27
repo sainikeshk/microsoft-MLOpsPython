@@ -1,0 +1,97 @@
+{
+	"name": "HubspotDeal",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Hubspot"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "DealId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DealStage",
+				"type": "varchar"
+			},
+			{
+				"name": "ClosedLostReason",
+				"type": "varchar"
+			},
+			{
+				"name": "LastModifiedDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Amount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "AmountSource",
+				"type": "varchar"
+			},
+			{
+				"name": "Pipeline",
+				"type": "varchar"
+			},
+			{
+				"name": "TFOLifecycleStage",
+				"type": "varchar"
+			},
+			{
+				"name": "CreateDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "DealOwnerId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "LeadStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "AssociatedContactIds",
+				"type": "varchar"
+			},
+			{
+				"name": "ClosedDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "DealType",
+				"type": "varchar"
+			},
+			{
+				"name": "NumberOfTimesContacted",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NumberOfSalesActivities",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HubspotDeal"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,38 @@
+{
+	"name": "Persona",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Hubspot"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "PersonaId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "HubspotName",
+				"type": "varchar"
+			},
+			{
+				"name": "DisplayName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Persona"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

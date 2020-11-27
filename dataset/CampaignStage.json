@@ -1,0 +1,81 @@
+{
+	"name": "CampaignStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CampaignId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "DisplayName",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignGroup",
+				"type": "varchar"
+			},
+			{
+				"name": "Type",
+				"type": "varchar"
+			},
+			{
+				"name": "Status",
+				"type": "varchar"
+			},
+			{
+				"name": "CostType",
+				"type": "varchar"
+			},
+			{
+				"name": "Objective",
+				"type": "varchar"
+			},
+			{
+				"name": "Account",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Modified",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "UnitCurrencyCode",
+				"type": "varchar"
+			},
+			{
+				"name": "UnitAmount",
+				"type": "varchar"
+			},
+			{
+				"name": "DailyCurrencyCode",
+				"type": "varchar"
+			},
+			{
+				"name": "DailyAmount",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "CampaignStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

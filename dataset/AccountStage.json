@@ -1,0 +1,54 @@
+{
+	"name": "AccountStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Currency",
+				"type": "varchar"
+			},
+			{
+				"name": "Status",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Modified",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Type",
+				"type": "varchar"
+			},
+			{
+				"name": "SourceId",
+				"type": "smallint",
+				"precision": 5
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AccountStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

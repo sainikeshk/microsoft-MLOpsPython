@@ -1,0 +1,114 @@
+{
+	"name": "DV360CostReport",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "dv360MetricsReport.csv",
+				"folderPath": "development/dv360",
+				"container": "dashboard"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Advertiser",
+				"type": "String"
+			},
+			{
+				"name": "Advertiser ID",
+				"type": "String"
+			},
+			{
+				"name": "Advertiser Currency",
+				"type": "String"
+			},
+			{
+				"name": "Insertion Order",
+				"type": "String"
+			},
+			{
+				"name": "Insertion Order ID",
+				"type": "String"
+			},
+			{
+				"name": "Line Item",
+				"type": "String"
+			},
+			{
+				"name": "Line Item ID",
+				"type": "String"
+			},
+			{
+				"name": "Campaign",
+				"type": "String"
+			},
+			{
+				"name": "Creative",
+				"type": "String"
+			},
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "Impressions",
+				"type": "String"
+			},
+			{
+				"name": "Billable Impressions",
+				"type": "String"
+			},
+			{
+				"name": "Clicks",
+				"type": "String"
+			},
+			{
+				"name": "Click Rate (CTR)",
+				"type": "String"
+			},
+			{
+				"name": "Total Conversions",
+				"type": "String"
+			},
+			{
+				"name": "Post-Click Conversions",
+				"type": "String"
+			},
+			{
+				"name": "Post-View Conversions",
+				"type": "String"
+			},
+			{
+				"name": "Revenue (Adv Currency)",
+				"type": "String"
+			},
+			{
+				"name": "Media Cost (Advertiser Currency)",
+				"type": "String"
+			},
+			{
+				"name": "Billable Cost (Adv Currency)",
+				"type": "String"
+			},
+			{
+				"name": "Platform Fee (Adv Currency)",
+				"type": "String"
+			},
+			{
+				"name": "Platform Fee Rate",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

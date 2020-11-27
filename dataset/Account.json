@@ -1,0 +1,63 @@
+{
+	"name": "Account",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SourceId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "DisplayName",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "CurrencyId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Modified",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "StatusId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "TypeId",
+				"type": "smallint",
+				"precision": 5
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Account"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,32 @@
+{
+	"name": "BudgetServicesDataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "BudgetServicesStage",
+						"type": "DatasetReference"
+					},
+					"name": "BudgetServicesStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "BudgetServices",
+						"type": "DatasetReference"
+					},
+					"name": "BudgetServices"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\tSerialNumber as long,\n\t\tAccountingCurrencyAmount as decimal(18,0),\n\t\tClients as string,\n\t\tDepartment as integer,\n\t\tCurrencyCode as string,\n\t\tEmployee as string,\n\t\tMainAccountId as integer,\n\t\tCustomer as string,\n\t\tTransactionCurrencyCode as string,\n\t\tTransDate as string,\n\t\tClassDim as string,\n\t\tProject as string,\n\t\tText as string,\n\t\tReportingCurrencyAmount as decimal(18,0),\n\t\tSPV as string,\n\t\tTransactionCurrencyAmount as decimal(18,0),\n\t\tVendor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> BudgetServicesStage\nBudgetServicesStage derive(TransDate = toTimestamp(replace(TransDate,' +00:00',''), 'MM/dd/yyyy HH:mm:ss')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tSerialNumber as long,\n\t\tAccountingCurrencyAmount as decimal(18,0),\n\t\tClients as string,\n\t\tDepartmentId as integer,\n\t\tCurrencyCode as string,\n\t\tEmployee as string,\n\t\tMainAccountId as integer,\n\t\tCustomer as string,\n\t\tTransactionCurrencyCode as string,\n\t\tTransactionDate as timestamp,\n\t\tClassDim as string,\n\t\tProjectId as integer,\n\t\tText as string,\n\t\tReportingCurrencyAmount as decimal(18,0),\n\t\tSPV as string,\n\t\tTransactionCurrencyAmount as decimal(18,0),\n\t\tVendor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tSerialNumber,\n\t\tAccountingCurrencyAmount,\n\t\tClients,\n\t\tDepartmentId = Department,\n\t\tCurrencyCode,\n\t\tEmployee,\n\t\tMainAccountId,\n\t\tCustomer,\n\t\tTransactionCurrencyCode,\n\t\tTransactionDate = TransDate,\n\t\tClassDim,\n\t\tProjectId = Project,\n\t\tText,\n\t\tReportingCurrencyAmount,\n\t\tSPV,\n\t\tTransactionCurrencyAmount,\n\t\tVendor\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> BudgetServices"
+		}
+	}
+}

@@ -1,0 +1,49 @@
+{
+	"name": "TwitterAccountStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountId",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "varchar"
+			},
+			{
+				"name": "Updated",
+				"type": "varchar"
+			},
+			{
+				"name": "BusinessName",
+				"type": "varchar"
+			},
+			{
+				"name": "IndustryType",
+				"type": "varchar"
+			},
+			{
+				"name": "ApprovalStatus",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterAccountStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

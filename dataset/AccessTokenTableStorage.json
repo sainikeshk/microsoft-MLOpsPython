@@ -1,0 +1,16 @@
+{
+	"name": "AccessTokenTableStorage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardTableStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "AccessToken"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

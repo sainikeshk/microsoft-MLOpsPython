@@ -1,0 +1,113 @@
+{
+	"name": "GoogleDV360Campaign",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DV360"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CampaignId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CampaignName",
+				"type": "varchar"
+			},
+			{
+				"name": "Creative",
+				"type": "varchar"
+			},
+			{
+				"name": "Date",
+				"type": "date"
+			},
+			{
+				"name": "Impressions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Clicks",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ClickRate",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "TotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ClickThroughConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "TfocoComDetailSubmitTotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "NewTfocoComGlobalTagTotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "NewTfocoComHomePageVisitTotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "NewTfocoComInvestmentPlannerVisitTotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "NewTfocoComPortfolioPlannerVisitTotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "NewTfocoComWebinarSignupTotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "NewTfocoComDetailSubmitTotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "TfocoComHomePageVisitTotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "TfocoComWealthPlanningTotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "TfocoComWhoWeAreTotalConversions",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "GoogleDV360Campaign"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

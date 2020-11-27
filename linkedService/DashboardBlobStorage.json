@@ -1,0 +1,15 @@
+{
+	"name": "DashboardBlobStorage",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"connectionString": "Server=tcp:mavericserver.database.windows.net,1433;Initial Catalog=tfodb;Persist Security Info=False;User ID=sqladmin;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+		},
+		"connectVia": {
+			"referenceName": "HighPerformanceIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

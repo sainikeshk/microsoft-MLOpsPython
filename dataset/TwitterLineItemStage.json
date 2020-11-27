@@ -1,0 +1,117 @@
+{
+	"name": "TwitterLineItemStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountId",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "BidType",
+				"type": "varchar"
+			},
+			{
+				"name": "AdvertiserUserId",
+				"type": "varchar"
+			},
+			{
+				"name": "StartDate",
+				"type": "varchar"
+			},
+			{
+				"name": "BidAmountLocalMicro",
+				"type": "varchar"
+			},
+			{
+				"name": "AutomaticallySelectBid",
+				"type": "varchar"
+			},
+			{
+				"name": "AdvertiserDomain",
+				"type": "varchar"
+			},
+			{
+				"name": "TargetCPALocalMicro",
+				"type": "varchar"
+			},
+			{
+				"name": "PrimaryWebEventTag",
+				"type": "varchar"
+			},
+			{
+				"name": "ChargeBy",
+				"type": "varchar"
+			},
+			{
+				"name": "ProductType",
+				"type": "varchar"
+			},
+			{
+				"name": "EndDate",
+				"type": "varchar"
+			},
+			{
+				"name": "BidUnit",
+				"type": "varchar"
+			},
+			{
+				"name": "TotalBudgetAmountLocalMicro",
+				"type": "varchar"
+			},
+			{
+				"name": "Objective",
+				"type": "varchar"
+			},
+			{
+				"name": "Id",
+				"type": "varchar"
+			},
+			{
+				"name": "EntityStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "Optimization",
+				"type": "varchar"
+			},
+			{
+				"name": "Currency",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "varchar"
+			},
+			{
+				"name": "Updated",
+				"type": "varchar"
+			},
+			{
+				"name": "CreativeSource",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignId",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterLineItemStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

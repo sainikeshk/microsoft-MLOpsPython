@@ -1,0 +1,61 @@
+{
+	"name": "VoucherServicesDataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "VoucherServicesStage",
+						"type": "DatasetReference"
+					},
+					"name": "VoucherServicesStage"
+				},
+				{
+					"dataset": {
+						"referenceName": "Currency",
+						"type": "DatasetReference"
+					},
+					"name": "Currency"
+				},
+				{
+					"dataset": {
+						"referenceName": "MainAccountCategory",
+						"type": "DatasetReference"
+					},
+					"name": "MainAccountCategory"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "VoucherServices",
+						"type": "DatasetReference"
+					},
+					"name": "VoucherServices"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinTransactionCurrency"
+				},
+				{
+					"name": "JoinMainAccountCategory"
+				},
+				{
+					"name": "SelectVoucherService"
+				},
+				{
+					"name": "JoinCurrency"
+				},
+				{
+					"name": "SelectVourceServiceColumns"
+				},
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\tCustomerLedgerDimension as string,\n\t\tTransactionType as string,\n\t\tDepartmentLedgerDimension as string,\n\t\tSPVLedgerDimension as string,\n\t\tTransactionCurrencyAmount as decimal(18,0),\n\t\tText as string,\n\t\tName as string,\n\t\tReportingCurrencyAmount as string,\n\t\tClassLedgerDimension as string,\n\t\tJournalId as string,\n\t\tTransDate as string,\n\t\tProjectLedgerDimension as string,\n\t\tEmployeeLedgerDimension as string,\n\t\tTransactionCurrencyCode as string,\n\t\tExchRate as decimal(18,0),\n\t\tMainAccountId as string,\n\t\tTaxGroup as string,\n\t\tVoucher as string,\n\t\tMainAccountCategory as string,\n\t\tCurrency as string,\n\t\tAccountingCurrencyAmount as string,\n\t\tDescription as string,\n\t\tSerialNumber as string,\n\t\tTaxItemGroup as string,\n\t\tClientsLedgerDimension as string,\n\t\tVendorLedgerDimension as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> VoucherServicesStage\nsource(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nsource(output(\n\t\tMainAccountCategoryId as short,\n\t\tName as string,\n\t\tDisplayName as binary\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> MainAccountCategory\nJoinMainAccountCategory, Currency join(TransactionCurrencyCode == Currency@Name,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinTransactionCurrency\nVoucherServicesStage, MainAccountCategory join(MainAccountCategory == MainAccountCategory@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinMainAccountCategory\nJoinTransactionCurrency select(mapColumn(\n\t\tCustomerLedgerDimension,\n\t\tTransactionType,\n\t\tDepartmentLedgerDimension,\n\t\tSPVLedgerDimension,\n\t\tTransactionCurrencyAmount,\n\t\tText,\n\t\tName = VoucherServicesStage@Name,\n\t\tReportingCurrencyAmount,\n\t\tClassLedgerDimension,\n\t\tJournalId,\n\t\tTransDate,\n\t\tProjectLedgerDimension,\n\t\tEmployeeLedgerDimension,\n\t\tExchRate,\n\t\tMainAccountId,\n\t\tTaxGroup,\n\t\tVoucher,\n\t\tCurrency,\n\t\tAccountingCurrencyAmount,\n\t\tDescription,\n\t\tSerialNumber,\n\t\tTaxItemGroup,\n\t\tClientsLedgerDimension,\n\t\tVendorLedgerDimension,\n\t\tMainAccountCategoryId,\n\t\tTransactionCurrencyId = CurrencyId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectVoucherService\nSelectVoucherService, Currency join(Currency == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCurrency\nJoinCurrency select(mapColumn(\n\t\tCustomerLedgerDimension,\n\t\tTransactionType,\n\t\tDepartmentLedgerDimension,\n\t\tSPVLedgerDimension,\n\t\tTransactionCurrencyAmount,\n\t\tText,\n\t\tName = SelectVoucherService@Name,\n\t\tReportingCurrencyAmount,\n\t\tClassLedgerDimension,\n\t\tJournalId,\n\t\tTransDate,\n\t\tProjectLedgerDimension,\n\t\tEmployeeLedgerDimension,\n\t\tExchRate,\n\t\tMainAccountId,\n\t\tTaxGroup,\n\t\tVoucher,\n\t\tAccountingCurrencyAmount,\n\t\tDescription,\n\t\tSerialNumber,\n\t\tTaxItemGroup,\n\t\tClientsLedgerDimension,\n\t\tVendorLedgerDimension,\n\t\tMainAccountCategoryId,\n\t\tTransactionCurrencyId,\n\t\tCurrencyId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectVourceServiceColumns\nSelectVourceServiceColumns derive(TransDate = toTimestamp(replace(TransDate,' +00:00',''), 'MM/dd/yyyy HH:mm:ss')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tJournalId as string,\n\t\tMainAccountId as integer,\n\t\tMainAccountCategoryId as integer,\n\t\tSerialNumber as long,\n\t\tTransactionCurrencyId as integer,\n\t\tCurrencyId as integer,\n\t\tTransactionType as string,\n\t\tTransactionCurrencyAmount as decimal(18,0),\n\t\tAccountingCurrencyAmount as decimal(18,0),\n\t\tReportingCurrencyAmount as decimal(18,0),\n\t\tExchangeRate as decimal(18,0),\n\t\tTransactionDate as timestamp,\n\t\tEmployeeLedgerDimension as string,\n\t\tCustomerLedgerDimension as string,\n\t\tVendorLedgerDimension as string,\n\t\tClassLedgerDimension as string,\n\t\tClientsLedgerDimension as string,\n\t\tDepartmentLedgerDimension as string,\n\t\tProjectLedgerDimension as string,\n\t\tSPVLedgerDimension as string,\n\t\tTaxGroup as string,\n\t\tTaxItemGroup as string,\n\t\tName as string,\n\t\tDescription as string,\n\t\tText as string,\n\t\tVoucher as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tJournalId,\n\t\tMainAccountId,\n\t\tMainAccountCategoryId,\n\t\tSerialNumber,\n\t\tTransactionCurrencyId,\n\t\tCurrencyId,\n\t\tTransactionType,\n\t\tTransactionCurrencyAmount,\n\t\tAccountingCurrencyAmount,\n\t\tReportingCurrencyAmount,\n\t\tExchangeRate = ExchRate,\n\t\tTransactionDate = TransDate,\n\t\tEmployeeLedgerDimension,\n\t\tCustomerLedgerDimension,\n\t\tVendorLedgerDimension,\n\t\tClassLedgerDimension,\n\t\tClientsLedgerDimension,\n\t\tDepartmentLedgerDimension,\n\t\tProjectLedgerDimension,\n\t\tSPVLedgerDimension,\n\t\tTaxGroup,\n\t\tTaxItemGroup,\n\t\tName,\n\t\tDescription,\n\t\tText,\n\t\tVoucher\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> VoucherServices"
+		}
+	}
+}

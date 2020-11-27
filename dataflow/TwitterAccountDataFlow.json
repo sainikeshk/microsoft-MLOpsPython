@@ -1,0 +1,58 @@
+{
+	"name": "TwitterAccountDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Twitter"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TwitterAccountStage",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterAccountStage"
+				},
+				{
+					"dataset": {
+						"referenceName": "IndustryType",
+						"type": "DatasetReference"
+					},
+					"name": "InustryType"
+				},
+				{
+					"dataset": {
+						"referenceName": "ApprovalStatus",
+						"type": "DatasetReference"
+					},
+					"name": "ApprovalStatus"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TwitterAccount",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterAccount"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinApprovalStatus"
+				},
+				{
+					"name": "JoinIndustryType"
+				},
+				{
+					"name": "SelectAccountColumns"
+				},
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\tAccountId as string,\n\t\tName as string,\n\t\tCreated as string,\n\t\tUpdated as string,\n\t\tBusinessName as string,\n\t\tIndustryType as string,\n\t\tApprovalStatus as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterAccountStage\nsource(output(\n\t\tIndustryTypeId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> InustryType\nsource(output(\n\t\tApprovalStatusId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ApprovalStatus\nJoinIndustryType, ApprovalStatus join(ApprovalStatus == ApprovalStatus@Name,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinApprovalStatus\nTwitterAccountStage, InustryType join(IndustryType == InustryType@Name,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinIndustryType\nPrepareColumns select(mapColumn(\n\t\tAccountId,\n\t\tName = TwitterAccountStage@Name,\n\t\tCreated,\n\t\tUpdated,\n\t\tBusinessName,\n\t\tIndustryTypeId,\n\t\tApprovalStatusId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectAccountColumns\nJoinApprovalStatus derive(Created = toTimestamp(Created, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tUpdated = toTimestamp(Updated, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3')) ~> PrepareColumns\nSelectAccountColumns sink(input(\n\t\tAccountId as string,\n\t\tName as string,\n\t\tCreated as timestamp,\n\t\tUpdated as timestamp,\n\t\tBusinessName as string,\n\t\tIndustryTypeId as integer,\n\t\tApprovalStatusId as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAccountId,\n\t\tName,\n\t\tCreated,\n\t\tUpdated,\n\t\tBusinessName,\n\t\tIndustryTypeId,\n\t\tApprovalStatusId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterAccount"
+		}
+	}
+}

@@ -1,0 +1,53 @@
+{
+	"name": "TwitterOrganicTweetStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "tweet_id",
+				"type": "varchar"
+			},
+			{
+				"name": "full_text",
+				"type": "varchar"
+			},
+			{
+				"name": "favorite_count",
+				"type": "varchar"
+			},
+			{
+				"name": "retweet_count",
+				"type": "varchar"
+			},
+			{
+				"name": "created_at",
+				"type": "varchar"
+			},
+			{
+				"name": "favorited",
+				"type": "varchar"
+			},
+			{
+				"name": "in_reply_to_status_id",
+				"type": "varchar"
+			},
+			{
+				"name": "account_id",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterOrganicTweetStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

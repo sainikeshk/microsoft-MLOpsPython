@@ -1,0 +1,492 @@
+{
+	"name": "TwitterOrganicTweetMetricsPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Until IsOrganicLastRequest is True",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Set OrganicStartDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('IsOrganicLastRequest'),true)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Check OrganicAnalyticsRequestDates",
+							"type": "AzureFunctionActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"functionName": "TwitterAnalyticsRequestDatesCheck",
+								"method": "GET",
+								"headers": {
+									"StartDate": {
+										"value": "@variables('OrganicStartDate')",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "TwitterAnalyticsRequestDatesCheck",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Set IsOrganicLastReq",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Ingest into TwitterOrganicTweetMetricsStage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "IsOrganicLastRequest",
+								"value": {
+									"value": "@activity('Check OrganicAnalyticsRequestDates').output.IsLastReq",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Get Organic Authorization Header",
+							"type": "AzureFunctionActivity",
+							"dependsOn": [
+								{
+									"activity": "Set OrganicAnalyticsParams",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"functionName": "GetTwitterAuthenticationHeader",
+								"method": "GET",
+								"headers": {
+									"ConsumerKey": {
+										"value": "@pipeline().parameters.ConsumerKey",
+										"type": "Expression"
+									},
+									"ConsumerKeySecret": {
+										"value": "@pipeline().parameters.ConsumerKeySecret",
+										"type": "Expression"
+									},
+									"AccessToken": {
+										"value": "@pipeline().parameters.AccessToken",
+										"type": "Expression"
+									},
+									"AccessTokenSecret": {
+										"value": "@pipeline().parameters.AccessTokenSecret",
+										"type": "Expression"
+									},
+									"APIUrl": {
+										"value": "@replace(variables('AnalyticsUrl'),'AccountIdPlaceHolder', pipeline().parameters.AccountId)",
+										"type": "Expression"
+									},
+									"UrlParams": {
+										"value": "@variables('OrganicAnalyticsParams')",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "GetTwitterAuthenticationHeader",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Set OrganicAnalyticsParams",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Check OrganicAnalyticsRequestDates",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "OrganicAnalyticsParams",
+								"value": {
+									"value": "@replace(replace(replace('entity=ORGANIC_TWEET&entity_ids=OrganicTweetIdPlaceHolder&start_time=StartTimePlaceHolder&end_time=EndTimePlaceHolder&granularity=DAY&placement=ALL_ON_TWITTER&metric_groups=ENGAGEMENT', 'OrganicTweetIdPlaceHolder', pipeline().parameters.OrganicTweetIdString),'StartTimePlaceHolder',activity('Check OrganicAnalyticsRequestDates').output.StartDate),'EndTimePlaceHolder',activity('Check OrganicAnalyticsRequestDates').output.EndDate)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Ingest into TwitterOrganicTweetMetricsStage",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Get Organic Authorization Header",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Authorization": {
+											"value": "@activity('Get Organic Authorization Header').output.AccessTokenValue",
+											"type": "Expression"
+										}
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['id']"
+											},
+											"sink": {
+												"name": "TweetId",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['impressions']"
+											},
+											"sink": {
+												"name": "impressions",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['tweets_send']"
+											},
+											"sink": {
+												"name": "tweets_send",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['billed_charge_local_micro']"
+											},
+											"sink": {
+												"name": "billed_charge_local_micro",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['qualified_impressions']"
+											},
+											"sink": {
+												"name": "qualified_impressions",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['follows']"
+											},
+											"sink": {
+												"name": "follows",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['app_clicks']"
+											},
+											"sink": {
+												"name": "app_clicks",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['retweets']"
+											},
+											"sink": {
+												"name": "retweets",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['unfollows']"
+											},
+											"sink": {
+												"name": "unfollows",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['likes']"
+											},
+											"sink": {
+												"name": "likes",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['engagements']"
+											},
+											"sink": {
+												"name": "engagements",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['clicks']"
+											},
+											"sink": {
+												"name": "clicks",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['card_engagements']"
+											},
+											"sink": {
+												"name": "card_engagements",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['poll_card_vote']"
+											},
+											"sink": {
+												"name": "poll_card_vote",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['replies']"
+											},
+											"sink": {
+												"name": "replies",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['billed_engagements']"
+											},
+											"sink": {
+												"name": "billed_engagements",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['request']['params']['start_time']"
+											},
+											"sink": {
+												"name": "StartDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['request']['params']['end_time']"
+											},
+											"sink": {
+												"name": "EndDate",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['data']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DynamicRESTDataSet",
+									"type": "DatasetReference",
+									"parameters": {
+										"Url": {
+											"value": "@concat(replace(variables('AnalyticsUrl'),'AccountIdPlaceHolder', pipeline().parameters.AccountId),'?',variables('OrganicAnalyticsParams'))",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "TwitterOrganicTweetMetricsStage",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Set StartDate",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Ingest into TwitterOrganicTweetMetricsStage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "OrganicStartDate",
+								"value": {
+									"value": "@activity('Check OrganicAnalyticsRequestDates').output.NextStartDate",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set IsOrganicLastReq True",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Check OrganicAnalyticsRequestDates",
+									"dependencyConditions": [
+										"Failed"
+									]
+								},
+								{
+									"activity": "Ingest into TwitterOrganicTweetMetricsStage",
+									"dependencyConditions": [
+										"Failed"
+									]
+								},
+								{
+									"activity": "Get Organic Authorization Header",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "IsOrganicLastRequest",
+								"value": {
+									"value": "@bool(true)",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "Set OrganicStartDate",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "OrganicStartDate",
+					"value": {
+						"value": "@pipeline().parameters.StartDate",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"OrganicTweetIdString": {
+				"type": "string",
+				"defaultValue": "1248317813162414080,1257728122658660354,1260473725662769152,1262366148609400834,1269637852830273536,1269683037278801923,1270344578831441921,1270346585562636288,1270365231299076096,1273652891098796036,1274750137013800960,1275395020296720385,1276181413906329601,1277185756436594688,1277198559172009987,1278704814830940161,1278705468878262278,1279767468106567680,1279784599011209217,1280086006314799105"
+			},
+			"ConsumerKey": {
+				"type": "string",
+				"defaultValue": "0bNbRmwfcwUylurWUlMLXVw6s"
+			},
+			"ConsumerKeySecret": {
+				"type": "string",
+				"defaultValue": "tTrmn64h8rvHSNfnqYzKk6TOdug8lUIT9m1lu4wLWh7cSKt7IS"
+			},
+			"AccessToken": {
+				"type": "string",
+				"defaultValue": "1247510171749883906-Mw7rz6qlwk38ZIAdnzD0RmUPQSqw78"
+			},
+			"AccessTokenSecret": {
+				"type": "string",
+				"defaultValue": "lxDxAxy1H6EhHniLrNyBxwEIwmZbGeOLXgaNXrUmsRDew"
+			},
+			"AccountId": {
+				"type": "string",
+				"defaultValue": "18ce554fqwc"
+			},
+			"StartDate": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"AnalyticsUrl": {
+				"type": "String",
+				"defaultValue": "https://ads-api.twitter.com/8/stats/accounts/AccountIdPlaceHolder"
+			},
+			"OrganicStartDate": {
+				"type": "String",
+				"defaultValue": "2020-01-01"
+			},
+			"IsOrganicLastRequest": {
+				"type": "Boolean"
+			},
+			"OrganicAnalyticsParams": {
+				"type": "String",
+				"defaultValue": "entity=ORGANIC_TWEET&entity_ids=OrganicTweetIdPlaceHolder&start_time=StartTimePlaceHolder&end_time=EndTimePlaceHolder&granularity=DAY&placement=ALL_ON_TWITTER&metric_groups=ENGAGEMENT"
+			}
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-11-11T05:10:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

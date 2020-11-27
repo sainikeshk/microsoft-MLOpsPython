@@ -1,0 +1,58 @@
+{
+	"name": "AdvertismentDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Linkedin"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AdvertismentStage",
+						"type": "DatasetReference"
+					},
+					"name": "AdvertismentStage"
+				},
+				{
+					"dataset": {
+						"referenceName": "AdvertismentType",
+						"type": "DatasetReference"
+					},
+					"name": "AdvertismentType"
+				},
+				{
+					"dataset": {
+						"referenceName": "AdvertismentStatus",
+						"type": "DatasetReference"
+					},
+					"name": "AdvertismentStatus"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Advertisment",
+						"type": "DatasetReference"
+					},
+					"name": "Advertisment"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinType"
+				},
+				{
+					"name": "JoinStatus"
+				},
+				{
+					"name": "SelectAdvertismentColumns"
+				},
+				{
+					"name": "PrepareAdvertismentCoumns"
+				}
+			],
+			"script": "source(output(\n\t\tAdvertismentId as integer,\n\t\tName as string,\n\t\tStatus as string,\n\t\tAdvertismentGroup as string,\n\t\tHeadline as string,\n\t\tIntroductionText as string,\n\t\tUrl as string,\n\t\tLine as string,\n\t\tSponsoredUpdateType as string,\n\t\tCampaignId as string,\n\t\tType as string,\n\t\tCreated as long,\n\t\tModified as long,\n\t\tDSCName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AdvertismentStage\nsource(output(\n\t\tAdvertismentTypeId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AdvertismentType\nsource(output(\n\t\tAdvertismentStatusId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AdvertismentStatus\nJoinStatus, AdvertismentType join(Type == AdvertismentType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinType\nAdvertismentStage, AdvertismentStatus join(Status == AdvertismentStatus@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinStatus\nJoinType select(mapColumn(\n\t\tAdvertismentId,\n\t\tName = AdvertismentStage@Name,\n\t\tAdvertismentGroup,\n\t\tHeadline,\n\t\tIntroductionText,\n\t\tUrl,\n\t\tLine,\n\t\tSponsoredUpdateType,\n\t\tCampaignId,\n\t\tCreated,\n\t\tModified,\n\t\tDSCName,\n\t\tAdvertismentStatusId,\n\t\tAdvertismentTypeId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectAdvertismentColumns\nSelectAdvertismentColumns derive(Created = toTimestamp(Created, 'yyyy-MM-dd HH:mm:ss'),\n\t\tModified = toTimestamp(Modified, 'yyyy-MM-dd HH:mm:ss'),\n\t\tCampaignId = replace(CampaignId, 'urn:li:sponsoredCampaign:', '')) ~> PrepareAdvertismentCoumns\nPrepareAdvertismentCoumns sink(input(\n\t\tAdvertismentId as integer,\n\t\tName as string,\n\t\tAdvertismentGroupId as integer,\n\t\tStatusId as integer,\n\t\tHeadline as string,\n\t\tIntroductionText as string,\n\t\tUrl as string,\n\t\tLine as string,\n\t\tSponsoredUpdateType as string,\n\t\tDSCName as string,\n\t\tCampaignId as integer,\n\t\tTypeId as integer,\n\t\tCreated as timestamp,\n\t\tModified as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAdvertismentId,\n\t\tName,\n\t\tAdvertismentGroupId = AdvertismentGroup,\n\t\tStatusId = AdvertismentStatusId,\n\t\tHeadline,\n\t\tIntroductionText,\n\t\tUrl,\n\t\tLine,\n\t\tSponsoredUpdateType,\n\t\tDSCName,\n\t\tCampaignId,\n\t\tTypeId = AdvertismentTypeId,\n\t\tCreated,\n\t\tModified\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Advertisment"
+		}
+	}
+}

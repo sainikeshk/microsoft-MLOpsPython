@@ -1,0 +1,35 @@
+{
+	"name": "TwitterOrganicTweetFlow",
+	"properties": {
+		"folder": {
+			"name": "Twitter"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TwitterOrganicTweetStage",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterOrganicTweetStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TwitterOrganicTweet",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterOrganicTweet"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\ttweet_id as string,\n\t\tfull_text as string,\n\t\tfavorite_count as string,\n\t\tretweet_count as string,\n\t\tcreated_at as string,\n\t\tfavorited as string,\n\t\tin_reply_to_status_id as string,\n\t\taccount_id as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterOrganicTweetStage\nTwitterOrganicTweetStage derive(created_at = toDate(trim(concat(substring(substring(replace(created_at, '+0000', ''),4),1,7), substring(substring(replace(created_at, '+0000', ''),4),17))),'MMM dd yyyy')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tTweetId as long,\n\t\tFullText as string,\n\t\tFavoriteCount as double,\n\t\tRetweetCount as double,\n\t\tCreated as timestamp,\n\t\tFavorited as double,\n\t\tInReplyToStatusId as string,\n\t\tAccountId as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tTweetId = tweet_id,\n\t\tFullText = full_text,\n\t\tFavoriteCount = favorite_count,\n\t\tRetweetCount = retweet_count,\n\t\tCreated = created_at,\n\t\tFavorited = favorited,\n\t\tInReplyToStatusId = in_reply_to_status_id,\n\t\tAccountId = account_id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterOrganicTweet"
+		}
+	}
+}

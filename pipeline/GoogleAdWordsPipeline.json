@@ -1,0 +1,636 @@
+{
+	"name": "GoogleAdWordsPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Bearer Token",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Adwords Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "GetGoogleAdsBearerToken",
+					"method": "GET",
+					"headers": {
+						"client_id": {
+							"value": "@variables('client_id')",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@variables('client_secret')",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@variables('refresh_token')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "GetGoogleAdsBearerToken",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest into AdWordsCampaignMetricsStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Get Bearer Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"requestBody": {
+							"value": "@{replace(replace('{\n  \"query\" : \"SELECT campaign.name, campaign.status,campaign.advertising_channel_type,campaign_budget.name,campaign_budget.amount_micros,campaign_budget.type,campaign_budget.status,campaign.optimization_score,campaign.bidding_strategy_type,metrics.interactions,metrics.interaction_rate,metrics.average_cost,metrics.cost_micros,metrics.impressions,metrics.conversions_from_interactions_rate,metrics.conversions,metrics.cost_per_all_conversions, segments.date FROM campaign WHERE segments.date BETWEEN ''startDatePlaceHolder'' AND ''endDatePlaceHolder''\"\n}','startDatePlaceHolder',variables('StartDate')),'endDatePlaceHolder',formatDateTime(utcnow(),'yyyy-MM-dd'))}",
+							"type": "Expression"
+						},
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@activity('Get Bearer Token').output.AccessTokenValue",
+								"type": "Expression"
+							},
+							"developer-token": {
+								"value": "@variables('developer-token')",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['campaign']['resourceName']"
+								},
+								"sink": {
+									"name": "CampaignResourceName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['campaign']['status']"
+								},
+								"sink": {
+									"name": "CampaignStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['campaign']['advertisingChannelType']"
+								},
+								"sink": {
+									"name": "CampaignType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['campaign']['biddingStrategyType']"
+								},
+								"sink": {
+									"name": "BidStrategyType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['campaign']['name']"
+								},
+								"sink": {
+									"name": "CampaignName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['metrics']['conversions']"
+								},
+								"sink": {
+									"name": "Conversions",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['metrics']['costMicros']"
+								},
+								"sink": {
+									"name": "Cost",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['metrics']['costPerAllConversions']"
+								},
+								"sink": {
+									"name": "CostPerAllConversions",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['metrics']['averageCost']"
+								},
+								"sink": {
+									"name": "AverageCost",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['metrics']['interactionRate']"
+								},
+								"sink": {
+									"name": "InteractionRate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['metrics']['impressions']"
+								},
+								"sink": {
+									"name": "Impressions",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['metrics']['conversionsFromInteractionsRate']"
+								},
+								"sink": {
+									"name": "ConversionsFromInteractionsRate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['metrics']['interactions']"
+								},
+								"sink": {
+									"name": "Interactions",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['campaignBudget']['status']"
+								},
+								"sink": {
+									"name": "BudgetStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['campaignBudget']['type']"
+								},
+								"sink": {
+									"name": "BudgetType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['campaignBudget']['name']"
+								},
+								"sink": {
+									"name": "BudgetName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['campaignBudget']['amountMicros']"
+								},
+								"sink": {
+									"name": "Budget",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['segments']['date']"
+								},
+								"sink": {
+									"name": "SegmentDate",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['results']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DynamicRESTDataSet",
+						"type": "DatasetReference",
+						"parameters": {
+							"Url": {
+								"value": "@replace(variables('Url'),'CustomerIdPlaceHolder',variables('CustomerId'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AdWordsCampaignMetricsStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Ingest into AdWordsCampaignMetrics",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Ingest into AdWordsCampaignMetricsStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "AdWordsCampaignFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Cleanup Adwords Tables",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spCleanUpGoogleAdWordsTables]"
+				},
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest into ProdAdWordsCampaignMetrics",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Ingest into AdWordsCampaignMetrics",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "Delete from prod.AdWordsCampaignMetrics",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "CampaignId",
+									"type": "Int64",
+									"physicalType": "bigint"
+								},
+								"sink": {
+									"name": "CampaignId",
+									"type": "Int64",
+									"physicalType": "bigint"
+								}
+							},
+							{
+								"source": {
+									"name": "CampaignName",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CampaignName",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CampaignStatus",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CampaignStatus",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "BudgetName",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BudgetName",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Budget",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Budget",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "BudgetType",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BudgetType",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "BudgetStatus",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BudgetStatus",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CampaignType",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CampaignType",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Impressions",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Impressions",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "Interactions",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Interactions",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "Cost",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Cost",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "Conversions",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "Conversions",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "BidStrategyType",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "BidStrategyType",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CostPerAllConversions",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "CostPerAllConversions",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "InteractionRate",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "InteractionRate",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "ConversionsFromInteractionsRate",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "ConversionsFromInteractionsRate",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "AverageCost",
+									"type": "Double",
+									"physicalType": "float"
+								},
+								"sink": {
+									"name": "AverageCost",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							},
+							{
+								"source": {
+									"name": "SegmentDate",
+									"type": "DateTime",
+									"physicalType": "smalldatetime"
+								},
+								"sink": {
+									"name": "SegmentDate",
+									"type": "DateTime",
+									"physicalType": "smalldatetime"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AdWordsCampaignMetrics",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ProdAdWordsCampaignMetrics",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"refresh_token": {
+				"type": "String",
+				"defaultValue": "1//03lq7ZOZ3XQwKCgYIARAAGAMSNwF-L9IrpeJnuXck4L3wSFFiR3PgmSMPvGvNSeCCo2Jz94nZVG8bTBViLPXB0O_r9hCJPkzR5_8"
+			},
+			"client_id": {
+				"type": "String",
+				"defaultValue": "846510467628-s82p2r3kns7tctorpmqhvs5asi2kbev1.apps.googleusercontent.com"
+			},
+			"client_secret": {
+				"type": "String",
+				"defaultValue": "HwnuWSil6GE-c5jd_6fBNqIQ"
+			},
+			"CustomerId": {
+				"type": "String",
+				"defaultValue": "2558520441"
+			},
+			"Url": {
+				"type": "String",
+				"defaultValue": "https://googleads.googleapis.com/v5/customers/CustomerIdPlaceHolder/googleAds:searchStream"
+			},
+			"developer-token": {
+				"type": "String",
+				"defaultValue": "jm-VeuBH9OnX7L_sPaymvg"
+			},
+			"StartDate": {
+				"type": "String",
+				"defaultValue": "2019-01-01"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-11-11T05:10:46Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

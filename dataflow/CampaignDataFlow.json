@@ -1,0 +1,94 @@
+{
+	"name": "CampaignDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Linkedin"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CampaignStage",
+						"type": "DatasetReference"
+					},
+					"name": "CampaignStage"
+				},
+				{
+					"dataset": {
+						"referenceName": "CampaignType",
+						"type": "DatasetReference"
+					},
+					"name": "CampaignType"
+				},
+				{
+					"dataset": {
+						"referenceName": "CampaignStatus",
+						"type": "DatasetReference"
+					},
+					"name": "CampaignStatus"
+				},
+				{
+					"dataset": {
+						"referenceName": "Objective",
+						"type": "DatasetReference"
+					},
+					"name": "Objective"
+				},
+				{
+					"dataset": {
+						"referenceName": "CostType",
+						"type": "DatasetReference"
+					},
+					"name": "CostType"
+				},
+				{
+					"dataset": {
+						"referenceName": "Currency",
+						"type": "DatasetReference"
+					},
+					"name": "Currency"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Campaign",
+						"type": "DatasetReference"
+					},
+					"name": "Campaign"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinType"
+				},
+				{
+					"name": "JoinStatus"
+				},
+				{
+					"name": "JoinObjective"
+				},
+				{
+					"name": "JoinCostType"
+				},
+				{
+					"name": "JoinUnitCurrency"
+				},
+				{
+					"name": "SelectCampaignColumns"
+				},
+				{
+					"name": "JoinDailyCurrency"
+				},
+				{
+					"name": "SelectAllCampaignColumns"
+				},
+				{
+					"name": "PrepareCampaignColumns"
+				}
+			],
+			"script": "source(output(\n\t\tCampaignId as integer,\n\t\tName as string,\n\t\tDisplayName as string,\n\t\tCampaignGroup as string,\n\t\tType as string,\n\t\tStatus as string,\n\t\tCostType as string,\n\t\tObjective as string,\n\t\tAccount as string,\n\t\tCreated as long,\n\t\tModified as long,\n\t\tUnitCurrencyCode as string,\n\t\tUnitAmount as string,\n\t\tDailyCurrencyCode as string,\n\t\tDailyAmount as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignStage\nsource(output(\n\t\tCampaignTypeId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignType\nsource(output(\n\t\tCampaignStatusID as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignStatus\nsource(output(\n\t\tObjectiveId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Objective\nsource(output(\n\t\tCostTypeId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CostType\nsource(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nJoinStatus, CampaignType join(Type == CampaignType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinType\nJoinObjective, CampaignStatus join(Status == CampaignStatus@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinStatus\nJoinCostType, Objective join(Objective == Objective@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinObjective\nJoinUnitCurrency, CostType join(CostType == CostType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCostType\nCampaignStage, Currency join(UnitCurrencyCode == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinUnitCurrency\nJoinType select(mapColumn(\n\t\tCampaignId,\n\t\tName = CampaignStage@Name,\n\t\tDisplayName = CampaignStage@DisplayName,\n\t\tCampaignGroup,\n\t\tAccount,\n\t\tCreated,\n\t\tModified,\n\t\tUnitCurrencyCode,\n\t\tUnitAmount,\n\t\tDailyCurrencyCode,\n\t\tDailyAmount,\n\t\tUnitCurrencyId = CurrencyId,\n\t\tCostTypeId,\n\t\tObjectiveId,\n\t\tCampaignStatusID,\n\t\tCampaignTypeId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCampaignColumns\nSelectCampaignColumns, Currency join(DailyCurrencyCode == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinDailyCurrency\nJoinDailyCurrency select(mapColumn(\n\t\tCampaignId,\n\t\tName = SelectCampaignColumns@Name,\n\t\tDisplayName = SelectCampaignColumns@DisplayName,\n\t\tCampaignGroup,\n\t\tAccount,\n\t\tCreated,\n\t\tModified,\n\t\tUnitAmount,\n\t\tDailyAmount,\n\t\tUnitCurrencyId,\n\t\tCostTypeId,\n\t\tObjectiveId,\n\t\tCampaignStatusId = CampaignStatusID,\n\t\tCampaignTypeId,\n\t\tDailyCurrencyId = CurrencyId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectAllCampaignColumns\nSelectAllCampaignColumns derive(CampaignGroupId = replace(CampaignGroup,'urn:li:sponsoredCampaignGroup:',''),\n\t\tAccountId = replace(Account, 'urn:li:sponsoredAccount:', ''),\n\t\tCreated = toTimestamp(Created, 'yyyy-MM-dd HH:mm:ss'),\n\t\tModified = toTimestamp(Modified, 'yyyy-MM-dd HH:mm:ss')) ~> PrepareCampaignColumns\nPrepareCampaignColumns sink(input(\n\t\tCampaignId as integer,\n\t\tName as string,\n\t\tDisplayName as string,\n\t\tCampaignGroupId as integer,\n\t\tTypeId as integer,\n\t\tAccountId as integer,\n\t\tStatusId as integer,\n\t\tCostTypeId as integer,\n\t\tObjectiveId as integer,\n\t\tCreated as timestamp,\n\t\tModified as timestamp,\n\t\tUnitCurrencyId as integer,\n\t\tUnitAmount as double,\n\t\tDailyCurrencyId as integer,\n\t\tDailyAmount as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tCampaignId,\n\t\tName,\n\t\tDisplayName,\n\t\tCampaignGroupId,\n\t\tTypeId = CampaignTypeId,\n\t\tAccountId,\n\t\tStatusId = CampaignStatusId,\n\t\tCostTypeId,\n\t\tObjectiveId,\n\t\tCreated,\n\t\tModified,\n\t\tUnitCurrencyId,\n\t\tUnitAmount,\n\t\tDailyCurrencyId,\n\t\tDailyAmount\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Campaign"
+		}
+	}
+}

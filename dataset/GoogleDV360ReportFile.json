@@ -1,0 +1,39 @@
+{
+	"name": "GoogleDV360ReportFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "FileId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "FileName",
+				"type": "varchar"
+			},
+			{
+				"name": "StartDate",
+				"type": "varchar"
+			},
+			{
+				"name": "EndDate",
+				"type": "varchar"
+			},
+			{
+				"name": "GeneratedTimeStamp",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "GoogleDV360ReportFile"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

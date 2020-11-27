@@ -1,0 +1,31 @@
+{
+	"name": "MainAccountCategory",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "MainAccountCategoryId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "DisplayName",
+				"type": "varbinary"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "MainAccountCategory"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

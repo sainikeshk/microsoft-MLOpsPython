@@ -1,0 +1,49 @@
+{
+	"name": "CampaignGroupStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CampaignGroupId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "DisplayName",
+				"type": "varchar"
+			},
+			{
+				"name": "AccountId",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Modified",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Status",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "CampaignGroupStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

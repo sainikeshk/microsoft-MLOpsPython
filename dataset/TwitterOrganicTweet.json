@@ -1,0 +1,59 @@
+{
+	"name": "TwitterOrganicTweet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TweetId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "FullText",
+				"type": "varchar"
+			},
+			{
+				"name": "FavoriteCount",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "RetweetCount",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Favorited",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "InReplyToStatusId",
+				"type": "varchar"
+			},
+			{
+				"name": "AccountId",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterOrganicTweet"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

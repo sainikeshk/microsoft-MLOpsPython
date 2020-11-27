@@ -1,0 +1,93 @@
+{
+	"name": "Campaign",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CampaignId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "DisplayName",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignGroupId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TypeId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "AccountId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "StatusId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "CostTypeId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "ObjectiveId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Modified",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "UnitCurrencyId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "UnitAmount",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "DailyCurrencyId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "DailyAmount",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Campaign"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

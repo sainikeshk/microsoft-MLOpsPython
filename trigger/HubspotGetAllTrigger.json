@@ -1,0 +1,32 @@
+{
+	"name": "HubspotGetAllTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "HubspotPipelineGetAll",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2020-11-08T14:19:00",
+				"timeZone": "Arab Standard Time",
+				"schedule": {
+					"minutes": [
+						10
+					],
+					"hours": [
+						0
+					]
+				}
+			}
+		}
+	}
+}

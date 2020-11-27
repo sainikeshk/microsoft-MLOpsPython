@@ -1,0 +1,68 @@
+{
+	"name": "AccountDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Linkedin"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AccountStage",
+						"type": "DatasetReference"
+					},
+					"name": "AccountStage"
+				},
+				{
+					"dataset": {
+						"referenceName": "AccountStatus",
+						"type": "DatasetReference"
+					},
+					"name": "AccountStatus"
+				},
+				{
+					"dataset": {
+						"referenceName": "AccountType",
+						"type": "DatasetReference"
+					},
+					"name": "AccountType"
+				},
+				{
+					"dataset": {
+						"referenceName": "Currency",
+						"type": "DatasetReference"
+					},
+					"name": "Currency"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Account",
+						"type": "DatasetReference"
+					},
+					"name": "IngestIntoAccount"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinStatus"
+				},
+				{
+					"name": "JoinType"
+				},
+				{
+					"name": "JoinCurrency"
+				},
+				{
+					"name": "SelectAccountColumns"
+				},
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\tAccountId as integer,\n\t\tName as string,\n\t\tCurrency as string,\n\t\tStatus as string,\n\t\tCreated as long,\n\t\tModified as long,\n\t\tType as string,\n\t\tSourceId as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AccountStage\nsource(output(\n\t\tAccountStatusId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AccountStatus\nsource(output(\n\t\tAccountTypeId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AccountType\nsource(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nJoinType, AccountStatus join(Status == AccountStatus@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinStatus\nJoinCurrency, AccountType join(Type == AccountType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinType\nAccountStage, Currency join(Currency == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCurrency\nJoinStatus select(mapColumn(\n\t\tAccountId,\n\t\tName = AccountStage@Name,\n\t\tCreated,\n\t\tModified,\n\t\tSourceId,\n\t\tCurrencyId,\n\t\tAccountTypeId,\n\t\tAccountStatusId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectAccountColumns\nSelectAccountColumns derive(Modified = toTimestamp(Modified, 'yyyy-MM-dd HH:mm:ss'),\n\t\tCreated = toTimestamp(Created, 'yyyy-MM-dd HH:mm:ss'),\n\t\tSourceId = 1,\n\t\tCurrencyId = toInteger(CurrencyId),\n\t\tTypeId = toInteger(AccountTypeId),\n\t\tStatusId = toInteger(AccountStatusId)) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tAccountId as integer,\n\t\tSourceId as integer,\n\t\tDisplayName as string,\n\t\tName as string,\n\t\tCurrencyId as integer,\n\t\tCreated as timestamp,\n\t\tModified as timestamp,\n\t\tStatusId as integer,\n\t\tTypeId as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAccountId,\n\t\tSourceId,\n\t\tName,\n\t\tCurrencyId,\n\t\tCreated,\n\t\tModified,\n\t\tStatusId,\n\t\tTypeId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> IngestIntoAccount"
+		}
+	}
+}

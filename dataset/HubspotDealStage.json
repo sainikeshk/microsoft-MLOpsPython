@@ -1,0 +1,103 @@
+{
+	"name": "HubspotDealStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Hubspot"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "hs_object_id",
+				"type": "varchar"
+			},
+			{
+				"name": "closedate",
+				"type": "varchar"
+			},
+			{
+				"name": "dealtype",
+				"type": "varchar"
+			},
+			{
+				"name": "num_contacted_notes",
+				"type": "varchar"
+			},
+			{
+				"name": "num_notes",
+				"type": "varchar"
+			},
+			{
+				"name": "hubspot_owner_id",
+				"type": "varchar"
+			},
+			{
+				"name": "dealstage",
+				"type": "varchar"
+			},
+			{
+				"name": "amount",
+				"type": "varchar"
+			},
+			{
+				"name": "lead_status_status",
+				"type": "varchar"
+			},
+			{
+				"name": "Offset",
+				"type": "varchar"
+			},
+			{
+				"name": "HasMore",
+				"type": "varchar"
+			},
+			{
+				"name": "InsertedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "closed_lost_reason",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_lastmodifieddate",
+				"type": "varchar"
+			},
+			{
+				"name": "amount_source",
+				"type": "varchar"
+			},
+			{
+				"name": "pipeline",
+				"type": "varchar"
+			},
+			{
+				"name": "lifecyclestage",
+				"type": "varchar"
+			},
+			{
+				"name": "createdate",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_lead_status",
+				"type": "varchar"
+			},
+			{
+				"name": "associatedVids",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HubspotDealStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

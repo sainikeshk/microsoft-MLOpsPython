@@ -1,0 +1,105 @@
+{
+	"name": "AdWordsCampaignMetrics",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "GoogleAdWords"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CampaignId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "CampaignName",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "BudgetName",
+				"type": "varchar"
+			},
+			{
+				"name": "Budget",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "BudgetType",
+				"type": "varchar"
+			},
+			{
+				"name": "BudgetStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignType",
+				"type": "varchar"
+			},
+			{
+				"name": "Impressions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Interactions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Cost",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Conversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "BidStrategyType",
+				"type": "varchar"
+			},
+			{
+				"name": "CostPerAllConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "InteractionRate",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ConversionsFromInteractionsRate",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "AverageCost",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "SegmentDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AdWordsCampaignMetrics"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

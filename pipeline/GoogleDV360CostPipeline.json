@@ -1,0 +1,696 @@
+{
+	"name": "GoogleDV360CostPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Bearer Token",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Cleanup Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "GetGoogleDoubleClickBidManagerToken",
+					"method": "POST",
+					"headers": {
+						"client_id": {
+							"value": "@variables('client_id')",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@variables('client_secret')",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@variables('refresh_token')",
+							"type": "Expression"
+						}
+					},
+					"body": {
+						"from": "Pipeline"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "GetGoogleDoubleClickBidManagerToken",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Run DV360Query",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Get Bearer Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@activity('Get Bearer Token').output.AccessTokenValue",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "Delete from GoogleDV360QueryFile",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['queryId']"
+								},
+								"sink": {
+									"name": "QueryId",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['metadata']['title']"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['metadata']['googleCloudStoragePathForLatestReport']"
+								},
+								"sink": {
+									"name": "StoragePath",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DynamicRESTDataSet",
+						"type": "DatasetReference",
+						"parameters": {
+							"Url": "@replace(variables('RunUrl'),'QueryIdPlaceHolder',variables('QueryId'))"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "GoogleDV360QueryFile",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Get Generated CSV Report StoragePath",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Run DV360Query",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "Select StoragePath from GoogleDV360QueryFile",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "GoogleDV360QueryFile",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Get Generated CSV Report",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Get Generated CSV Report StoragePath",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@activity('Get Generated CSV Report StoragePath').output.firstRow.StoragePath",
+						"type": "Expression"
+					},
+					"method": "GET"
+				}
+			},
+			{
+				"name": "Save CSV Report",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Get Generated CSV Report",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "SaveDV360MetricsCSV",
+					"method": "POST",
+					"body": {
+						"value": "@activity('Get Generated CSV Report').output.Response",
+						"type": "Expression"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SaveDV360MetricCSV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest into GoogleDV360CostMetricsStage",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Save CSV Report",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Advertiser ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "AdvertiserId",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Advertiser",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Advertiser",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Advertiser Currency",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "AdvertiserCurrency",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Campaign ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CampaignId",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Insertion Order",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "InsertionOrder",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Insertion Order ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "InsertionOrderId",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Line Item",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "LineItem",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Line Item ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "LineItemId",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Campaign",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Campaign",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Creative",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Creative",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Date",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Impressions",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Impressions",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Billable Impressions",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "BillableImpressions",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Clicks",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Clicks",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Click Rate (CTR)",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ClickRateCTR",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Total Conversions",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TotalConversions",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Post-Click Conversions",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PostClickConversions",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Post-View Conversions",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PostViewConversions",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Revenue (Adv Currency)",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "RevenueAdvCurrency",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Media Cost (Advertiser Currency)",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "MediaCostAdvetiserCurrency",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Billable Cost (Adv Currency)",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "BillableCostAdvertiserCurrency",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Platform Fee (Adv Currency)",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PlatformFeeAdvertiserCurrency",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Platform Fee Rate",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PlatformFeeRate",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DV360CostReport",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "GoogleDV360CostMetricsStage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Ingest into GoogleDV360CostMetrics",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Ingest into GoogleDV360CostMetricsStage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DV360CostMetricsDataFlow",
+						"type": "DataFlowReference"
+					},
+					"integrationRuntime": {
+						"referenceName": "HighPerformanceIR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Cleanup Tables",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spCleanUpGoogleDV360CostTables]"
+				},
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Ingest into ProdGoogleDV360CostMetrics",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Ingest into GoogleDV360CostMetrics",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "Delete from prod.GoogleDV360CostMetrics",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "GoogleDV360CostMetrics",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ProdGoogleDV360CostMetrics",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"QueryId": {
+				"type": "String",
+				"defaultValue": "737387306"
+			},
+			"RunUrl": {
+				"type": "String",
+				"defaultValue": "https://www.googleapis.com/doubleclickbidmanager/v1.1/query/QueryIdPlaceHolder"
+			},
+			"client_id": {
+				"type": "String",
+				"defaultValue": "846510467628-s82p2r3kns7tctorpmqhvs5asi2kbev1.apps.googleusercontent.com"
+			},
+			"client_secret": {
+				"type": "String",
+				"defaultValue": "HwnuWSil6GE-c5jd_6fBNqIQ"
+			},
+			"refresh_token": {
+				"type": "String",
+				"defaultValue": "1//03XUpD_KVRMaECgYIARAAGAMSNwF-L9IrWd-Iwn0uUSzlCIQBr_UvoA9g7wpRHlNrqI9VdSvGdQqZiQlTckpiDE_L8FaQ4tw1fF8"
+			}
+		},
+		"folder": {
+			"name": "DV360"
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-11-11T05:10:46Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

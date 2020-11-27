@@ -1,0 +1,73 @@
+{
+	"name": "TwitterTweetStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "account_id",
+				"type": "varchar"
+			},
+			{
+				"name": "tweet_type",
+				"type": "varchar"
+			},
+			{
+				"name": "hashtags",
+				"type": "varchar"
+			},
+			{
+				"name": "in_reply_to_status_id_str",
+				"type": "varchar"
+			},
+			{
+				"name": "geo",
+				"type": "varchar"
+			},
+			{
+				"name": "in_reply_to_user_id",
+				"type": "varchar"
+			},
+			{
+				"name": "created_at",
+				"type": "varchar"
+			},
+			{
+				"name": "full_text",
+				"type": "varchar"
+			},
+			{
+				"name": "card_uri",
+				"type": "varchar"
+			},
+			{
+				"name": "retweet_count",
+				"type": "varchar"
+			},
+			{
+				"name": "in_reply_to_screen_name",
+				"type": "varchar"
+			},
+			{
+				"name": "tweet_id",
+				"type": "varchar"
+			},
+			{
+				"name": "source",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterTweetStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

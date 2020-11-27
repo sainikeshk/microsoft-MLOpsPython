@@ -1,0 +1,260 @@
+{
+	"name": "HubspotContactStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Hubspot"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "hs_object_id",
+				"type": "varchar"
+			},
+			{
+				"name": "channel",
+				"type": "varchar"
+			},
+			{
+				"name": "acquistion_date_from_import",
+				"type": "varchar"
+			},
+			{
+				"name": "recent_deal_close_date",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_lifecyclestage_marketingqualifiedlead_date",
+				"type": "varchar"
+			},
+			{
+				"name": "closedate",
+				"type": "varchar"
+			},
+			{
+				"name": "num_associated_deals",
+				"type": "varchar"
+			},
+			{
+				"name": "recent_deal_amount",
+				"type": "varchar"
+			},
+			{
+				"name": "num_contacted_notes",
+				"type": "varchar"
+			},
+			{
+				"name": "num_notes",
+				"type": "varchar"
+			},
+			{
+				"name": "date_of_birth",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_analytics_source",
+				"type": "varchar"
+			},
+			{
+				"name": "lead_is_probably_relevant_for_dfo",
+				"type": "varchar"
+			},
+			{
+				"name": "detailed_source",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_lifecyclestage_salesqualifiedlead_date",
+				"type": "varchar"
+			},
+			{
+				"name": "assigned_rm",
+				"type": "varchar"
+			},
+			{
+				"name": "assigned_to",
+				"type": "varchar"
+			},
+			{
+				"name": "meeting_booked",
+				"type": "varchar"
+			},
+			{
+				"name": "work_email",
+				"type": "varchar"
+			},
+			{
+				"name": "questions_embed_url_utm_medium",
+				"type": "varchar"
+			},
+			{
+				"name": "active_sal_or_not",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_lifecyclestage_opportunity_date",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_analytics_source_data_1",
+				"type": "varchar"
+			},
+			{
+				"name": "brighttalk_webcast_title",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_analytics_source_data_2",
+				"type": "varchar"
+			},
+			{
+				"name": "lifecyclestage",
+				"type": "varchar"
+			},
+			{
+				"name": "questions_embed_url_utm_source",
+				"type": "varchar"
+			},
+			{
+				"name": "is_this_lead_already_found_in_an_internal_database",
+				"type": "varchar"
+			},
+			{
+				"name": "country",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_persona",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_lifecyclestage_customer_date",
+				"type": "varchar"
+			},
+			{
+				"name": "source_of_sign_up",
+				"type": "varchar"
+			},
+			{
+				"name": "webcast_activity",
+				"type": "varchar"
+			},
+			{
+				"name": "days_to_close",
+				"type": "varchar"
+			},
+			{
+				"name": "age_range",
+				"type": "varchar"
+			},
+			{
+				"name": "ip_country",
+				"type": "varchar"
+			},
+			{
+				"name": "age",
+				"type": "varchar"
+			},
+			{
+				"name": "updated",
+				"type": "varchar"
+			},
+			{
+				"name": "created",
+				"type": "varchar"
+			},
+			{
+				"name": "hasMore",
+				"type": "varchar"
+			},
+			{
+				"name": "VidOffset",
+				"type": "varchar"
+			},
+			{
+				"name": "InsertedDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "contact_type",
+				"type": "varchar"
+			},
+			{
+				"name": "hs_analytics_first_url",
+				"type": "varchar"
+			},
+			{
+				"name": "gender",
+				"type": "varchar"
+			},
+			{
+				"name": "on24utm",
+				"type": "varchar"
+			},
+			{
+				"name": "firstname",
+				"type": "varchar"
+			},
+			{
+				"name": "lastname",
+				"type": "varchar"
+			},
+			{
+				"name": "mobilephone",
+				"type": "varchar"
+			},
+			{
+				"name": "phone",
+				"type": "varchar"
+			},
+			{
+				"name": "fax",
+				"type": "varchar"
+			},
+			{
+				"name": "address_line_1",
+				"type": "varchar"
+			},
+			{
+				"name": "address_line_2",
+				"type": "varchar"
+			},
+			{
+				"name": "city",
+				"type": "varchar"
+			},
+			{
+				"name": "state",
+				"type": "varchar"
+			},
+			{
+				"name": "hubspot_owner_id",
+				"type": "varchar"
+			},
+			{
+				"name": "lifecycle_stage_status",
+				"type": "varchar"
+			},
+			{
+				"name": "time-offset",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "recent_conversion_event_name",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HubspotContactStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

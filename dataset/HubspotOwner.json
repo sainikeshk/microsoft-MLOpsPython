@@ -1,0 +1,67 @@
+{
+	"name": "HubspotOwner",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Hubspot"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "OwnerId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			},
+			{
+				"name": "Email",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Updated",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "HasContactsAccess",
+				"type": "bit"
+			},
+			{
+				"name": "ActiveUserId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ActiveSalesForceId",
+				"type": "varchar"
+			},
+			{
+				"name": "IsActive",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HubspotOwner"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

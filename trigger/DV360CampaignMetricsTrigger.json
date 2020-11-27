@@ -1,0 +1,24 @@
+{
+	"name": "DV360CampaignMetricsTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "GoogleDV360Pipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 3,
+				"startTime": "2020-11-06T08:10:00",
+				"timeZone": "Arab Standard Time"
+			}
+		}
+	}
+}

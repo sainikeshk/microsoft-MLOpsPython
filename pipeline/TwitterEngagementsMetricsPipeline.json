@@ -1,0 +1,493 @@
+{
+	"name": "TwitterEngagementsMetricsPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Until IsLastRequest is True",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Set StartDate Variable From Parent Pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('IsLastRequest'),true)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Check AnalyticsRequestDates",
+							"type": "AzureFunctionActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"functionName": "TwitterAnalyticsRequestDatesCheck",
+								"method": "GET",
+								"headers": {
+									"StartDate": {
+										"value": "@variables('StartDate')",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "TwitterAnalyticsRequestDatesCheck",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Set IsLastReq",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Ingest into TwitterEnagagementMetricsStage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "IsLastRequest",
+								"value": {
+									"value": "@activity('Check AnalyticsRequestDates').output.IsLastReq",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Get Authorization Header",
+							"type": "AzureFunctionActivity",
+							"dependsOn": [
+								{
+									"activity": "Set AnalyticsParams",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"functionName": "GetTwitterAuthenticationHeader",
+								"method": "GET",
+								"headers": {
+									"ConsumerKey": {
+										"value": "@pipeline().parameters.ConsumerKey",
+										"type": "Expression"
+									},
+									"ConsumerKeySecret": {
+										"value": "@pipeline().parameters.ConsumerKeySecret",
+										"type": "Expression"
+									},
+									"AccessToken": {
+										"value": "@pipeline().parameters.AccessToken",
+										"type": "Expression"
+									},
+									"AccessTokenSecret": {
+										"value": "@pipeline().parameters.AccessTokenSecret",
+										"type": "Expression"
+									},
+									"APIUrl": {
+										"value": "@replace(variables('AnalyticsUrl'),'AccountIdPlaceHolder', pipeline().parameters.AccountId)",
+										"type": "Expression"
+									},
+									"UrlParams": {
+										"value": "@variables('AnalyticsParams')",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "GetTwitterAuthenticationHeader",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Set AnalyticsParams",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Check AnalyticsRequestDates",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "AnalyticsParams",
+								"value": {
+									"value": "@replace(replace(replace('entity=LINE_ITEM&entity_ids=LineItemIdPlaceHolder&start_time=StartTimePlaceHolder&end_time=EndTimePlaceHolder&granularity=DAY&placement=ALL_ON_TWITTER&metric_groups=ENGAGEMENT,BILLING', 'LineItemIdPlaceHolder', pipeline().parameters.LineItemString),'StartTimePlaceHolder',activity('Check AnalyticsRequestDates').output.StartDate),'EndTimePlaceHolder',activity('Check AnalyticsRequestDates').output.EndDate)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Ingest into TwitterEnagagementMetricsStage",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Get Authorization Header",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Authorization": {
+											"value": "@activity('Get Authorization Header').output.AccessTokenValue",
+											"type": "Expression"
+										}
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['id']"
+											},
+											"sink": {
+												"name": "LineItemId",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['impressions']"
+											},
+											"sink": {
+												"name": "impressions",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['tweets_send']"
+											},
+											"sink": {
+												"name": "tweets_send",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['billed_charge_local_micro']"
+											},
+											"sink": {
+												"name": "billed_charge_local_micro",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['qualified_impressions']"
+											},
+											"sink": {
+												"name": "qualified_impressions",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['follows']"
+											},
+											"sink": {
+												"name": "follows",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['app_clicks']"
+											},
+											"sink": {
+												"name": "app_clicks",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['retweets']"
+											},
+											"sink": {
+												"name": "retweets",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['unfollows']"
+											},
+											"sink": {
+												"name": "unfollows",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['likes']"
+											},
+											"sink": {
+												"name": "likes",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['engagements']"
+											},
+											"sink": {
+												"name": "engagements",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['clicks']"
+											},
+											"sink": {
+												"name": "clicks",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['card_engagements']"
+											},
+											"sink": {
+												"name": "card_engagements",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['poll_card_vote']"
+											},
+											"sink": {
+												"name": "poll_card_vote",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['replies']"
+											},
+											"sink": {
+												"name": "replies",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['id_data'][0]['metrics']['billed_engagements']"
+											},
+											"sink": {
+												"name": "billed_engagements",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['request']['params']['start_time']"
+											},
+											"sink": {
+												"name": "StartDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['request']['params']['end_time']"
+											},
+											"sink": {
+												"name": "EndDate",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['data']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DynamicRESTDataSet",
+									"type": "DatasetReference",
+									"parameters": {
+										"Url": {
+											"value": "@concat(replace(variables('AnalyticsUrl'),'AccountIdPlaceHolder', pipeline().parameters.AccountId),'?',variables('AnalyticsParams'))",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "TwitterEnagagementMetricsStage",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Set StartDate",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Ingest into TwitterEnagagementMetricsStage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "StartDate",
+								"value": {
+									"value": "@activity('Check AnalyticsRequestDates').output.NextStartDate",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set IsLastRequest True",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Check AnalyticsRequestDates",
+									"dependencyConditions": [
+										"Failed"
+									]
+								},
+								{
+									"activity": "Ingest into TwitterEnagagementMetricsStage",
+									"dependencyConditions": [
+										"Failed"
+									]
+								},
+								{
+									"activity": "Get Authorization Header",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "IsLastRequest",
+								"value": {
+									"value": "@bool(true)",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "Set StartDate Variable From Parent Pipeline",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "StartDate",
+					"value": {
+						"value": "@pipeline().parameters.StartDate",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"LineItemString": {
+				"type": "string",
+				"defaultValue": "h4kdj,h6wlt,h76yb,h7ehl,h7v2n,h846c,h87mc,h8oma,h918n,h9k3x,h9k4g,hehuo,hei55,hgcm1,hgq07,hh39c,hhzec,hi0ok,hj5ql,hkrxq"
+			},
+			"ConsumerKey": {
+				"type": "string",
+				"defaultValue": "0bNbRmwfcwUylurWUlMLXVw6s"
+			},
+			"ConsumerKeySecret": {
+				"type": "string",
+				"defaultValue": "tTrmn64h8rvHSNfnqYzKk6TOdug8lUIT9m1lu4wLWh7cSKt7IS"
+			},
+			"AccessToken": {
+				"type": "string",
+				"defaultValue": "1247510171749883906-Mw7rz6qlwk38ZIAdnzD0RmUPQSqw78"
+			},
+			"AccessTokenSecret": {
+				"type": "string",
+				"defaultValue": "lxDxAxy1H6EhHniLrNyBxwEIwmZbGeOLXgaNXrUmsRDew"
+			},
+			"AccountId": {
+				"type": "string",
+				"defaultValue": "18ce554fqwc"
+			},
+			"StartDate": {
+				"type": "string",
+				"defaultValue": "2020-01-01"
+			}
+		},
+		"variables": {
+			"AnalyticsUrl": {
+				"type": "String",
+				"defaultValue": "https://ads-api.twitter.com/8/stats/accounts/AccountIdPlaceHolder"
+			},
+			"StartDate": {
+				"type": "String",
+				"defaultValue": "2020-01-01"
+			},
+			"IsLastRequest": {
+				"type": "Boolean"
+			},
+			"AnalyticsParams": {
+				"type": "String",
+				"defaultValue": "entity=LINE_ITEM&entity_ids=LineItemIdPlaceHolder&start_time=StartTimePlaceHolder&end_time=EndTimePlaceHolder&granularity=DAY&placement=ALL_ON_TWITTER&metric_groups=ENGAGEMENT,BILLING"
+			}
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-11-11T05:10:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

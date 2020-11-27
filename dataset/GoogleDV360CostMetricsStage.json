@@ -1,0 +1,113 @@
+{
+	"name": "GoogleDV360CostMetricsStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DV360"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AdvertiserId",
+				"type": "varchar"
+			},
+			{
+				"name": "Advertiser",
+				"type": "varchar"
+			},
+			{
+				"name": "AdvertiserCurrency",
+				"type": "varchar"
+			},
+			{
+				"name": "InsertionOrder",
+				"type": "varchar"
+			},
+			{
+				"name": "InsertionOrderId",
+				"type": "varchar"
+			},
+			{
+				"name": "LineItem",
+				"type": "varchar"
+			},
+			{
+				"name": "LineItemId",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignId",
+				"type": "varchar"
+			},
+			{
+				"name": "Campaign",
+				"type": "varchar"
+			},
+			{
+				"name": "Creative",
+				"type": "varchar"
+			},
+			{
+				"name": "Date",
+				"type": "varchar"
+			},
+			{
+				"name": "Impressions",
+				"type": "varchar"
+			},
+			{
+				"name": "BillableImpressions",
+				"type": "varchar"
+			},
+			{
+				"name": "Clicks",
+				"type": "varchar"
+			},
+			{
+				"name": "ClickRateCTR",
+				"type": "varchar"
+			},
+			{
+				"name": "TotalConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "PostClickConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "PostViewConversions",
+				"type": "varchar"
+			},
+			{
+				"name": "RevenueAdvCurrency",
+				"type": "varchar"
+			},
+			{
+				"name": "MediaCostAdvetiserCurrency",
+				"type": "varchar"
+			},
+			{
+				"name": "BillableCostAdvertiserCurrency",
+				"type": "varchar"
+			},
+			{
+				"name": "PlatformFeeAdvertiserCurrency",
+				"type": "varchar"
+			},
+			{
+				"name": "PlatformFeeRate",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "GoogleDV360CostMetricsStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

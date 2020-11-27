@@ -1,0 +1,132 @@
+{
+	"name": "ProdGoogleDV360CostMetrics",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DV360"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AdvertiserId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Advertiser",
+				"type": "varchar"
+			},
+			{
+				"name": "AdvertiserCurrencyId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "CampaignId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "InsertionOrder",
+				"type": "varchar"
+			},
+			{
+				"name": "InsertionOrderId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "LineItem",
+				"type": "varchar"
+			},
+			{
+				"name": "LineItemId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Campaign",
+				"type": "varchar"
+			},
+			{
+				"name": "Creative",
+				"type": "varchar"
+			},
+			{
+				"name": "Date",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Impressions",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "BillableImpressions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Clicks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ClickRateCTR",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "TotalConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "PostClickConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "PostViewConversions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "RevenueAdvCurrency",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "MediaCostAdvetiserCurrency",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "BillableCostAdvertiserCurrency",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "PlatformFeeAdvertiserCurrency",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "PlatformFeeRate",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "prod",
+			"table": "GoogleDV360CostMetrics"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

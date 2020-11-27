@@ -1,0 +1,17 @@
+{
+	"name": "GoogleAnalyticsAPI",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://analyticsreporting.googleapis.com/v4/reports:batchGet",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		},
+		"connectVia": {
+			"referenceName": "HighPerformanceIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

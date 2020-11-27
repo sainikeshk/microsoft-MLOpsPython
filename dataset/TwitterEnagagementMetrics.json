@@ -1,0 +1,106 @@
+{
+	"name": "TwitterEnagagementMetrics",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "LineItemId",
+				"type": "varchar"
+			},
+			{
+				"name": "MetricDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Impressions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "TweetsSend",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "QualifiedImpressions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Follows",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "AppClicks",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Retweets",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Unfollows",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Likes",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Engagements",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Clicks",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "CardEngagements",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "PollCardVote",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Replies",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "BilledChargeLocalMicro",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "BilledEngagements",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterEnagagementMetrics"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,16 @@
+{
+	"name": "GoogleAnalyticsAPI",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GoogleAnalyticsAPI",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "GoogleAnalytics"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

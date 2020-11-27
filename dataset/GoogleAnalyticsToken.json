@@ -1,0 +1,35 @@
+{
+	"name": "GoogleAnalyticsToken",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "GoogleAnalytics"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "APIName",
+				"type": "varchar"
+			},
+			{
+				"name": "Token",
+				"type": "varchar"
+			},
+			{
+				"name": "AccessTime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "GoogleAnalyticsToken"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

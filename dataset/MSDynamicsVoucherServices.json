@@ -1,0 +1,19 @@
+{
+	"name": "MSDynamicsVoucherServices",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MSDynamicsAXLiveService",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MSDynamics"
+		},
+		"annotations": [],
+		"type": "DynamicsAXResource",
+		"schema": [],
+		"typeProperties": {
+			"path": "VoucherServices"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

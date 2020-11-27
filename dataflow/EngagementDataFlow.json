@@ -1,0 +1,35 @@
+{
+	"name": "EngagementDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Hubspot"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "HubspotEngagementStage",
+						"type": "DatasetReference"
+					},
+					"name": "HubspotEngagementStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "HubspotEngagement",
+						"type": "DatasetReference"
+					},
+					"name": "HubspotEngagement"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\tEngagementId as long,\n\t\tcreatedAt as string,\n\t\tlastUpdated as string,\n\t\townerId as long,\n\t\ttype as string,\n\t\ttimestamp as string,\n\t\tteamId as long,\n\t\tsource as string,\n\t\tsourceId as string,\n\t\tallAccessibleTeamIds as string,\n\t\tbodyPreview as string,\n\t\tcreatedBy as long,\n\t\tmodifiedBy as long,\n\t\tportalId as long,\n\t\tactive as string,\n\t\tcontactAssosications as string,\n\t\tHasMore as string,\n\t\tOffset as string,\n\t\tInsertedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> HubspotEngagementStage\nHubspotEngagementStage derive(timestamp = toTimestamp(toLong(timestamp),'yyyy-MM-dd HH:mm:ss.SSS'),\n\t\tcreatedAt = toTimestamp(toLong(createdAt),'yyyy-MM-dd HH:mm:ss.SSS'),\n\t\tlastUpdated = toTimestamp(toLong(lastUpdated),'yyyy-MM-dd HH:mm:ss.SSS'),\n\t\tactive = toBoolean(active)) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tEngagementId as long,\n\t\tType as string,\n\t\tTimeStamp as timestamp,\n\t\tTeamId as long,\n\t\tCreated as timestamp,\n\t\tUpdated as timestamp,\n\t\tOwnerId as long,\n\t\tSource as string,\n\t\tSourceId as long,\n\t\tAllAccessibleTeamIds as string,\n\t\tBodyPreview as string,\n\t\tCreatedBy as long,\n\t\tModifiedBy as long,\n\t\tPortalId as long,\n\t\tActive as boolean,\n\t\tContactAssociations as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tEngagementId,\n\t\tType = type,\n\t\tTimeStamp = timestamp,\n\t\tTeamId = teamId,\n\t\tCreated = createdAt,\n\t\tUpdated = lastUpdated,\n\t\tOwnerId = ownerId,\n\t\tSource = source,\n\t\tSourceId = sourceId,\n\t\tAllAccessibleTeamIds = allAccessibleTeamIds,\n\t\tBodyPreview = bodyPreview,\n\t\tCreatedBy = createdBy,\n\t\tModifiedBy = modifiedBy,\n\t\tPortalId = portalId,\n\t\tActive = active,\n\t\tContactAssociations = contactAssosications\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> HubspotEngagement"
+		}
+	}
+}

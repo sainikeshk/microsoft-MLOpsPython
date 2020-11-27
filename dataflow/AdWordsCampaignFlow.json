@@ -1,0 +1,32 @@
+{
+	"name": "AdWordsCampaignFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AdWordsCampaignMetricsStage",
+						"type": "DatasetReference"
+					},
+					"name": "AdWordsCampaignMetricsStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AdWordsCampaignMetrics",
+						"type": "DatasetReference"
+					},
+					"name": "AdWordsCampaignMetrics"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepeareColumns"
+				}
+			],
+			"script": "source(output(\n\t\tCampaignResourceName as string,\n\t\tCampaignName as string,\n\t\tCampaignStatus as string,\n\t\tBudgetName as string,\n\t\tBudget as string,\n\t\tBudgetType as string,\n\t\tBudgetStatus as string,\n\t\tCampaignType as string,\n\t\tImpressions as string,\n\t\tInteractions as string,\n\t\tCost as string,\n\t\tConversions as string,\n\t\tBidStrategyType as string,\n\t\tCostPerAllConversions as string,\n\t\tInteractionRate as string,\n\t\tConversionsFromInteractionsRate as string,\n\t\tAverageCost as string,\n\t\tSegmentDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AdWordsCampaignMetricsStage\nAdWordsCampaignMetricsStage derive(CampaignId = replace(CampaignResourceName,'customers/2558520441/campaigns/',''),\n\t\tSegmentDate = toDate(SegmentDate, 'yyyy-MM-dd')) ~> PrepeareColumns\nPrepeareColumns sink(input(\n\t\tCampaignId as long,\n\t\tCampaignName as string,\n\t\tCampaignStatus as string,\n\t\tBudgetName as string,\n\t\tBudget as double,\n\t\tBudgetType as string,\n\t\tBudgetStatus as string,\n\t\tCampaignType as string,\n\t\tImpressions as double,\n\t\tInteractions as double,\n\t\tCost as double,\n\t\tConversions as double,\n\t\tBidStrategyType as string,\n\t\tCostPerAllConversions as double,\n\t\tInteractionRate as double,\n\t\tConversionsFromInteractionsRate as double,\n\t\tAverageCost as double,\n\t\tSegmentDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tCampaignId,\n\t\tCampaignName,\n\t\tCampaignStatus,\n\t\tBudgetName,\n\t\tBudget,\n\t\tBudgetType,\n\t\tBudgetStatus,\n\t\tCampaignType,\n\t\tImpressions,\n\t\tInteractions,\n\t\tCost,\n\t\tConversions,\n\t\tBidStrategyType,\n\t\tCostPerAllConversions,\n\t\tInteractionRate,\n\t\tConversionsFromInteractionsRate,\n\t\tAverageCost,\n\t\tSegmentDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> AdWordsCampaignMetrics"
+		}
+	}
+}

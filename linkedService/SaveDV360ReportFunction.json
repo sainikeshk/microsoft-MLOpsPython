@@ -1,0 +1,16 @@
+{
+	"name": "SaveDV360ReportFunction",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureFunction",
+		"typeProperties": {
+			"functionAppUrl": "https://tfocodashboardfunctions.azurewebsites.net",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlRGT0RGXzQyYjZhNmI2LWI3NTMtNGM3OS05ZTBhLTc0NDc5MDk5ODE5ZiINCn0="
+		},
+		"connectVia": {
+			"referenceName": "HighPerformanceIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

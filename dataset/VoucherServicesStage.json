@@ -1,0 +1,129 @@
+{
+	"name": "VoucherServicesStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MSDynamics"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CustomerLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "TransactionType",
+				"type": "varchar"
+			},
+			{
+				"name": "DepartmentLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "SPVLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "TransactionCurrencyAmount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "Text",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "ReportingCurrencyAmount",
+				"type": "varchar"
+			},
+			{
+				"name": "ClassLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "JournalId",
+				"type": "varchar"
+			},
+			{
+				"name": "TransDate",
+				"type": "varchar"
+			},
+			{
+				"name": "ProjectLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "EmployeeLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "TransactionCurrencyCode",
+				"type": "varchar"
+			},
+			{
+				"name": "ExchRate",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "MainAccountId",
+				"type": "varchar"
+			},
+			{
+				"name": "TaxGroup",
+				"type": "varchar"
+			},
+			{
+				"name": "Voucher",
+				"type": "varchar"
+			},
+			{
+				"name": "MainAccountCategory",
+				"type": "varchar"
+			},
+			{
+				"name": "Currency",
+				"type": "varchar"
+			},
+			{
+				"name": "AccountingCurrencyAmount",
+				"type": "varchar"
+			},
+			{
+				"name": "Description",
+				"type": "varchar"
+			},
+			{
+				"name": "SerialNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "TaxItemGroup",
+				"type": "varchar"
+			},
+			{
+				"name": "ClientsLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "VendorLedgerDimension",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "VoucherServicesStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

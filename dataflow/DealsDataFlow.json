@@ -1,0 +1,35 @@
+{
+	"name": "DealsDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Hubspot"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "HubspotDealStage",
+						"type": "DatasetReference"
+					},
+					"name": "HubspotDealStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "HubspotDeal",
+						"type": "DatasetReference"
+					},
+					"name": "HubspotDeal"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\ths_object_id as string,\n\t\tclosedate as string,\n\t\tdealtype as string,\n\t\tnum_contacted_notes as string,\n\t\tnum_notes as string,\n\t\thubspot_owner_id as string,\n\t\tdealstage as string,\n\t\tamount as string,\n\t\tlead_status_status as string,\n\t\tOffset as string,\n\t\tHasMore as string,\n\t\tInsertedDate as timestamp,\n\t\tclosed_lost_reason as string,\n\t\ths_lastmodifieddate as string,\n\t\tamount_source as string,\n\t\tpipeline as string,\n\t\tlifecyclestage as string,\n\t\tcreatedate as string,\n\t\ths_lead_status as string,\n\t\tassociatedVids as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> HubspotDealStage\nHubspotDealStage derive(closedate = toTimestamp(toLong(closedate),'yyyy-MM-dd HH:mm:ss'),\n\t\ths_lastmodifieddate = toTimestamp(toLong(hs_lastmodifieddate),'yyyy-MM-dd HH:mm:ss'),\n\t\tcreatedate = toTimestamp(toLong(createdate),'yyyy-MM-dd HH:mm:ss'),\n\t\tassociatedVids = replace(replace(associatedVids,'[',''),']','')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tDealId as integer,\n\t\tDealStage as string,\n\t\tClosedLostReason as string,\n\t\tLastModifiedDate as timestamp,\n\t\tAmount as decimal(18,0),\n\t\tAmountSource as string,\n\t\tPipeline as string,\n\t\tTFOLifecycleStage as string,\n\t\tCreateDate as timestamp,\n\t\tDealOwnerId as integer,\n\t\tLeadStatus as string,\n\t\tAssociatedContactIds as string,\n\t\tClosedDate as timestamp,\n\t\tDealType as string,\n\t\tNumberOfTimesContacted as integer,\n\t\tNumberOfSalesActivities as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tDealId = hs_object_id,\n\t\tDealStage = dealstage,\n\t\tClosedLostReason = closed_lost_reason,\n\t\tLastModifiedDate = hs_lastmodifieddate,\n\t\tAmount = amount,\n\t\tAmountSource = amount_source,\n\t\tPipeline = pipeline,\n\t\tTFOLifecycleStage = lifecyclestage,\n\t\tCreateDate = createdate,\n\t\tDealOwnerId = hubspot_owner_id,\n\t\tLeadStatus = lead_status_status,\n\t\tAssociatedContactIds = associatedVids,\n\t\tClosedDate = closedate,\n\t\tDealType = dealtype,\n\t\tNumberOfTimesContacted = num_contacted_notes,\n\t\tNumberOfSalesActivities = num_notes\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> HubspotDeal"
+		}
+	}
+}

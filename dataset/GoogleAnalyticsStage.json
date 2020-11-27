@@ -1,0 +1,34 @@
+{
+	"name": "GoogleAnalyticsStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "GoogleAnalytics"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "GroupId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "MetricsArr",
+				"type": "varchar"
+			},
+			{
+				"name": "ValuesArr",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "GoogleAnalyticsStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

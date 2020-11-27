@@ -1,0 +1,264 @@
+{
+	"name": "HubspotContact",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Hubspot"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ContactId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "LastName",
+				"type": "varchar"
+			},
+			{
+				"name": "AddressLine1",
+				"type": "varchar"
+			},
+			{
+				"name": "AddressLine2",
+				"type": "varchar"
+			},
+			{
+				"name": "City",
+				"type": "varchar"
+			},
+			{
+				"name": "State",
+				"type": "varchar"
+			},
+			{
+				"name": "Country",
+				"type": "varchar"
+			},
+			{
+				"name": "MobilePhone",
+				"type": "varchar"
+			},
+			{
+				"name": "Phone",
+				"type": "varchar"
+			},
+			{
+				"name": "Fax",
+				"type": "varchar"
+			},
+			{
+				"name": "DateOfBirth",
+				"type": "varchar"
+			},
+			{
+				"name": "ContactType",
+				"type": "varchar"
+			},
+			{
+				"name": "Age",
+				"type": "varchar"
+			},
+			{
+				"name": "AgeRange",
+				"type": "varchar"
+			},
+			{
+				"name": "Gender",
+				"type": "varchar"
+			},
+			{
+				"name": "Channel",
+				"type": "varchar"
+			},
+			{
+				"name": "HubspotOwnerId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "AcquistionDateFromImport",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "RecentDealCloseDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "BecameMarketingQualifiedLeadDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "CloseDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "AssociatedDeals",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RecentDealAmount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "NumberOfTimesContacted",
+				"type": "varchar"
+			},
+			{
+				"name": "NumberOfSalesActivities",
+				"type": "varchar"
+			},
+			{
+				"name": "OriginalSource",
+				"type": "varchar"
+			},
+			{
+				"name": "LeadsProbablyRelevantForDFOAndARMShouldTalkToHimFirstAssessmentOfLeadStatus",
+				"type": "varchar"
+			},
+			{
+				"name": "DetailedSource",
+				"type": "varchar"
+			},
+			{
+				"name": "BecameASalesQualifiedLeadDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "AssignedRm",
+				"type": "varchar"
+			},
+			{
+				"name": "AssignedTo",
+				"type": "varchar"
+			},
+			{
+				"name": "MeetingBooked",
+				"type": "varchar"
+			},
+			{
+				"name": "WorkEmail",
+				"type": "varchar"
+			},
+			{
+				"name": "EmbedUrlUtmMedium",
+				"type": "varchar"
+			},
+			{
+				"name": "ActiveSalOrNot",
+				"type": "varchar"
+			},
+			{
+				"name": "BecameAnOpportunityDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "OriginalSourceDrillDown1",
+				"type": "varchar"
+			},
+			{
+				"name": "BrighttalkWebcastTitle",
+				"type": "varchar"
+			},
+			{
+				"name": "OriginalSourceDrillDown2",
+				"type": "varchar"
+			},
+			{
+				"name": "LifecycleStage",
+				"type": "varchar"
+			},
+			{
+				"name": "EmbedUrlUtmSource",
+				"type": "varchar"
+			},
+			{
+				"name": "IsThisLeadAlreadyFoundInInternalDatabase",
+				"type": "varchar"
+			},
+			{
+				"name": "Persona",
+				"type": "varchar"
+			},
+			{
+				"name": "BecameACustomerDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "SourceOfSignUp",
+				"type": "varchar"
+			},
+			{
+				"name": "WebcastActivity",
+				"type": "varchar"
+			},
+			{
+				"name": "DaysToClose",
+				"type": "varchar"
+			},
+			{
+				"name": "IPCountry",
+				"type": "varchar"
+			},
+			{
+				"name": "updated",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "FirstPageSeen",
+				"type": "varchar"
+			},
+			{
+				"name": "On24UTM",
+				"type": "varchar"
+			},
+			{
+				"name": "DFOLifeCycleStage",
+				"type": "varchar"
+			},
+			{
+				"name": "RecentConversion",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HubspotContact"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,19 @@
+{
+	"name": "MSDynamicsBudgetServices",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MSDynamicsAXLiveService",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MSDynamics"
+		},
+		"annotations": [],
+		"type": "DynamicsAXResource",
+		"schema": [],
+		"typeProperties": {
+			"path": "BudgetOdataServices"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,90 @@
+{
+	"name": "LinkedinShare",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Owner",
+				"type": "varchar"
+			},
+			{
+				"name": "Agent",
+				"type": "varchar"
+			},
+			{
+				"name": "Activity",
+				"type": "varchar"
+			},
+			{
+				"name": "Subject",
+				"type": "varchar"
+			},
+			{
+				"name": "CreatedBy",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Id",
+				"type": "varchar"
+			},
+			{
+				"name": "LastModifiedBy",
+				"type": "varchar"
+			},
+			{
+				"name": "LastModified",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Text",
+				"type": "varchar"
+			},
+			{
+				"name": "LandingPageTitle",
+				"type": "varchar"
+			},
+			{
+				"name": "Description",
+				"type": "varchar"
+			},
+			{
+				"name": "EntityLocation",
+				"type": "varchar"
+			},
+			{
+				"name": "Title",
+				"type": "varchar"
+			},
+			{
+				"name": "LandingPageUrl",
+				"type": "varchar"
+			},
+			{
+				"name": "Entity",
+				"type": "varchar"
+			},
+			{
+				"name": "ShareMediaCategory",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "LinkedinShare"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

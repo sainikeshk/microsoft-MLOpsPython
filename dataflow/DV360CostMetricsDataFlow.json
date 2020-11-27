@@ -1,0 +1,48 @@
+{
+	"name": "DV360CostMetricsDataFlow",
+	"properties": {
+		"folder": {
+			"name": "DV360"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Currency",
+						"type": "DatasetReference"
+					},
+					"name": "Currency"
+				},
+				{
+					"dataset": {
+						"referenceName": "GoogleDV360CostMetricsStage",
+						"type": "DatasetReference"
+					},
+					"name": "GoogleDV360CostMetricsStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "GoogleDV360CostMetrics",
+						"type": "DatasetReference"
+					},
+					"name": "GoogleDV360CostMetrics"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareColumns"
+				},
+				{
+					"name": "SelectMetricsColumns"
+				},
+				{
+					"name": "JoinCurrency"
+				}
+			],
+			"script": "source(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nsource(output(\n\t\tAdvertiserId as string,\n\t\tAdvertiser as string,\n\t\tAdvertiserCurrency as string,\n\t\tInsertionOrder as string,\n\t\tInsertionOrderId as string,\n\t\tLineItem as string,\n\t\tLineItemId as string,\n\t\tCampaignId as string,\n\t\tCampaign as string,\n\t\tCreative as string,\n\t\tDate as string,\n\t\tImpressions as string,\n\t\tBillableImpressions as string,\n\t\tClicks as string,\n\t\tClickRateCTR as string,\n\t\tTotalConversions as string,\n\t\tPostClickConversions as string,\n\t\tPostViewConversions as string,\n\t\tRevenueAdvCurrency as string,\n\t\tMediaCostAdvetiserCurrency as string,\n\t\tBillableCostAdvertiserCurrency as string,\n\t\tPlatformFeeAdvertiserCurrency as string,\n\t\tPlatformFeeRate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> GoogleDV360CostMetricsStage\nSelectMetricsColumns derive(Date = toDate(Date, 'yyyy/MM/dd'),\n\t\tClickRateCTR = replace(ClickRateCTR,'%',''),\n\t\tPlatformFeeRate = replace(PlatformFeeRate,'%','')) ~> PrepareColumns\nJoinCurrency select(mapColumn(\n\t\tAdvertiserId,\n\t\tAdvertiser,\n\t\tAdvertiserCurrency,\n\t\tInsertionOrder,\n\t\tInsertionOrderId,\n\t\tLineItem,\n\t\tLineItemId,\n\t\tCampaignId,\n\t\tCampaign,\n\t\tCreative,\n\t\tDate,\n\t\tImpressions,\n\t\tBillableImpressions,\n\t\tClicks,\n\t\tClickRateCTR,\n\t\tTotalConversions,\n\t\tPostClickConversions,\n\t\tPostViewConversions,\n\t\tRevenueAdvCurrency,\n\t\tMediaCostAdvetiserCurrency,\n\t\tBillableCostAdvertiserCurrency,\n\t\tPlatformFeeAdvertiserCurrency,\n\t\tPlatformFeeRate,\n\t\tCurrencyId,\n\t\tName,\n\t\tDisplayName\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectMetricsColumns\nGoogleDV360CostMetricsStage, Currency join(AdvertiserCurrency == Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCurrency\nPrepareColumns sink(input(\n\t\tAdvertiserId as integer,\n\t\tAdvertiser as string,\n\t\tAdvertiserCurrencyId as integer,\n\t\tCampaignId as integer,\n\t\tInsertionOrder as string,\n\t\tInsertionOrderId as integer,\n\t\tLineItem as string,\n\t\tLineItemId as integer,\n\t\tCampaign as string,\n\t\tCreative as string,\n\t\tDate as timestamp,\n\t\tImpressions as integer,\n\t\tBillableImpressions as double,\n\t\tClicks as integer,\n\t\tClickRateCTR as double,\n\t\tTotalConversions as double,\n\t\tPostClickConversions as double,\n\t\tPostViewConversions as double,\n\t\tRevenueAdvCurrency as double,\n\t\tMediaCostAdvetiserCurrency as double,\n\t\tBillableCostAdvertiserCurrency as double,\n\t\tPlatformFeeAdvertiserCurrency as double,\n\t\tPlatformFeeRate as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAdvertiserId,\n\t\tAdvertiser,\n\t\tAdvertiserCurrencyId = CurrencyId,\n\t\tCampaignId,\n\t\tInsertionOrder,\n\t\tInsertionOrderId,\n\t\tLineItem,\n\t\tLineItemId,\n\t\tCampaign,\n\t\tCreative,\n\t\tDate,\n\t\tImpressions,\n\t\tBillableImpressions,\n\t\tClicks,\n\t\tClickRateCTR,\n\t\tTotalConversions,\n\t\tPostClickConversions,\n\t\tPostViewConversions,\n\t\tRevenueAdvCurrency,\n\t\tMediaCostAdvetiserCurrency,\n\t\tBillableCostAdvertiserCurrency,\n\t\tPlatformFeeAdvertiserCurrency,\n\t\tPlatformFeeRate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> GoogleDV360CostMetrics"
+		}
+	}
+}

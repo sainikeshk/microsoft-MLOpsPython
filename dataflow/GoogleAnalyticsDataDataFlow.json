@@ -1,0 +1,32 @@
+{
+	"name": "GoogleAnalyticsDataDataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "GoogleAnalyticsStage",
+						"type": "DatasetReference"
+					},
+					"name": "GoogleAnalyticsStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "GoogleAnalyticsData",
+						"type": "DatasetReference"
+					},
+					"name": "GoogleAnalyticsData"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareData"
+				}
+			],
+			"script": "parameters{\n\tGroupId as integer (1)\n}\nsource(output(\n\t\tGroupId as short,\n\t\tMetricsArr as string,\n\t\tValuesArr as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> GoogleAnalyticsStage\nGoogleAnalyticsStage derive(GroupValue = replace(split(replace(replace(MetricsArr, ']',''),'[',''),',')[1],'\"',''),\n\t\tSourceDate = toDate(replace(split(replace(replace(MetricsArr, ']',''),'[',''),',')[2],'\"',''), 'yyyyMMdd'),\n\t\tUsers = replace(split(replace(replace(ValuesArr, ']',''),'[',''),',')[1],'\"',''),\n\t\tNewUsers = replace(split(replace(replace(ValuesArr, ']',''),'[',''),',')[2],'\"',''),\n\t\tPageViews = replace(split(replace(replace(ValuesArr, ']',''),'[',''),',')[3],'\"',''),\n\t\tSessionsPerUser = replace(split(replace(replace(ValuesArr, ']',''),'[',''),',')[4],'\"',''),\n\t\tSessions = replace(split(replace(replace(ValuesArr, ']',''),'[',''),',')[5],'\"',''),\n\t\tBounceRate = replace(split(replace(replace(ValuesArr, ']',''),'[',''),',')[6],'\"',''),\n\t\tAvgSessionDuration = replace(split(replace(replace(ValuesArr, ']',''),'[',''),',')[7],'\"',''),\n\t\tGroupId = $GroupId,\n\t\tGoal1ConversionRate = replace(split(replace(replace(ValuesArr, ']',''),'[',''),',')[8],'\"',''),\n\t\tGoal1Completions = replace(split(replace(replace(ValuesArr, ']',''),'[',''),',')[9],'\"',''),\n\t\tGoal1Value = replace(split(replace(replace(ValuesArr, ']',''),'[',''),',')[10],'\"','')) ~> PrepareData\nPrepareData sink(input(\n\t\tGroupId as integer,\n\t\tGroupValue as string,\n\t\tSourceDate as date,\n\t\tUsers as double,\n\t\tNewUsers as double,\n\t\tPageviews as double,\n\t\tSessionsPerUser as double,\n\t\tSessions as double,\n\t\tBounceRate as double,\n\t\tAvgSessionDuration as double,\n\t\tGoal1ConversionRate as double,\n\t\tGoal1Completions as double,\n\t\tGoal1Value as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tGroupId,\n\t\tGroupValue,\n\t\tSourceDate,\n\t\tUsers,\n\t\tNewUsers,\n\t\tPageviews = PageViews,\n\t\tSessionsPerUser,\n\t\tSessions,\n\t\tBounceRate,\n\t\tAvgSessionDuration,\n\t\tGoal1ConversionRate,\n\t\tGoal1Completions,\n\t\tGoal1Value\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> GoogleAnalyticsData"
+		}
+	}
+}

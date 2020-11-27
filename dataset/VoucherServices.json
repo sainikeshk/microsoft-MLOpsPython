@@ -1,0 +1,140 @@
+{
+	"name": "VoucherServices",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MSDynamics"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "JournalId",
+				"type": "varchar"
+			},
+			{
+				"name": "MainAccountId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MainAccountCategoryId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "SerialNumber",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "TransactionCurrencyId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "CurrencyId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "TransactionType",
+				"type": "varchar"
+			},
+			{
+				"name": "TransactionCurrencyAmount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "AccountingCurrencyAmount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "ReportingCurrencyAmount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "ExchangeRate",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "TransactionDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "EmployeeLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "CustomerLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "VendorLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "ClassLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "ClientsLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "DepartmentLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "ProjectLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "SPVLedgerDimension",
+				"type": "varchar"
+			},
+			{
+				"name": "TaxGroup",
+				"type": "varchar"
+			},
+			{
+				"name": "TaxItemGroup",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Description",
+				"type": "varchar"
+			},
+			{
+				"name": "Text",
+				"type": "varchar"
+			},
+			{
+				"name": "Voucher",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "VoucherServices"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

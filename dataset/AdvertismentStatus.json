@@ -1,0 +1,31 @@
+{
+	"name": "AdvertismentStatus",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AdvertismentStatusId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "DisplayName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AdvertismentStatus"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

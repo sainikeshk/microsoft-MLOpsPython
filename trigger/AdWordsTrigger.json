@@ -1,0 +1,24 @@
+{
+	"name": "AdWordsTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "GoogleAdWordsPipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 3,
+				"startTime": "2020-11-06T08:15:00",
+				"timeZone": "Arab Standard Time"
+			}
+		}
+	}
+}

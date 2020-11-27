@@ -1,0 +1,35 @@
+{
+	"name": "CampaignGroupDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Linkedin"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CampaignGroupStage",
+						"type": "DatasetReference"
+					},
+					"name": "CampaignGroupStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CampaignGroup",
+						"type": "DatasetReference"
+					},
+					"name": "CampaignGroup"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\tCampaignGroupId as integer,\n\t\tName as string,\n\t\tDisplayName as string,\n\t\tAccountId as string,\n\t\tCreated as long,\n\t\tModified as long,\n\t\tStatus as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignGroupStage\nCampaignGroupStage derive(Created = toTimestamp(Created, 'yyyy-MM-dd HH:mm:ss'),\n\t\tModified = toTimestamp(Modified, 'yyyy-MM-dd HH:mm:ss'),\n\t\tAccountId = replace(AccountId, 'urn:li:sponsoredAccount:', '')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tCampaignGroupId as integer,\n\t\tName as string,\n\t\tDisplayName as string,\n\t\tAccountId as integer,\n\t\tCreated as timestamp,\n\t\tModified as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> CampaignGroup"
+		}
+	}
+}

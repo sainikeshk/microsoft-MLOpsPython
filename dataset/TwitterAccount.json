@@ -1,0 +1,55 @@
+{
+	"name": "TwitterAccount",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountId",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Updated",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "BusinessName",
+				"type": "varchar"
+			},
+			{
+				"name": "IndustryTypeId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "ApprovalStatusId",
+				"type": "smallint",
+				"precision": 5
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterAccount"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

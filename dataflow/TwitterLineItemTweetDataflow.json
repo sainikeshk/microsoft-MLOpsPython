@@ -1,0 +1,35 @@
+{
+	"name": "TwitterLineItemTweetDataflow",
+	"properties": {
+		"folder": {
+			"name": "Twitter"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "TwitterLineItemTweetStage",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterLineItemTweetStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TwitterLineItemTweet",
+						"type": "DatasetReference"
+					},
+					"name": "TwitterLineItemTweet"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\tTweetId as string,\n\t\tLineItemId as string,\n\t\tcreated_at as string,\n\t\tupdated_at as string,\n\t\tentity_status as string,\n\t\tapproval_status as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterLineItemTweetStage\nTwitterLineItemTweetStage derive(created_at = toTimestamp(created_at, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tupdated_at = toTimestamp(updated_at, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tTweetId as string,\n\t\tLineItemId as string,\n\t\tCreated as timestamp,\n\t\tUpdated as timestamp,\n\t\tEntityStatus as string,\n\t\tApprovalStatus as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tTweetId,\n\t\tLineItemId,\n\t\tCreated = created_at,\n\t\tUpdated = updated_at,\n\t\tEntityStatus = entity_status,\n\t\tApprovalStatus = approval_status\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterLineItemTweet"
+		}
+	}
+}

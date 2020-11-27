@@ -1,0 +1,93 @@
+{
+	"name": "TwitterEnagagementMetricsStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "LineItemId",
+				"type": "varchar"
+			},
+			{
+				"name": "StartDate",
+				"type": "varchar"
+			},
+			{
+				"name": "EndDate",
+				"type": "varchar"
+			},
+			{
+				"name": "impressions",
+				"type": "varchar"
+			},
+			{
+				"name": "tweets_send",
+				"type": "varchar"
+			},
+			{
+				"name": "qualified_impressions",
+				"type": "varchar"
+			},
+			{
+				"name": "follows",
+				"type": "varchar"
+			},
+			{
+				"name": "app_clicks",
+				"type": "varchar"
+			},
+			{
+				"name": "retweets",
+				"type": "varchar"
+			},
+			{
+				"name": "unfollows",
+				"type": "varchar"
+			},
+			{
+				"name": "likes",
+				"type": "varchar"
+			},
+			{
+				"name": "engagements",
+				"type": "varchar"
+			},
+			{
+				"name": "clicks",
+				"type": "varchar"
+			},
+			{
+				"name": "card_engagements",
+				"type": "varchar"
+			},
+			{
+				"name": "poll_card_vote",
+				"type": "varchar"
+			},
+			{
+				"name": "replies",
+				"type": "varchar"
+			},
+			{
+				"name": "billed_charge_local_micro",
+				"type": "varchar"
+			},
+			{
+				"name": "billed_engagements",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterEnagagementMetricsStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

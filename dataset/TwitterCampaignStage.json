@@ -1,0 +1,69 @@
+{
+	"name": "TwitterCampaignStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountId",
+				"type": "varchar"
+			},
+			{
+				"name": "CampaignId",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "varchar"
+			},
+			{
+				"name": "Modified",
+				"type": "varchar"
+			},
+			{
+				"name": "Status",
+				"type": "varchar"
+			},
+			{
+				"name": "Currency",
+				"type": "varchar"
+			},
+			{
+				"name": "TotalBudgetAmount",
+				"type": "varchar"
+			},
+			{
+				"name": "DailyBudgetAmount",
+				"type": "varchar"
+			},
+			{
+				"name": "Servable",
+				"type": "varchar"
+			},
+			{
+				"name": "StartDate",
+				"type": "varchar"
+			},
+			{
+				"name": "EndDate",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterCampaignStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

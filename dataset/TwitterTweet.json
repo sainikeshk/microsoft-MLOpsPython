@@ -1,0 +1,75 @@
+{
+	"name": "TwitterTweet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Twitter"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TweetId",
+				"type": "varchar"
+			},
+			{
+				"name": "AccountId",
+				"type": "varchar"
+			},
+			{
+				"name": "FullText",
+				"type": "varchar"
+			},
+			{
+				"name": "TweetType",
+				"type": "varchar"
+			},
+			{
+				"name": "Hashtags",
+				"type": "varchar"
+			},
+			{
+				"name": "InReplyToStatusIdStr",
+				"type": "varchar"
+			},
+			{
+				"name": "Geo",
+				"type": "varchar"
+			},
+			{
+				"name": "InReplyToUserId",
+				"type": "varchar"
+			},
+			{
+				"name": "Created",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "CardUri",
+				"type": "varchar"
+			},
+			{
+				"name": "RetweetCount",
+				"type": "varchar"
+			},
+			{
+				"name": "InReplyToScreenName",
+				"type": "varchar"
+			},
+			{
+				"name": "Source",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TwitterTweet"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

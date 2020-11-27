@@ -1,0 +1,64 @@
+{
+	"name": "HubspotOwnerStage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Hubspot"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "OwnerId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "firstName",
+				"type": "varchar"
+			},
+			{
+				"name": "lastName",
+				"type": "varchar"
+			},
+			{
+				"name": "email",
+				"type": "varchar"
+			},
+			{
+				"name": "createdAt",
+				"type": "varchar"
+			},
+			{
+				"name": "updatedAt",
+				"type": "varchar"
+			},
+			{
+				"name": "hasContactsAccess",
+				"type": "varchar"
+			},
+			{
+				"name": "activeUserId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "activeSalesforceId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "isActive",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "HubspotOwnerStage"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

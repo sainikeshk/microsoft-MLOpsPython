@@ -1,0 +1,84 @@
+{
+	"name": "GoogleAnalyticsData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "GoogleAnalytics"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "GroupId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "GroupValue",
+				"type": "varchar"
+			},
+			{
+				"name": "SourceDate",
+				"type": "date"
+			},
+			{
+				"name": "Users",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "NewUsers",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Pageviews",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "SessionsPerUser",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Sessions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "BounceRate",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "AvgSessionDuration",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Goal1ConversionRate",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Goal1Completions",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Goal1Value",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "GoogleAnalyticsData"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

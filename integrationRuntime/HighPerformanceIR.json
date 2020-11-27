@@ -1,0 +1,16 @@
+{
+	"name": "HighPerformanceIR",
+	"properties": {
+		"type": "Managed",
+		"typeProperties": {
+			"computeProperties": {
+				"location": "AutoResolve",
+				"dataFlowProperties": {
+					"computeType": "General",
+					"coreCount": 80,
+					"timeToLive": 30
+				}
+			}
+		}
+	}
+}

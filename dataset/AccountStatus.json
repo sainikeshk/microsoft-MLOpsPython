@@ -1,0 +1,31 @@
+{
+	"name": "AccountStatus",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DashboardDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountStatusId",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "DisplayName",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AccountStatus"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

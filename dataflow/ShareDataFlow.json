@@ -1,0 +1,35 @@
+{
+	"name": "ShareDataFlow",
+	"properties": {
+		"folder": {
+			"name": "Linkedin"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "LinkedinShareStage",
+						"type": "DatasetReference"
+					},
+					"name": "LinkedinShareStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "LinkedinShare",
+						"type": "DatasetReference"
+					},
+					"name": "LinkedinShare"
+				}
+			],
+			"transformations": [
+				{
+					"name": "PrepareColumns"
+				}
+			],
+			"script": "source(output(\n\t\towner as string,\n\t\tagent as string,\n\t\tactivity as string,\n\t\tsubject as string,\n\t\tcreatedby as string,\n\t\tcreated as string,\n\t\tid as string,\n\t\tlastModifiedby as string,\n\t\tlastModified as string,\n\t\ttext as string,\n\t\tlandingPageTitle as string,\n\t\tdescription as string,\n\t\tentityLocation as string,\n\t\ttitle as string,\n\t\tlandingPageUrl as string,\n\t\tentity as string,\n\t\tshareMediaCategory as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> LinkedinShareStage\nLinkedinShareStage derive(created = toTimestamp(toLong(created), 'yyyy-MM-dd HH:mm:ss'),\n\t\tlastModified = toTimestamp(toLong(lastModified), 'yyyy-MM-dd HH:mm:ss')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tOwner as string,\n\t\tAgent as string,\n\t\tActivity as string,\n\t\tSubject as string,\n\t\tCreatedBy as string,\n\t\tCreated as timestamp,\n\t\tId as string,\n\t\tLastModifiedBy as string,\n\t\tLastModified as timestamp,\n\t\tText as string,\n\t\tLandingPageTitle as string,\n\t\tDescription as string,\n\t\tEntityLocation as string,\n\t\tTitle as string,\n\t\tLandingPageUrl as string,\n\t\tEntity as string,\n\t\tShareMediaCategory as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tOwner = owner,\n\t\tAgent = agent,\n\t\tActivity = activity,\n\t\tSubject = subject,\n\t\tCreatedBy = createdby,\n\t\tCreated = created,\n\t\tId = id,\n\t\tLastModifiedBy = lastModifiedby,\n\t\tLastModified = lastModified,\n\t\tText = text,\n\t\tLandingPageTitle = landingPageTitle,\n\t\tDescription = description,\n\t\tEntityLocation = entityLocation,\n\t\tTitle = title,\n\t\tLandingPageUrl = landingPageUrl,\n\t\tEntity = entity,\n\t\tShareMediaCategory = shareMediaCategory\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> LinkedinShare"
+		}
+	}
+}
