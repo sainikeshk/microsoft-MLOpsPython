@@ -28,10 +28,21 @@
 								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd 16:30:00')",
 								"type": "Expression"
 							},
+							"wildcardFolderPath": {
+								"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'))",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.gz",
 							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
 							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
 						}
 					},
 					"enableStaging": false
@@ -39,6 +50,12 @@
 				"inputs": [
 					{
 						"referenceName": "sftpBinary",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "binaryBlobStorage",
 						"type": "DatasetReference"
 					}
 				]
