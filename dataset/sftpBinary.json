@@ -10,7 +10,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "SftpLocation",
-				"folderPath": "/@concat('CM30/DATA/',formatDateTime(utcnow(),'%B%d%Y'),'/')"
+				"folderPath": {
+					"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'%B%d%Y'))",
+					"type": "Expression"
+				}
 			}
 		}
 	}
