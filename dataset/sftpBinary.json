@@ -9,11 +9,7 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "SftpLocation",
-				"folderPath": {
-					"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'))",
-					"type": "Expression"
-				}
+				"type": "SftpLocation"
 			}
 		}
 	}
