@@ -9,7 +9,7 @@
 		"type": "AzureMySqlTable",
 		"schema": [],
 		"typeProperties": {
-			"tableName": "ind"
+			"tableName": "cadata"
 		}
 	}
 }
