@@ -19,7 +19,15 @@
 						"type": "DelimitedTextSource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
-							"recursive": true
+							"recursive": true,
+							"modifiedDatetimeStart": {
+								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd 08:45:00')",
+								"type": "Expression"
+							},
+							"modifiedDatetimeEnd": {
+								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd 16:30:00')",
+								"type": "Expression"
+							}
 						},
 						"formatSettings": {
 							"type": "DelimitedTextReadSettings"
