@@ -158,7 +158,22 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/dmohith06@outlook.com/nse",
+					"baseParameters": {
+						"storage_id": "uidfhiufhksdfaioshfkhdsioafhohfaKHFAHFSDHFAJHDFASHFKFjh",
+						"": "mohifhuidfhjkdfuigsdbsdujhduifh7484iuhsdfihdfuih"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks1",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"storage_id": "uidfhiufhksdfaioshfkhdsioafhohfaKHFAHFSDHFAJHDFASHFKFjh",
+						"storage_sas": "mohifhuidfhjkdfuigsdbsdujhduifh7484iuhsdfihdfuih"
+					}
+				}
 			}
 		],
 		"annotations": []
