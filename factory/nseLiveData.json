@@ -5,6 +5,10 @@
 			"storage_id": {
 				"type": "string",
 				"value": "uidfhiufhksdfaioshfkhdsioafhohfaKHFAHFSDHFAJHDFASHFKFjh"
+			},
+			"storage_sas": {
+				"type": "string",
+				"value": "mohifhuidfhjkdfuigsdbsdujhduifh7484iuhsdfihdfuih"
 			}
 		}
 	},
