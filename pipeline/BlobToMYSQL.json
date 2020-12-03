@@ -162,7 +162,8 @@
 				"typeProperties": {
 					"notebookPath": "/Users/dmohith06@outlook.com/nse",
 					"baseParameters": {
-						"input": "@pipeline().globalParameters"
+						"storage_id": "@pipeline().parameters.storage_id",
+						"storage_sas": "@pipeline().parameters.storage_sas"
 					}
 				},
 				"linkedServiceName": {
