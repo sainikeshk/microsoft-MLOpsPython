@@ -146,35 +146,6 @@
 						"type": "DatasetReference"
 					}
 				]
-			},
-			{
-				"name": "Custom1",
-				"type": "Custom",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"command": "python main.py",
-					"resourceLinkedService": {
-						"referenceName": "sftpbinaryBlob",
-						"type": "LinkedServiceReference"
-					},
-					"folderPath": "input",
-					"referenceObjects": {
-						"linkedServices": [],
-						"datasets": []
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "AzureBatch1",
-					"type": "LinkedServiceReference"
-				}
 			}
 		],
 		"annotations": []
