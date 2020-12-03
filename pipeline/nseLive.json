@@ -534,7 +534,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "blobTomysql",
+						"referenceName": "catoMysqlca",
 						"type": "DatasetReference"
 					}
 				]
