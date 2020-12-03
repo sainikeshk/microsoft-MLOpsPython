@@ -15,8 +15,27 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "@concat('/output/',formatDateTime(utcnow(),'MMMMddyyyy'))",
+							"wildcardFileName": "*.csv",
+							"deleteFilesAfterCompletion": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
 					"enableStaging": false
-				}
+				},
+				"inputs": [
+					{
+						"referenceName": "binaryBlobStorage",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"annotations": []
