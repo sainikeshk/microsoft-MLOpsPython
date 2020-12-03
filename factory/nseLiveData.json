@@ -2,7 +2,7 @@
 	"name": "nseLiveData",
 	"properties": {
 		"globalParameters": {
-			"storage": {
+			"storage_id": {
 				"type": "string",
 				"value": "uidfhiufhksdfaioshfkhdsioafhohfaKHFAHFSDHFAJHDFASHFKFjh"
 			}
