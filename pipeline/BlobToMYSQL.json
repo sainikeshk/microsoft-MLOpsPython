@@ -160,6 +160,12 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"command": "python main.py",
+					"resourceLinkedService": {
+						"referenceName": "sftpbinaryBlob",
+						"type": "LinkedServiceReference"
+					},
+					"folderPath": "input",
 					"referenceObjects": {
 						"linkedServices": [],
 						"datasets": []
