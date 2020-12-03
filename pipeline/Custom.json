@@ -20,7 +20,7 @@
 						"referenceName": "sftpbinaryBlob",
 						"type": "LinkedServiceReference"
 					},
-					"folderPath": "output",
+					"folderPath": "input",
 					"referenceObjects": {
 						"linkedServices": [],
 						"datasets": []
