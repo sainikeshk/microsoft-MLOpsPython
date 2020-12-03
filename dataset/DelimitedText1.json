@@ -1,0 +1,57 @@
+{
+	"name": "DelimitedText1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sftpbinaryBlob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "December032020_ind.csv",
+				"folderPath": "December032020",
+				"container": "output"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "transcode",
+				"type": "String"
+			},
+			{
+				"name": "timestamp",
+				"type": "String"
+			},
+			{
+				"name": "tsDateTime",
+				"type": "String"
+			},
+			{
+				"name": "indexToken",
+				"type": "String"
+			},
+			{
+				"name": "currentIndexValue",
+				"type": "String"
+			},
+			{
+				"name": "highIndexValue",
+				"type": "String"
+			},
+			{
+				"name": "lowIndexValue",
+				"type": "String"
+			},
+			{
+				"name": "percentageChangeInIndex",
+				"type": "String"
+			}
+		]
+	}
+}
