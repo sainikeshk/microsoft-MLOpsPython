@@ -1,0 +1,15 @@
+{
+	"name": "blobTomysql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "indblobToindSql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureMySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "ind"
+		}
+	}
+}
