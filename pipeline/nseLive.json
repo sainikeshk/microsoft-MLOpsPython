@@ -55,7 +55,14 @@
 			{
 				"name": "binaryToAscii",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "copyBinaryfiles",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -71,6 +78,158 @@
 					"referenceName": "bintoasciiAdb",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "copyIndtoSqlInd",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "binaryToAscii",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@concat('',formatDateTime(utcnow(),'MMMMddyyyy'))",
+								"type": "Expression"
+							},
+							"wildcardFileName": {
+								"value": "@concat(formatDateTime(utcnow(),'MMMMddyyyy'),'_ind.csv')",
+								"type": "Expression"
+							}
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureMySqlSink",
+						"writeBatchSize": 10000,
+						"writeBatchTimeout": "00:00:30"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "transcode",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "transcodetimestamp",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "tsDateTime",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "tsDateTime",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "indexToken",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "indexToken",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "currentIndexValue",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "currentIndexValue",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "highIndexValue",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "highIndexValue",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "lowIndexValue",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "lowIndexValue",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "percentageChangeInIndex",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "percentageChangeInIndex",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "asciiFiles",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "blobTomysql",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"annotations": []
