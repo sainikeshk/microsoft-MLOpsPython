@@ -15,10 +15,20 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"command": "python main.py",
+					"resourceLinkedService": {
+						"referenceName": "sftpbinaryBlob",
+						"type": "LinkedServiceReference"
+					},
+					"folderPath": "output",
 					"referenceObjects": {
 						"linkedServices": [],
 						"datasets": []
 					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureBatch1",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
