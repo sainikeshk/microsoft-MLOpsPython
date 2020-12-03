@@ -1,4 +1,12 @@
 {
 	"name": "nseLiveData",
+	"properties": {
+		"globalParameters": {
+			"storage": {
+				"type": "string",
+				"value": "uidfhiufhksdfaioshfkhdsioafhohfaKHFAHFSDHFAJHDFASHFKFjh"
+			}
+		}
+	},
 	"location": "eastus"
 }
