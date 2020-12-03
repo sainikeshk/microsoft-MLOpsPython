@@ -619,7 +619,7 @@
 								"sink": {
 									"name": "TsDateTime",
 									"type": "DateTime",
-									"physicalType": "datetime"
+									"physicalType": "timestamp"
 								}
 							},
 							{
@@ -630,8 +630,8 @@
 								},
 								"sink": {
 									"name": "SecurityToken",
-									"type": "Int16",
-									"physicalType": "smallint"
+									"type": "String",
+									"physicalType": "varchar"
 								}
 							},
 							{
@@ -672,18 +672,6 @@
 							},
 							{
 								"source": {
-									"name": "buyBBMMFlag",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "BuyBBMMFlag",
-									"type": "String",
-									"physicalType": "char"
-								}
-							},
-							{
-								"source": {
 									"name": "bestSellQuantity",
 									"type": "String",
 									"physicalType": "String"
@@ -708,18 +696,6 @@
 							},
 							{
 								"source": {
-									"name": "sellBBMMFlag",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "SellBBMMFlag",
-									"type": "String",
-									"physicalType": "char"
-								}
-							},
-							{
-								"source": {
 									"name": "totalTradedQuantity",
 									"type": "String",
 									"physicalType": "String"
@@ -732,36 +708,12 @@
 							},
 							{
 								"source": {
-									"name": "indicativeTradedQuantity",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "IndicativeTradedQuantity",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
 									"name": "averageTradedPrice",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
 									"name": "AverageTradedPrice",
-									"type": "Int32",
-									"physicalType": "int"
-								}
-							},
-							{
-								"source": {
-									"name": "firstOpenPrice",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "FirstOpenPrice",
 									"type": "Int32",
 									"physicalType": "int"
 								}
