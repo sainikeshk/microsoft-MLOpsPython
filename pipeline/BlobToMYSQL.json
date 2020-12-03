@@ -164,7 +164,14 @@
 					"baseParameters": {
 						"storage_id": "@pipeline().parameters.storage_id",
 						"storage_sas": "@pipeline().parameters.storage_sas"
-					}
+					},
+					"libraries": [
+						{
+							"pypi": {
+								"package": "azure-storage"
+							}
+						}
+					]
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
