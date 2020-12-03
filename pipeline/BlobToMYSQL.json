@@ -21,7 +21,7 @@
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
 							"wildcardFolderPath": "@concat('/output/',formatDateTime(utcnow(),'MMMMddyyyy'))",
-							"wildcardFileName": "*.csv",
+							"wildcardFileName": "December032020_ind.csv",
 							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
@@ -36,6 +36,37 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "dataflowTransform",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "StorageToSql",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflowTransform",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
 			}
 		],
 		"annotations": []
