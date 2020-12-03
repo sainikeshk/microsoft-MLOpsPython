@@ -171,6 +171,16 @@
 				}
 			}
 		],
+		"variables": {
+			"storage_id": {
+				"type": "String",
+				"defaultValue": "uidfhiufhksdfaioshfkhdsioafhohfaKHFAHFSDHFAJHDFASHFKFjh"
+			},
+			"storage_sas": {
+				"type": "String",
+				"defaultValue": "mohifhuidfhjkdfuigsdbsdujhduifh7484iuhsdfihdfuih"
+			}
+		},
 		"annotations": []
 	}
 }
