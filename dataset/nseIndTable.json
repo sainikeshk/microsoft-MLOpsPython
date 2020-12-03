@@ -1,5 +1,5 @@
 {
-	"name": "AzureMySqlTable1",
+	"name": "nseIndTable",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureMySql1",
