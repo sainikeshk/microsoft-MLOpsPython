@@ -162,17 +162,12 @@
 				"typeProperties": {
 					"notebookPath": "/Users/dmohith06@outlook.com/nse",
 					"baseParameters": {
-						"storage_id": "uidfhiufhksdfaioshfkhdsioafhohfaKHFAHFSDHFAJHDFASHFKFjh",
-						"storage_sas": "mohifhuidfhjkdfuigsdbsdujhduifh7484iuhsdfihdfuih"
+						"input": "@pipeline().globalParameters"
 					}
 				},
 				"linkedServiceName": {
 					"referenceName": "AzureDatabricks1",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"storage_id": "uidfhiufhksdfaioshfkhdsioafhohfaKHFAHFSDHFAJHDFASHFKFjh",
-						"storage_sas": "mohifhuidfhjkdfuigsdbsdujhduifh7484iuhsdfihdfuih"
-					}
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
