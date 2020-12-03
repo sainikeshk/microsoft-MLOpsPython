@@ -16,16 +16,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "BinarySource",
+						"type": "DelimitedTextSource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"wildcardFolderPath": "@concat('/output/',formatDateTime(utcnow(),'MMMMddyyyy'))",
-							"wildcardFileName": "December032020_ind.csv",
-							"deleteFilesAfterCompletion": false
+							"recursive": true
 						},
 						"formatSettings": {
-							"type": "BinaryReadSettings"
+							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"sink": {
@@ -33,11 +30,19 @@
 						"writeBatchSize": 10000,
 						"writeBatchTimeout": "00:00:30"
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
 				"inputs": [
 					{
-						"referenceName": "binaryBlobStorage",
+						"referenceName": "DelimitedText1",
 						"type": "DatasetReference"
 					}
 				],
