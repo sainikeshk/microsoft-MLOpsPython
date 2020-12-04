@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"notebookPath": "/Users/blenu4ece16082@bl.students.amrita.edu/test",
 					"baseParameters": {
-						"storagename": "storageaccountnse9f48"
+						"storagename": {
+							"value": "@pipeline().parameters.storagename",
+							"type": "Expression"
+						}
 					}
 				},
 				"linkedServiceName": {
@@ -26,6 +29,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"storagename": {
+				"type": "string",
+				"defaultValue": "storageaccountnse9f48"
+			}
+		},
 		"annotations": []
 	}
 }
