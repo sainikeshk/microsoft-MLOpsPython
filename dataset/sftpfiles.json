@@ -1,0 +1,20 @@
+{
+	"name": "sftpfiles",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SftpConnLs",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"folderPath": {
+					"value": "concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy')",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}
