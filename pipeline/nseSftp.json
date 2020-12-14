@@ -20,6 +20,14 @@
 						"storeSettings": {
 							"type": "SftpReadSettings",
 							"recursive": true,
+							"modifiedDatetimeStart": {
+								"value": "@addminutes(formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss'),-1)",
+								"type": "Expression"
+							},
+							"modifiedDatetimeEnd": {
+								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss')",
+								"type": "Expression"
+							},
 							"wildcardFolderPath": {
 								"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'))",
 								"type": "Expression"
