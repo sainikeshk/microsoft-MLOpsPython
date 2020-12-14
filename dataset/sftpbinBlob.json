@@ -1,0 +1,21 @@
+{
+	"name": "sftpbinBlob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sftpbinaryBlob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "concat('',formatDateTime(utcnow(),'MMMMddyyyy')",
+					"type": "Expression"
+				},
+				"container": "temp"
+			}
+		}
+	}
+}
