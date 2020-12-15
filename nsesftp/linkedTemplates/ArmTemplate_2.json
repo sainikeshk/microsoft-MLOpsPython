@@ -1,0 +1,1667 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "nsesftp"
+		},
+		"MSDynamicsAXLiveService_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'MSDynamicsAXLiveService'"
+		},
+		"PythonBatch_accessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessKey' of 'PythonBatch'"
+		},
+		"SaveDV360MetricCSV_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'SaveDV360MetricCSV'"
+		},
+		"SaveDV360ReportFunction_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'SaveDV360ReportFunction'"
+		},
+		"TwitterAnalyticsRequestDatesCheck_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'TwitterAnalyticsRequestDatesCheck'"
+		},
+		"batchnse_accessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessKey' of 'batchnse'"
+		},
+		"LinkedinAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "@{linkedService().Url}"
+		},
+		"MSDynamicsAXLiveService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://tfo-live.operations.dynamics.com/data"
+		},
+		"MSDynamicsAXLiveService_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "722fb109-13f1-4aa0-9a39-dd9440082369"
+		},
+		"MSDynamicsAXLiveService_properties_typeProperties_aadResourceId": {
+			"type": "string",
+			"defaultValue": "https://tfo-live.operations.dynamics.com"
+		},
+		"MSDynamicsAXLiveService_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "7d55aa19-d4ad-4447-ac83-e17200bfa898"
+		},
+		"PythonBatch_properties_typeProperties_accountName": {
+			"type": "string",
+			"defaultValue": "nse"
+		},
+		"PythonBatch_properties_typeProperties_batchUri": {
+			"type": "string",
+			"defaultValue": "https://nse.eastus.batch.azure.com"
+		},
+		"PythonBatch_properties_typeProperties_poolName": {
+			"type": "string",
+			"defaultValue": "1234567"
+		},
+		"SaveDV360MetricCSV_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"SaveDV360ReportFunction_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"TwitterAnalyticsRequestDatesCheck_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"batchnse_properties_typeProperties_accountName": {
+			"type": "string",
+			"defaultValue": "nsebatch"
+		},
+		"batchnse_properties_typeProperties_batchUri": {
+			"type": "string",
+			"defaultValue": "https://nsebatch.eastus.batch.azure.com"
+		},
+		"batchnse_properties_typeProperties_poolName": {
+			"type": "string",
+			"defaultValue": "nsePool"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/LinkedinAPI')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"Url": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('LinkedinAPI_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				},
+				"connectVia": {
+					"referenceName": "HighPerformanceIR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MSDynamicsAXLiveService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "DynamicsAX",
+				"typeProperties": {
+					"url": "[parameters('MSDynamicsAXLiveService_properties_typeProperties_url')]",
+					"tenant": "[parameters('MSDynamicsAXLiveService_properties_typeProperties_tenant')]",
+					"aadResourceId": "[parameters('MSDynamicsAXLiveService_properties_typeProperties_aadResourceId')]",
+					"servicePrincipalId": "[parameters('MSDynamicsAXLiveService_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalKey": {
+						"type": "SecureString",
+						"value": "[parameters('MSDynamicsAXLiveService_servicePrincipalKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "HighPerformanceIR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PythonBatch')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBatch",
+				"typeProperties": {
+					"accountName": "[parameters('PythonBatch_properties_typeProperties_accountName')]",
+					"accessKey": {
+						"type": "SecureString",
+						"value": "[parameters('PythonBatch_accessKey')]"
+					},
+					"batchUri": "[parameters('PythonBatch_properties_typeProperties_batchUri')]",
+					"poolName": "[parameters('PythonBatch_properties_typeProperties_poolName')]",
+					"linkedServiceName": {
+						"referenceName": "sftpbinaryBlob",
+						"type": "LinkedServiceReference"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SaveDV360MetricCSV')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('SaveDV360MetricCSV_properties_typeProperties_functionAppUrl')]",
+					"functionKey": {
+						"type": "SecureString",
+						"value": "[parameters('SaveDV360MetricCSV_functionKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "HighPerformanceIR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SaveDV360ReportFunction')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('SaveDV360ReportFunction_properties_typeProperties_functionAppUrl')]",
+					"functionKey": {
+						"type": "SecureString",
+						"value": "[parameters('SaveDV360ReportFunction_functionKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "HighPerformanceIR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterAnalyticsRequestDatesCheck')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('TwitterAnalyticsRequestDatesCheck_properties_typeProperties_functionAppUrl')]",
+					"functionKey": {
+						"type": "SecureString",
+						"value": "[parameters('TwitterAnalyticsRequestDatesCheck_functionKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "HighPerformanceIR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/batchnse')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBatch",
+				"typeProperties": {
+					"accountName": "[parameters('batchnse_properties_typeProperties_accountName')]",
+					"accessKey": {
+						"type": "SecureString",
+						"value": "[parameters('batchnse_accessKey')]"
+					},
+					"batchUri": "[parameters('batchnse_properties_typeProperties_batchUri')]",
+					"poolName": "[parameters('batchnse_properties_typeProperties_poolName')]",
+					"linkedServiceName": {
+						"referenceName": "sftpbinaryBlob",
+						"type": "LinkedServiceReference"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/nseSftppipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "sftp to blob",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "SftpReadSettings",
+									"recursive": true,
+									"modifiedDatetimeStart": {
+										"value": "@addminutes(formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss'),-1)",
+										"type": "Expression"
+									},
+									"modifiedDatetimeEnd": {
+										"value": "@formatDateTime(utcnow(),'yyyy-MM-dd HH:mm:ss')",
+										"type": "Expression"
+									},
+									"wildcardFolderPath": {
+										"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'))",
+										"type": "Expression"
+									},
+									"wildcardFileName": "*.gz",
+									"deleteFilesAfterCompletion": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "sftpfiles",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sftpbinBlob",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AccessTokenTableStorage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardTableStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "AccessToken"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Account')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SourceId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "DisplayName",
+						"type": "varchar"
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "CurrencyId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Created",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "Modified",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "StatusId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "TypeId",
+						"type": "smallint",
+						"precision": 5
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Account"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AccountStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Currency",
+						"type": "varchar"
+					},
+					{
+						"name": "Status",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "Modified",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "Type",
+						"type": "varchar"
+					},
+					{
+						"name": "SourceId",
+						"type": "smallint",
+						"precision": 5
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AccountStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AccountStatus')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountStatusId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "DisplayName",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AccountStatus"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AccountType')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountTypeId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "DisplayName",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AccountType"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdWordsCampaignMetrics')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleAdWords"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CampaignId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "CampaignName",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "BudgetName",
+						"type": "varchar"
+					},
+					{
+						"name": "Budget",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "BudgetType",
+						"type": "varchar"
+					},
+					{
+						"name": "BudgetStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignType",
+						"type": "varchar"
+					},
+					{
+						"name": "Impressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Interactions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Cost",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Conversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "BidStrategyType",
+						"type": "varchar"
+					},
+					{
+						"name": "CostPerAllConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "InteractionRate",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ConversionsFromInteractionsRate",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "AverageCost",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "SegmentDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AdWordsCampaignMetrics"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdWordsCampaignMetricsStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleAdWords"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CampaignResourceName",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignName",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "BudgetName",
+						"type": "varchar"
+					},
+					{
+						"name": "Budget",
+						"type": "varchar"
+					},
+					{
+						"name": "BudgetType",
+						"type": "varchar"
+					},
+					{
+						"name": "BudgetStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignType",
+						"type": "varchar"
+					},
+					{
+						"name": "Impressions",
+						"type": "varchar"
+					},
+					{
+						"name": "Interactions",
+						"type": "varchar"
+					},
+					{
+						"name": "Cost",
+						"type": "varchar"
+					},
+					{
+						"name": "Conversions",
+						"type": "varchar"
+					},
+					{
+						"name": "BidStrategyType",
+						"type": "varchar"
+					},
+					{
+						"name": "CostPerAllConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "InteractionRate",
+						"type": "varchar"
+					},
+					{
+						"name": "ConversionsFromInteractionsRate",
+						"type": "varchar"
+					},
+					{
+						"name": "AverageCost",
+						"type": "varchar"
+					},
+					{
+						"name": "SegmentDate",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AdWordsCampaignMetricsStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Advertisment')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AdvertismentId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "AdvertismentGroupId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "StatusId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Headline",
+						"type": "varchar"
+					},
+					{
+						"name": "IntroductionText",
+						"type": "varchar"
+					},
+					{
+						"name": "Url",
+						"type": "varchar"
+					},
+					{
+						"name": "Line",
+						"type": "varchar"
+					},
+					{
+						"name": "SponsoredUpdateType",
+						"type": "varchar"
+					},
+					{
+						"name": "DSCName",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TypeId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Created",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "Modified",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Advertisment"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdvertismentDetailLinkedin')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AdvertismentId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AdvertismentStartDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "AdvertismentEndDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "TotalSpent",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ActionClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AdUnitClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ApproximateUniqueImpressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CardClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CardImpressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Clicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CommentLikes",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Comments",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CompanyPageClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ConversionValueInLocalCurrency",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CostInLocalCurrency",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "CostInUsd",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ExternalWebsiteConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ExternalWebsitePostClickConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ExternalWebsitePostViewConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Follows",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FullScreenPlays",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Impressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LandingPageClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LeadGenerationMailContactInfoShares",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LeadGenerationMailInterestedClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Likes",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OneClickLeadFormOpens",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OneClickLeads",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Opens",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OtherEngagements",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ReturnOnAreactionsdSpend",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Sends",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Shares",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TextUrlClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TotalEngagements",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "VideoCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "VideoFirstQuartileCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "VideoMidpointCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "VideoStarts",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "VideoThirdQuartileCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "VideoViews",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralCardClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralCardImpressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralCommentLikes",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralComments",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralCompanyPageClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralExternalWebsiteConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralExternalWebsitePostClickConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralExternalWebsitePostViewConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralFollows",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralFullScreenPlays",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralImpressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralLandingPageClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralLikes",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralOneClickLeadFormOpens",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralOneClickLeads",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralOtherEngagements",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralReactions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralShares",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralTotalEngagements",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralVideoCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralVideoFirstQuartileCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralVideoMidpointCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralVideoStarts",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralVideoThirdQuartileCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ViralVideoViews",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Reactions",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AdvertismentDetailLinkedin"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdvertismentDetailLinkedinStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AdvertismentId",
+						"type": "varchar"
+					},
+					{
+						"name": "AdvertismentDateDay",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AdvertismentDateMonth",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AdvertismentDateYear",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AdvertismentEndDay",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AdvertismentEndMonth",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AdvertismentEndYear",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TotalSpent",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "actionClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "adUnitClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "approximateUniqueImpressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cardClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cardImpressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "clicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "commentLikes",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "comments",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "companyPageClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "conversionValueInLocalCurrency",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "costInLocalCurrency",
+						"type": "varchar"
+					},
+					{
+						"name": "costInUsd",
+						"type": "varchar"
+					},
+					{
+						"name": "externalWebsiteConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "externalWebsitePostClickConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "externalWebsitePostViewConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "follows",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fullScreenPlays",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "impressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "landingPageClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "leadGenerationMailContactInfoShares",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "leadGenerationMailInterestedClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "likes",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "oneClickLeadFormOpens",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "oneClickLeads",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "opens",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "otherEngagements",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "returnOnAreactionsdSpend",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "sends",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "shares",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "textUrlClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "totalEngagements",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "videoCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "videoFirstQuartileCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "videoMidpointCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "videoStarts",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "videoThirdQuartileCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "videoViews",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralCardClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralCardImpressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralCommentLikes",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralComments",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralCompanyPageClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralExternalWebsiteConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralExternalWebsitePostClickConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralExternalWebsitePostViewConversions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralFollows",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralFullScreenPlays",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralImpressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralLandingPageClicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralLikes",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralOneClickLeadFormOpens",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralOneClickLeads",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralOtherEngagements",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralReactions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralShares",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralTotalEngagements",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralVideoCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralVideoFirstQuartileCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralVideoMidpointCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralVideoStarts",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralVideoThirdQuartileCompletions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "viralVideoViews",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "reactions",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AdvertismentDetailLinkedinStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdvertismentStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AdvertismentId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Status",
+						"type": "varchar"
+					},
+					{
+						"name": "AdvertismentGroup",
+						"type": "varchar"
+					},
+					{
+						"name": "Headline",
+						"type": "varchar"
+					},
+					{
+						"name": "IntroductionText",
+						"type": "varchar"
+					},
+					{
+						"name": "Url",
+						"type": "varchar"
+					},
+					{
+						"name": "Line",
+						"type": "varchar"
+					},
+					{
+						"name": "SponsoredUpdateType",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignId",
+						"type": "varchar"
+					},
+					{
+						"name": "Type",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "Modified",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "DSCName",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AdvertismentStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdvertismentStatus')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AdvertismentStatusId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "DisplayName",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AdvertismentStatus"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

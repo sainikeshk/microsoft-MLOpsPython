@@ -1,0 +1,2154 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "nsesftp"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterOrganicTweetString')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "OrganicTweetString",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterOrganicTweetString"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterPromotedTweet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TweetId",
+						"type": "varchar"
+					},
+					{
+						"name": "LineItemId",
+						"type": "varchar"
+					},
+					{
+						"name": "created_at",
+						"type": "varchar"
+					},
+					{
+						"name": "updated_at",
+						"type": "varchar"
+					},
+					{
+						"name": "entity_status",
+						"type": "varchar"
+					},
+					{
+						"name": "approval_status",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterPromotedTweet"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterPromotedTweetStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TweetId",
+						"type": "varchar"
+					},
+					{
+						"name": "LineItemId",
+						"type": "varchar"
+					},
+					{
+						"name": "created_at",
+						"type": "varchar"
+					},
+					{
+						"name": "updated_at",
+						"type": "varchar"
+					},
+					{
+						"name": "entity_status",
+						"type": "varchar"
+					},
+					{
+						"name": "approval_status",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterPromotedTweetStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterTweet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TweetId",
+						"type": "varchar"
+					},
+					{
+						"name": "AccountId",
+						"type": "varchar"
+					},
+					{
+						"name": "FullText",
+						"type": "varchar"
+					},
+					{
+						"name": "TweetType",
+						"type": "varchar"
+					},
+					{
+						"name": "Hashtags",
+						"type": "varchar"
+					},
+					{
+						"name": "InReplyToStatusIdStr",
+						"type": "varchar"
+					},
+					{
+						"name": "Geo",
+						"type": "varchar"
+					},
+					{
+						"name": "InReplyToUserId",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "CardUri",
+						"type": "varchar"
+					},
+					{
+						"name": "RetweetCount",
+						"type": "varchar"
+					},
+					{
+						"name": "InReplyToScreenName",
+						"type": "varchar"
+					},
+					{
+						"name": "Source",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterTweet"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterTweetStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "account_id",
+						"type": "varchar"
+					},
+					{
+						"name": "tweet_type",
+						"type": "varchar"
+					},
+					{
+						"name": "hashtags",
+						"type": "varchar"
+					},
+					{
+						"name": "in_reply_to_status_id_str",
+						"type": "varchar"
+					},
+					{
+						"name": "geo",
+						"type": "varchar"
+					},
+					{
+						"name": "in_reply_to_user_id",
+						"type": "varchar"
+					},
+					{
+						"name": "created_at",
+						"type": "varchar"
+					},
+					{
+						"name": "full_text",
+						"type": "varchar"
+					},
+					{
+						"name": "card_uri",
+						"type": "varchar"
+					},
+					{
+						"name": "retweet_count",
+						"type": "varchar"
+					},
+					{
+						"name": "in_reply_to_screen_name",
+						"type": "varchar"
+					},
+					{
+						"name": "tweet_id",
+						"type": "varchar"
+					},
+					{
+						"name": "source",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterTweetStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterWebSiteCardStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "WebsiteShortenedUrl",
+						"type": "varchar"
+					},
+					{
+						"name": "ImageDisplayHeight",
+						"type": "varchar"
+					},
+					{
+						"name": "MediaUrl",
+						"type": "varchar"
+					},
+					{
+						"name": "WebsiteDisplayUrl",
+						"type": "varchar"
+					},
+					{
+						"name": "Id",
+						"type": "varchar"
+					},
+					{
+						"name": "WebsiteDestUrl",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "varchar"
+					},
+					{
+						"name": "MediaKey",
+						"type": "varchar"
+					},
+					{
+						"name": "ImageDisplayWidth",
+						"type": "varchar"
+					},
+					{
+						"name": "WebsiteTitle",
+						"type": "varchar"
+					},
+					{
+						"name": "CardUri",
+						"type": "varchar"
+					},
+					{
+						"name": "WebsiteUrl",
+						"type": "varchar"
+					},
+					{
+						"name": "Updated",
+						"type": "varchar"
+					},
+					{
+						"name": "CardType",
+						"type": "varchar"
+					},
+					{
+						"name": "WebsiteDestinationUrl",
+						"type": "varchar"
+					},
+					{
+						"name": "AccountId",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterWebSiteCardStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VoucherServices')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "MSDynamics"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "JournalId",
+						"type": "varchar"
+					},
+					{
+						"name": "MainAccountId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MainAccountCategoryId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "SerialNumber",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "TransactionCurrencyId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "CurrencyId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "TransactionType",
+						"type": "varchar"
+					},
+					{
+						"name": "TransactionCurrencyAmount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "AccountingCurrencyAmount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "ReportingCurrencyAmount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "ExchangeRate",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "TransactionDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "EmployeeLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "CustomerLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "VendorLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "ClassLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "ClientsLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "DepartmentLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "ProjectLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "SPVLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "TaxGroup",
+						"type": "varchar"
+					},
+					{
+						"name": "TaxItemGroup",
+						"type": "varchar"
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Description",
+						"type": "varchar"
+					},
+					{
+						"name": "Text",
+						"type": "varchar"
+					},
+					{
+						"name": "Voucher",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "VoucherServices"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VoucherServicesStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "MSDynamics"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CustomerLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "TransactionType",
+						"type": "varchar"
+					},
+					{
+						"name": "DepartmentLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "SPVLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "TransactionCurrencyAmount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "Text",
+						"type": "varchar"
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "ReportingCurrencyAmount",
+						"type": "varchar"
+					},
+					{
+						"name": "ClassLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "JournalId",
+						"type": "varchar"
+					},
+					{
+						"name": "TransDate",
+						"type": "varchar"
+					},
+					{
+						"name": "ProjectLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "EmployeeLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "TransactionCurrencyCode",
+						"type": "varchar"
+					},
+					{
+						"name": "ExchRate",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "MainAccountId",
+						"type": "varchar"
+					},
+					{
+						"name": "TaxGroup",
+						"type": "varchar"
+					},
+					{
+						"name": "Voucher",
+						"type": "varchar"
+					},
+					{
+						"name": "MainAccountCategory",
+						"type": "varchar"
+					},
+					{
+						"name": "Currency",
+						"type": "varchar"
+					},
+					{
+						"name": "AccountingCurrencyAmount",
+						"type": "varchar"
+					},
+					{
+						"name": "Description",
+						"type": "varchar"
+					},
+					{
+						"name": "SerialNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "TaxItemGroup",
+						"type": "varchar"
+					},
+					{
+						"name": "ClientsLedgerDimension",
+						"type": "varchar"
+					},
+					{
+						"name": "VendorLedgerDimension",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "VoucherServicesStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterEngagementsMetricsPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Until IsLastRequest is True",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "Set StartDate Variable From Parent Pipeline",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('IsLastRequest'),true)",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Check AnalyticsRequestDates",
+									"type": "AzureFunctionActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"functionName": "TwitterAnalyticsRequestDatesCheck",
+										"method": "GET",
+										"headers": {
+											"StartDate": {
+												"value": "@variables('StartDate')",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "TwitterAnalyticsRequestDatesCheck",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Set IsLastReq",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Ingest into TwitterEnagagementMetricsStage",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "IsLastRequest",
+										"value": {
+											"value": "@activity('Check AnalyticsRequestDates').output.IsLastReq",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Get Authorization Header",
+									"type": "AzureFunctionActivity",
+									"dependsOn": [
+										{
+											"activity": "Set AnalyticsParams",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"functionName": "GetTwitterAuthenticationHeader",
+										"method": "GET",
+										"headers": {
+											"ConsumerKey": {
+												"value": "@pipeline().parameters.ConsumerKey",
+												"type": "Expression"
+											},
+											"ConsumerKeySecret": {
+												"value": "@pipeline().parameters.ConsumerKeySecret",
+												"type": "Expression"
+											},
+											"AccessToken": {
+												"value": "@pipeline().parameters.AccessToken",
+												"type": "Expression"
+											},
+											"AccessTokenSecret": {
+												"value": "@pipeline().parameters.AccessTokenSecret",
+												"type": "Expression"
+											},
+											"APIUrl": {
+												"value": "@replace(variables('AnalyticsUrl'),'AccountIdPlaceHolder', pipeline().parameters.AccountId)",
+												"type": "Expression"
+											},
+											"UrlParams": {
+												"value": "@variables('AnalyticsParams')",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "GetTwitterAuthenticationHeader",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Set AnalyticsParams",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Check AnalyticsRequestDates",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "AnalyticsParams",
+										"value": {
+											"value": "@replace(replace(replace('entity=LINE_ITEM&entity_ids=LineItemIdPlaceHolder&start_time=StartTimePlaceHolder&end_time=EndTimePlaceHolder&granularity=DAY&placement=ALL_ON_TWITTER&metric_groups=ENGAGEMENT,BILLING', 'LineItemIdPlaceHolder', pipeline().parameters.LineItemString),'StartTimePlaceHolder',activity('Check AnalyticsRequestDates').output.StartDate),'EndTimePlaceHolder',activity('Check AnalyticsRequestDates').output.EndDate)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Ingest into TwitterEnagagementMetricsStage",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Get Authorization Header",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Authorization": {
+													"value": "@activity('Get Authorization Header').output.AccessTokenValue",
+													"type": "Expression"
+												}
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink"
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"path": "[['id']"
+													},
+													"sink": {
+														"name": "LineItemId",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['impressions']"
+													},
+													"sink": {
+														"name": "impressions",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['tweets_send']"
+													},
+													"sink": {
+														"name": "tweets_send",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['billed_charge_local_micro']"
+													},
+													"sink": {
+														"name": "billed_charge_local_micro",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['qualified_impressions']"
+													},
+													"sink": {
+														"name": "qualified_impressions",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['follows']"
+													},
+													"sink": {
+														"name": "follows",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['app_clicks']"
+													},
+													"sink": {
+														"name": "app_clicks",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['retweets']"
+													},
+													"sink": {
+														"name": "retweets",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['unfollows']"
+													},
+													"sink": {
+														"name": "unfollows",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['likes']"
+													},
+													"sink": {
+														"name": "likes",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['engagements']"
+													},
+													"sink": {
+														"name": "engagements",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['clicks']"
+													},
+													"sink": {
+														"name": "clicks",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['card_engagements']"
+													},
+													"sink": {
+														"name": "card_engagements",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['poll_card_vote']"
+													},
+													"sink": {
+														"name": "poll_card_vote",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['replies']"
+													},
+													"sink": {
+														"name": "replies",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['billed_engagements']"
+													},
+													"sink": {
+														"name": "billed_engagements",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['request']['params']['start_time']"
+													},
+													"sink": {
+														"name": "StartDate",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['request']['params']['end_time']"
+													},
+													"sink": {
+														"name": "EndDate",
+														"type": "String"
+													}
+												}
+											],
+											"collectionReference": "$['data']",
+											"mapComplexValuesToString": true
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DynamicRESTDataSet",
+											"type": "DatasetReference",
+											"parameters": {
+												"Url": {
+													"value": "@concat(replace(variables('AnalyticsUrl'),'AccountIdPlaceHolder', pipeline().parameters.AccountId),'?',variables('AnalyticsParams'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "TwitterEnagagementMetricsStage",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								},
+								{
+									"name": "Set StartDate",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Ingest into TwitterEnagagementMetricsStage",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "StartDate",
+										"value": {
+											"value": "@activity('Check AnalyticsRequestDates').output.NextStartDate",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set IsLastRequest True",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Check AnalyticsRequestDates",
+											"dependencyConditions": [
+												"Failed"
+											]
+										},
+										{
+											"activity": "Ingest into TwitterEnagagementMetricsStage",
+											"dependencyConditions": [
+												"Failed"
+											]
+										},
+										{
+											"activity": "Get Authorization Header",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "IsLastRequest",
+										"value": {
+											"value": "@bool(true)",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "7.00:00:00"
+						}
+					},
+					{
+						"name": "Set StartDate Variable From Parent Pipeline",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "StartDate",
+							"value": {
+								"value": "@pipeline().parameters.StartDate",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"LineItemString": {
+						"type": "string",
+						"defaultValue": "h4kdj,h6wlt,h76yb,h7ehl,h7v2n,h846c,h87mc,h8oma,h918n,h9k3x,h9k4g,hehuo,hei55,hgcm1,hgq07,hh39c,hhzec,hi0ok,hj5ql,hkrxq"
+					},
+					"ConsumerKey": {
+						"type": "string",
+						"defaultValue": "0bNbRmwfcwUylurWUlMLXVw6s"
+					},
+					"ConsumerKeySecret": {
+						"type": "string",
+						"defaultValue": "tTrmn64h8rvHSNfnqYzKk6TOdug8lUIT9m1lu4wLWh7cSKt7IS"
+					},
+					"AccessToken": {
+						"type": "string",
+						"defaultValue": "1247510171749883906-Mw7rz6qlwk38ZIAdnzD0RmUPQSqw78"
+					},
+					"AccessTokenSecret": {
+						"type": "string",
+						"defaultValue": "lxDxAxy1H6EhHniLrNyBxwEIwmZbGeOLXgaNXrUmsRDew"
+					},
+					"AccountId": {
+						"type": "string",
+						"defaultValue": "18ce554fqwc"
+					},
+					"StartDate": {
+						"type": "string",
+						"defaultValue": "2020-01-01"
+					}
+				},
+				"variables": {
+					"AnalyticsUrl": {
+						"type": "String",
+						"defaultValue": "https://ads-api.twitter.com/8/stats/accounts/AccountIdPlaceHolder"
+					},
+					"StartDate": {
+						"type": "String",
+						"defaultValue": "2020-01-01"
+					},
+					"IsLastRequest": {
+						"type": "Boolean"
+					},
+					"AnalyticsParams": {
+						"type": "String",
+						"defaultValue": "entity=LINE_ITEM&entity_ids=LineItemIdPlaceHolder&start_time=StartTimePlaceHolder&end_time=EndTimePlaceHolder&granularity=DAY&placement=ALL_ON_TWITTER&metric_groups=ENGAGEMENT,BILLING"
+					}
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"lastPublishTime": "2020-11-11T05:10:45Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterOrganicTweetMetricsPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Until IsOrganicLastRequest is True",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "Set OrganicStartDate",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('IsOrganicLastRequest'),true)",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Check OrganicAnalyticsRequestDates",
+									"type": "AzureFunctionActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"functionName": "TwitterAnalyticsRequestDatesCheck",
+										"method": "GET",
+										"headers": {
+											"StartDate": {
+												"value": "@variables('OrganicStartDate')",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "TwitterAnalyticsRequestDatesCheck",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Set IsOrganicLastReq",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Ingest into TwitterOrganicTweetMetricsStage",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "IsOrganicLastRequest",
+										"value": {
+											"value": "@activity('Check OrganicAnalyticsRequestDates').output.IsLastReq",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Get Organic Authorization Header",
+									"type": "AzureFunctionActivity",
+									"dependsOn": [
+										{
+											"activity": "Set OrganicAnalyticsParams",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"functionName": "GetTwitterAuthenticationHeader",
+										"method": "GET",
+										"headers": {
+											"ConsumerKey": {
+												"value": "@pipeline().parameters.ConsumerKey",
+												"type": "Expression"
+											},
+											"ConsumerKeySecret": {
+												"value": "@pipeline().parameters.ConsumerKeySecret",
+												"type": "Expression"
+											},
+											"AccessToken": {
+												"value": "@pipeline().parameters.AccessToken",
+												"type": "Expression"
+											},
+											"AccessTokenSecret": {
+												"value": "@pipeline().parameters.AccessTokenSecret",
+												"type": "Expression"
+											},
+											"APIUrl": {
+												"value": "@replace(variables('AnalyticsUrl'),'AccountIdPlaceHolder', pipeline().parameters.AccountId)",
+												"type": "Expression"
+											},
+											"UrlParams": {
+												"value": "@variables('OrganicAnalyticsParams')",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "GetTwitterAuthenticationHeader",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Set OrganicAnalyticsParams",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Check OrganicAnalyticsRequestDates",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "OrganicAnalyticsParams",
+										"value": {
+											"value": "@replace(replace(replace('entity=ORGANIC_TWEET&entity_ids=OrganicTweetIdPlaceHolder&start_time=StartTimePlaceHolder&end_time=EndTimePlaceHolder&granularity=DAY&placement=ALL_ON_TWITTER&metric_groups=ENGAGEMENT', 'OrganicTweetIdPlaceHolder', pipeline().parameters.OrganicTweetIdString),'StartTimePlaceHolder',activity('Check OrganicAnalyticsRequestDates').output.StartDate),'EndTimePlaceHolder',activity('Check OrganicAnalyticsRequestDates').output.EndDate)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Ingest into TwitterOrganicTweetMetricsStage",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Get Organic Authorization Header",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Authorization": {
+													"value": "@activity('Get Organic Authorization Header').output.AccessTokenValue",
+													"type": "Expression"
+												}
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink"
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"path": "[['id']"
+													},
+													"sink": {
+														"name": "TweetId",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['impressions']"
+													},
+													"sink": {
+														"name": "impressions",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['tweets_send']"
+													},
+													"sink": {
+														"name": "tweets_send",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['billed_charge_local_micro']"
+													},
+													"sink": {
+														"name": "billed_charge_local_micro",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['qualified_impressions']"
+													},
+													"sink": {
+														"name": "qualified_impressions",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['follows']"
+													},
+													"sink": {
+														"name": "follows",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['app_clicks']"
+													},
+													"sink": {
+														"name": "app_clicks",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['retweets']"
+													},
+													"sink": {
+														"name": "retweets",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['unfollows']"
+													},
+													"sink": {
+														"name": "unfollows",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['likes']"
+													},
+													"sink": {
+														"name": "likes",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['engagements']"
+													},
+													"sink": {
+														"name": "engagements",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['clicks']"
+													},
+													"sink": {
+														"name": "clicks",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['card_engagements']"
+													},
+													"sink": {
+														"name": "card_engagements",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['poll_card_vote']"
+													},
+													"sink": {
+														"name": "poll_card_vote",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['replies']"
+													},
+													"sink": {
+														"name": "replies",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['id_data'][0]['metrics']['billed_engagements']"
+													},
+													"sink": {
+														"name": "billed_engagements",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['request']['params']['start_time']"
+													},
+													"sink": {
+														"name": "StartDate",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['request']['params']['end_time']"
+													},
+													"sink": {
+														"name": "EndDate",
+														"type": "String"
+													}
+												}
+											],
+											"collectionReference": "$['data']",
+											"mapComplexValuesToString": true
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DynamicRESTDataSet",
+											"type": "DatasetReference",
+											"parameters": {
+												"Url": {
+													"value": "@concat(replace(variables('AnalyticsUrl'),'AccountIdPlaceHolder', pipeline().parameters.AccountId),'?',variables('OrganicAnalyticsParams'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "TwitterOrganicTweetMetricsStage",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								},
+								{
+									"name": "Set StartDate",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Ingest into TwitterOrganicTweetMetricsStage",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "OrganicStartDate",
+										"value": {
+											"value": "@activity('Check OrganicAnalyticsRequestDates').output.NextStartDate",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set IsOrganicLastReq True",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Check OrganicAnalyticsRequestDates",
+											"dependencyConditions": [
+												"Failed"
+											]
+										},
+										{
+											"activity": "Ingest into TwitterOrganicTweetMetricsStage",
+											"dependencyConditions": [
+												"Failed"
+											]
+										},
+										{
+											"activity": "Get Organic Authorization Header",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "IsOrganicLastRequest",
+										"value": {
+											"value": "@bool(true)",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "7.00:00:00"
+						}
+					},
+					{
+						"name": "Set OrganicStartDate",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "OrganicStartDate",
+							"value": {
+								"value": "@pipeline().parameters.StartDate",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"OrganicTweetIdString": {
+						"type": "string",
+						"defaultValue": "1248317813162414080,1257728122658660354,1260473725662769152,1262366148609400834,1269637852830273536,1269683037278801923,1270344578831441921,1270346585562636288,1270365231299076096,1273652891098796036,1274750137013800960,1275395020296720385,1276181413906329601,1277185756436594688,1277198559172009987,1278704814830940161,1278705468878262278,1279767468106567680,1279784599011209217,1280086006314799105"
+					},
+					"ConsumerKey": {
+						"type": "string",
+						"defaultValue": "0bNbRmwfcwUylurWUlMLXVw6s"
+					},
+					"ConsumerKeySecret": {
+						"type": "string",
+						"defaultValue": "tTrmn64h8rvHSNfnqYzKk6TOdug8lUIT9m1lu4wLWh7cSKt7IS"
+					},
+					"AccessToken": {
+						"type": "string",
+						"defaultValue": "1247510171749883906-Mw7rz6qlwk38ZIAdnzD0RmUPQSqw78"
+					},
+					"AccessTokenSecret": {
+						"type": "string",
+						"defaultValue": "lxDxAxy1H6EhHniLrNyBxwEIwmZbGeOLXgaNXrUmsRDew"
+					},
+					"AccountId": {
+						"type": "string",
+						"defaultValue": "18ce554fqwc"
+					},
+					"StartDate": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"AnalyticsUrl": {
+						"type": "String",
+						"defaultValue": "https://ads-api.twitter.com/8/stats/accounts/AccountIdPlaceHolder"
+					},
+					"OrganicStartDate": {
+						"type": "String",
+						"defaultValue": "2020-01-01"
+					},
+					"IsOrganicLastRequest": {
+						"type": "Boolean"
+					},
+					"OrganicAnalyticsParams": {
+						"type": "String",
+						"defaultValue": "entity=ORGANIC_TWEET&entity_ids=OrganicTweetIdPlaceHolder&start_time=StartTimePlaceHolder&end_time=EndTimePlaceHolder&granularity=DAY&placement=ALL_ON_TWITTER&metric_groups=ENGAGEMENT"
+					}
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"lastPublishTime": "2020-11-11T05:10:45Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AccountDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Linkedin"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AccountStage",
+								"type": "DatasetReference"
+							},
+							"name": "AccountStage"
+						},
+						{
+							"dataset": {
+								"referenceName": "AccountStatus",
+								"type": "DatasetReference"
+							},
+							"name": "AccountStatus"
+						},
+						{
+							"dataset": {
+								"referenceName": "AccountType",
+								"type": "DatasetReference"
+							},
+							"name": "AccountType"
+						},
+						{
+							"dataset": {
+								"referenceName": "Currency",
+								"type": "DatasetReference"
+							},
+							"name": "Currency"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Account",
+								"type": "DatasetReference"
+							},
+							"name": "IngestIntoAccount"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinStatus"
+						},
+						{
+							"name": "JoinType"
+						},
+						{
+							"name": "JoinCurrency"
+						},
+						{
+							"name": "SelectAccountColumns"
+						},
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\tAccountId as integer,\n\t\tName as string,\n\t\tCurrency as string,\n\t\tStatus as string,\n\t\tCreated as long,\n\t\tModified as long,\n\t\tType as string,\n\t\tSourceId as short\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AccountStage\nsource(output(\n\t\tAccountStatusId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AccountStatus\nsource(output(\n\t\tAccountTypeId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AccountType\nsource(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nJoinType, AccountStatus join(Status == AccountStatus@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinStatus\nJoinCurrency, AccountType join(Type == AccountType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinType\nAccountStage, Currency join(Currency == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCurrency\nJoinStatus select(mapColumn(\n\t\tAccountId,\n\t\tName = AccountStage@Name,\n\t\tCreated,\n\t\tModified,\n\t\tSourceId,\n\t\tCurrencyId,\n\t\tAccountTypeId,\n\t\tAccountStatusId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectAccountColumns\nSelectAccountColumns derive(Modified = toTimestamp(Modified, 'yyyy-MM-dd HH:mm:ss'),\n\t\tCreated = toTimestamp(Created, 'yyyy-MM-dd HH:mm:ss'),\n\t\tSourceId = 1,\n\t\tCurrencyId = toInteger(CurrencyId),\n\t\tTypeId = toInteger(AccountTypeId),\n\t\tStatusId = toInteger(AccountStatusId)) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tAccountId as integer,\n\t\tSourceId as integer,\n\t\tDisplayName as string,\n\t\tName as string,\n\t\tCurrencyId as integer,\n\t\tCreated as timestamp,\n\t\tModified as timestamp,\n\t\tStatusId as integer,\n\t\tTypeId as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAccountId,\n\t\tSourceId,\n\t\tName,\n\t\tCurrencyId,\n\t\tCreated,\n\t\tModified,\n\t\tStatusId,\n\t\tTypeId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> IngestIntoAccount"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdvertismentDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Linkedin"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AdvertismentStage",
+								"type": "DatasetReference"
+							},
+							"name": "AdvertismentStage"
+						},
+						{
+							"dataset": {
+								"referenceName": "AdvertismentType",
+								"type": "DatasetReference"
+							},
+							"name": "AdvertismentType"
+						},
+						{
+							"dataset": {
+								"referenceName": "AdvertismentStatus",
+								"type": "DatasetReference"
+							},
+							"name": "AdvertismentStatus"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Advertisment",
+								"type": "DatasetReference"
+							},
+							"name": "Advertisment"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinType"
+						},
+						{
+							"name": "JoinStatus"
+						},
+						{
+							"name": "SelectAdvertismentColumns"
+						},
+						{
+							"name": "PrepareAdvertismentCoumns"
+						}
+					],
+					"script": "source(output(\n\t\tAdvertismentId as integer,\n\t\tName as string,\n\t\tStatus as string,\n\t\tAdvertismentGroup as string,\n\t\tHeadline as string,\n\t\tIntroductionText as string,\n\t\tUrl as string,\n\t\tLine as string,\n\t\tSponsoredUpdateType as string,\n\t\tCampaignId as string,\n\t\tType as string,\n\t\tCreated as long,\n\t\tModified as long,\n\t\tDSCName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AdvertismentStage\nsource(output(\n\t\tAdvertismentTypeId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AdvertismentType\nsource(output(\n\t\tAdvertismentStatusId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AdvertismentStatus\nJoinStatus, AdvertismentType join(Type == AdvertismentType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinType\nAdvertismentStage, AdvertismentStatus join(Status == AdvertismentStatus@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinStatus\nJoinType select(mapColumn(\n\t\tAdvertismentId,\n\t\tName = AdvertismentStage@Name,\n\t\tAdvertismentGroup,\n\t\tHeadline,\n\t\tIntroductionText,\n\t\tUrl,\n\t\tLine,\n\t\tSponsoredUpdateType,\n\t\tCampaignId,\n\t\tCreated,\n\t\tModified,\n\t\tDSCName,\n\t\tAdvertismentStatusId,\n\t\tAdvertismentTypeId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectAdvertismentColumns\nSelectAdvertismentColumns derive(Created = toTimestamp(Created, 'yyyy-MM-dd HH:mm:ss'),\n\t\tModified = toTimestamp(Modified, 'yyyy-MM-dd HH:mm:ss'),\n\t\tCampaignId = replace(CampaignId, 'urn:li:sponsoredCampaign:', '')) ~> PrepareAdvertismentCoumns\nPrepareAdvertismentCoumns sink(input(\n\t\tAdvertismentId as integer,\n\t\tName as string,\n\t\tAdvertismentGroupId as integer,\n\t\tStatusId as integer,\n\t\tHeadline as string,\n\t\tIntroductionText as string,\n\t\tUrl as string,\n\t\tLine as string,\n\t\tSponsoredUpdateType as string,\n\t\tDSCName as string,\n\t\tCampaignId as integer,\n\t\tTypeId as integer,\n\t\tCreated as timestamp,\n\t\tModified as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAdvertismentId,\n\t\tName,\n\t\tAdvertismentGroupId = AdvertismentGroup,\n\t\tStatusId = AdvertismentStatusId,\n\t\tHeadline,\n\t\tIntroductionText,\n\t\tUrl,\n\t\tLine,\n\t\tSponsoredUpdateType,\n\t\tDSCName,\n\t\tCampaignId,\n\t\tTypeId = AdvertismentTypeId,\n\t\tCreated,\n\t\tModified\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Advertisment"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdvertismentDetailLinkedinDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Linkedin"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AdvertismentDetailLinkedinStage",
+								"type": "DatasetReference"
+							},
+							"name": "AdvertismentDetailLinkedinStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AdvertismentDetailLinkedin",
+								"type": "DatasetReference"
+							},
+							"name": "AdvertismentDetailLinkedin"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\tAdvertismentId as string,\n\t\tAdvertismentDateDay as integer,\n\t\tAdvertismentDateMonth as integer,\n\t\tAdvertismentDateYear as integer,\n\t\tAdvertismentEndDay as integer,\n\t\tAdvertismentEndMonth as integer,\n\t\tAdvertismentEndYear as integer,\n\t\tTotalSpent as integer,\n\t\tactionClicks as integer,\n\t\tadUnitClicks as integer,\n\t\tapproximateUniqueImpressions as integer,\n\t\tcardClicks as integer,\n\t\tcardImpressions as integer,\n\t\tclicks as integer,\n\t\tcommentLikes as integer,\n\t\tcomments as integer,\n\t\tcompanyPageClicks as integer,\n\t\tconversionValueInLocalCurrency as integer,\n\t\tcostInLocalCurrency as string,\n\t\tcostInUsd as string,\n\t\texternalWebsiteConversions as integer,\n\t\texternalWebsitePostClickConversions as integer,\n\t\texternalWebsitePostViewConversions as integer,\n\t\tfollows as integer,\n\t\tfullScreenPlays as integer,\n\t\timpressions as integer,\n\t\tlandingPageClicks as integer,\n\t\tleadGenerationMailContactInfoShares as integer,\n\t\tleadGenerationMailInterestedClicks as integer,\n\t\tlikes as integer,\n\t\toneClickLeadFormOpens as integer,\n\t\toneClickLeads as integer,\n\t\topens as integer,\n\t\totherEngagements as integer,\n\t\treturnOnAreactionsdSpend as integer,\n\t\tsends as integer,\n\t\tshares as integer,\n\t\ttextUrlClicks as integer,\n\t\ttotalEngagements as integer,\n\t\tvideoCompletions as integer,\n\t\tvideoFirstQuartileCompletions as integer,\n\t\tvideoMidpointCompletions as integer,\n\t\tvideoStarts as integer,\n\t\tvideoThirdQuartileCompletions as integer,\n\t\tvideoViews as integer,\n\t\tviralCardClicks as integer,\n\t\tviralCardImpressions as integer,\n\t\tviralClicks as integer,\n\t\tviralCommentLikes as integer,\n\t\tviralComments as integer,\n\t\tviralCompanyPageClicks as integer,\n\t\tviralExternalWebsiteConversions as integer,\n\t\tviralExternalWebsitePostClickConversions as integer,\n\t\tviralExternalWebsitePostViewConversions as integer,\n\t\tviralFollows as integer,\n\t\tviralFullScreenPlays as integer,\n\t\tviralImpressions as integer,\n\t\tviralLandingPageClicks as integer,\n\t\tviralLikes as integer,\n\t\tviralOneClickLeadFormOpens as integer,\n\t\tviralOneClickLeads as integer,\n\t\tviralOtherEngagements as integer,\n\t\tviralReactions as integer,\n\t\tviralShares as integer,\n\t\tviralTotalEngagements as integer,\n\t\tviralVideoCompletions as integer,\n\t\tviralVideoFirstQuartileCompletions as integer,\n\t\tviralVideoMidpointCompletions as integer,\n\t\tviralVideoStarts as integer,\n\t\tviralVideoThirdQuartileCompletions as integer,\n\t\tviralVideoViews as integer,\n\t\treactions as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AdvertismentDetailLinkedinStage\nAdvertismentDetailLinkedinStage derive(AdvertismentId = replace(replace(AdvertismentId, '[\"urn:li:sponsoredCreative:',''),'\"]',''),\n\t\tAdvertismentStartDate = toDate(toString(AdvertismentDateYear) + '-' + toString(AdvertismentDateMonth) +  '-'+ toString(AdvertismentDateDay) , 'yyyy-MM-dd'),\n\t\tAdvertismentEndDate = toDate(toString(AdvertismentEndYear) + '-' + toString(AdvertismentEndMonth) +  '-'+ toString(AdvertismentEndDay) , 'yyyy-MM-dd')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tAdvertismentId as integer,\n\t\tAdvertismentStartDate as timestamp,\n\t\tAdvertismentEndDate as timestamp,\n\t\tTotalSpent as integer,\n\t\tActionClicks as integer,\n\t\tAdUnitClicks as integer,\n\t\tApproximateUniqueImpressions as integer,\n\t\tCardClicks as integer,\n\t\tCardImpressions as integer,\n\t\tClicks as integer,\n\t\tCommentLikes as integer,\n\t\tComments as integer,\n\t\tCompanyPageClicks as integer,\n\t\tConversionValueInLocalCurrency as integer,\n\t\tCostInLocalCurrency as double,\n\t\tCostInUsd as double,\n\t\tExternalWebsiteConversions as integer,\n\t\tExternalWebsitePostClickConversions as integer,\n\t\tExternalWebsitePostViewConversions as integer,\n\t\tFollows as integer,\n\t\tFullScreenPlays as integer,\n\t\tImpressions as integer,\n\t\tLandingPageClicks as integer,\n\t\tLeadGenerationMailContactInfoShares as integer,\n\t\tLeadGenerationMailInterestedClicks as integer,\n\t\tLikes as integer,\n\t\tOneClickLeadFormOpens as integer,\n\t\tOneClickLeads as integer,\n\t\tOpens as integer,\n\t\tOtherEngagements as integer,\n\t\tReturnOnAreactionsdSpend as integer,\n\t\tSends as integer,\n\t\tShares as integer,\n\t\tTextUrlClicks as integer,\n\t\tTotalEngagements as integer,\n\t\tVideoCompletions as integer,\n\t\tVideoFirstQuartileCompletions as integer,\n\t\tVideoMidpointCompletions as integer,\n\t\tVideoStarts as integer,\n\t\tVideoThirdQuartileCompletions as integer,\n\t\tVideoViews as integer,\n\t\tViralCardClicks as integer,\n\t\tViralCardImpressions as integer,\n\t\tViralClicks as integer,\n\t\tViralCommentLikes as integer,\n\t\tViralComments as integer,\n\t\tViralCompanyPageClicks as integer,\n\t\tViralExternalWebsiteConversions as integer,\n\t\tViralExternalWebsitePostClickConversions as integer,\n\t\tViralExternalWebsitePostViewConversions as integer,\n\t\tViralFollows as integer,\n\t\tViralFullScreenPlays as integer,\n\t\tViralImpressions as integer,\n\t\tViralLandingPageClicks as integer,\n\t\tViralLikes as integer,\n\t\tViralOneClickLeadFormOpens as integer,\n\t\tViralOneClickLeads as integer,\n\t\tViralOtherEngagements as integer,\n\t\tViralReactions as integer,\n\t\tViralShares as integer,\n\t\tViralTotalEngagements as integer,\n\t\tViralVideoCompletions as integer,\n\t\tViralVideoFirstQuartileCompletions as integer,\n\t\tViralVideoMidpointCompletions as integer,\n\t\tViralVideoStarts as integer,\n\t\tViralVideoThirdQuartileCompletions as integer,\n\t\tViralVideoViews as integer,\n\t\tReactions as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAdvertismentId,\n\t\tAdvertismentStartDate,\n\t\tAdvertismentEndDate,\n\t\tTotalSpent,\n\t\tActionClicks = actionClicks,\n\t\tAdUnitClicks = adUnitClicks,\n\t\tApproximateUniqueImpressions = approximateUniqueImpressions,\n\t\tCardClicks = cardClicks,\n\t\tCardImpressions = cardImpressions,\n\t\tClicks = clicks,\n\t\tCommentLikes = commentLikes,\n\t\tComments = comments,\n\t\tCompanyPageClicks = companyPageClicks,\n\t\tConversionValueInLocalCurrency = conversionValueInLocalCurrency,\n\t\tCostInLocalCurrency = costInLocalCurrency,\n\t\tCostInUsd = costInUsd,\n\t\tExternalWebsiteConversions = externalWebsiteConversions,\n\t\tExternalWebsitePostClickConversions = externalWebsitePostClickConversions,\n\t\tExternalWebsitePostViewConversions = externalWebsitePostViewConversions,\n\t\tFollows = follows,\n\t\tFullScreenPlays = fullScreenPlays,\n\t\tImpressions = impressions,\n\t\tLandingPageClicks = landingPageClicks,\n\t\tLeadGenerationMailContactInfoShares = leadGenerationMailContactInfoShares,\n\t\tLeadGenerationMailInterestedClicks = leadGenerationMailInterestedClicks,\n\t\tLikes = likes,\n\t\tOneClickLeadFormOpens = oneClickLeadFormOpens,\n\t\tOneClickLeads = oneClickLeads,\n\t\tOpens = opens,\n\t\tOtherEngagements = otherEngagements,\n\t\tReturnOnAreactionsdSpend = returnOnAreactionsdSpend,\n\t\tSends = sends,\n\t\tShares = shares,\n\t\tTextUrlClicks = textUrlClicks,\n\t\tTotalEngagements = totalEngagements,\n\t\tVideoCompletions = videoCompletions,\n\t\tVideoFirstQuartileCompletions = videoFirstQuartileCompletions,\n\t\tVideoMidpointCompletions = videoMidpointCompletions,\n\t\tVideoStarts = videoStarts,\n\t\tVideoThirdQuartileCompletions = videoThirdQuartileCompletions,\n\t\tVideoViews = videoViews,\n\t\tViralCardClicks = viralCardClicks,\n\t\tViralCardImpressions = viralCardImpressions,\n\t\tViralClicks = viralClicks,\n\t\tViralCommentLikes = viralCommentLikes,\n\t\tViralComments = viralComments,\n\t\tViralCompanyPageClicks = viralCompanyPageClicks,\n\t\tViralExternalWebsiteConversions = viralExternalWebsiteConversions,\n\t\tViralExternalWebsitePostClickConversions = viralExternalWebsitePostClickConversions,\n\t\tViralExternalWebsitePostViewConversions = viralExternalWebsitePostViewConversions,\n\t\tViralFollows = viralFollows,\n\t\tViralFullScreenPlays = viralFullScreenPlays,\n\t\tViralImpressions = viralImpressions,\n\t\tViralLandingPageClicks = viralLandingPageClicks,\n\t\tViralLikes = viralLikes,\n\t\tViralOneClickLeadFormOpens = viralOneClickLeadFormOpens,\n\t\tViralOneClickLeads = viralOneClickLeads,\n\t\tViralOtherEngagements = viralOtherEngagements,\n\t\tViralReactions = viralReactions,\n\t\tViralShares = viralShares,\n\t\tViralTotalEngagements = viralTotalEngagements,\n\t\tViralVideoCompletions = viralVideoCompletions,\n\t\tViralVideoFirstQuartileCompletions = viralVideoFirstQuartileCompletions,\n\t\tViralVideoMidpointCompletions = viralVideoMidpointCompletions,\n\t\tViralVideoStarts = viralVideoStarts,\n\t\tViralVideoThirdQuartileCompletions = viralVideoThirdQuartileCompletions,\n\t\tViralVideoViews = viralVideoViews,\n\t\tReactions = reactions\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> AdvertismentDetailLinkedin"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BudgetServicesDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "BudgetServicesStage",
+								"type": "DatasetReference"
+							},
+							"name": "BudgetServicesStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "BudgetServices",
+								"type": "DatasetReference"
+							},
+							"name": "BudgetServices"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\tSerialNumber as long,\n\t\tAccountingCurrencyAmount as decimal(18,0),\n\t\tClients as string,\n\t\tDepartment as integer,\n\t\tCurrencyCode as string,\n\t\tEmployee as string,\n\t\tMainAccountId as integer,\n\t\tCustomer as string,\n\t\tTransactionCurrencyCode as string,\n\t\tTransDate as string,\n\t\tClassDim as string,\n\t\tProject as string,\n\t\tText as string,\n\t\tReportingCurrencyAmount as decimal(18,0),\n\t\tSPV as string,\n\t\tTransactionCurrencyAmount as decimal(18,0),\n\t\tVendor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> BudgetServicesStage\nBudgetServicesStage derive(TransDate = toTimestamp(replace(TransDate,' +00:00',''), 'MM/dd/yyyy HH:mm:ss')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tSerialNumber as long,\n\t\tAccountingCurrencyAmount as decimal(18,0),\n\t\tClients as string,\n\t\tDepartmentId as integer,\n\t\tCurrencyCode as string,\n\t\tEmployee as string,\n\t\tMainAccountId as integer,\n\t\tCustomer as string,\n\t\tTransactionCurrencyCode as string,\n\t\tTransactionDate as timestamp,\n\t\tClassDim as string,\n\t\tProjectId as integer,\n\t\tText as string,\n\t\tReportingCurrencyAmount as decimal(18,0),\n\t\tSPV as string,\n\t\tTransactionCurrencyAmount as decimal(18,0),\n\t\tVendor as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tSerialNumber,\n\t\tAccountingCurrencyAmount,\n\t\tClients,\n\t\tDepartmentId = Department,\n\t\tCurrencyCode,\n\t\tEmployee,\n\t\tMainAccountId,\n\t\tCustomer,\n\t\tTransactionCurrencyCode,\n\t\tTransactionDate = TransDate,\n\t\tClassDim,\n\t\tProjectId = Project,\n\t\tText,\n\t\tReportingCurrencyAmount,\n\t\tSPV,\n\t\tTransactionCurrencyAmount,\n\t\tVendor\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> BudgetServices"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CampaignDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Linkedin"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CampaignStage",
+								"type": "DatasetReference"
+							},
+							"name": "CampaignStage"
+						},
+						{
+							"dataset": {
+								"referenceName": "CampaignType",
+								"type": "DatasetReference"
+							},
+							"name": "CampaignType"
+						},
+						{
+							"dataset": {
+								"referenceName": "CampaignStatus",
+								"type": "DatasetReference"
+							},
+							"name": "CampaignStatus"
+						},
+						{
+							"dataset": {
+								"referenceName": "Objective",
+								"type": "DatasetReference"
+							},
+							"name": "Objective"
+						},
+						{
+							"dataset": {
+								"referenceName": "CostType",
+								"type": "DatasetReference"
+							},
+							"name": "CostType"
+						},
+						{
+							"dataset": {
+								"referenceName": "Currency",
+								"type": "DatasetReference"
+							},
+							"name": "Currency"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Campaign",
+								"type": "DatasetReference"
+							},
+							"name": "Campaign"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinType"
+						},
+						{
+							"name": "JoinStatus"
+						},
+						{
+							"name": "JoinObjective"
+						},
+						{
+							"name": "JoinCostType"
+						},
+						{
+							"name": "JoinUnitCurrency"
+						},
+						{
+							"name": "SelectCampaignColumns"
+						},
+						{
+							"name": "JoinDailyCurrency"
+						},
+						{
+							"name": "SelectAllCampaignColumns"
+						},
+						{
+							"name": "PrepareCampaignColumns"
+						}
+					],
+					"script": "source(output(\n\t\tCampaignId as integer,\n\t\tName as string,\n\t\tDisplayName as string,\n\t\tCampaignGroup as string,\n\t\tType as string,\n\t\tStatus as string,\n\t\tCostType as string,\n\t\tObjective as string,\n\t\tAccount as string,\n\t\tCreated as long,\n\t\tModified as long,\n\t\tUnitCurrencyCode as string,\n\t\tUnitAmount as string,\n\t\tDailyCurrencyCode as string,\n\t\tDailyAmount as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignStage\nsource(output(\n\t\tCampaignTypeId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignType\nsource(output(\n\t\tCampaignStatusID as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignStatus\nsource(output(\n\t\tObjectiveId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Objective\nsource(output(\n\t\tCostTypeId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CostType\nsource(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nJoinStatus, CampaignType join(Type == CampaignType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinType\nJoinObjective, CampaignStatus join(Status == CampaignStatus@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinStatus\nJoinCostType, Objective join(Objective == Objective@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinObjective\nJoinUnitCurrency, CostType join(CostType == CostType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCostType\nCampaignStage, Currency join(UnitCurrencyCode == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinUnitCurrency\nJoinType select(mapColumn(\n\t\tCampaignId,\n\t\tName = CampaignStage@Name,\n\t\tDisplayName = CampaignStage@DisplayName,\n\t\tCampaignGroup,\n\t\tAccount,\n\t\tCreated,\n\t\tModified,\n\t\tUnitCurrencyCode,\n\t\tUnitAmount,\n\t\tDailyCurrencyCode,\n\t\tDailyAmount,\n\t\tUnitCurrencyId = CurrencyId,\n\t\tCostTypeId,\n\t\tObjectiveId,\n\t\tCampaignStatusID,\n\t\tCampaignTypeId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCampaignColumns\nSelectCampaignColumns, Currency join(DailyCurrencyCode == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinDailyCurrency\nJoinDailyCurrency select(mapColumn(\n\t\tCampaignId,\n\t\tName = SelectCampaignColumns@Name,\n\t\tDisplayName = SelectCampaignColumns@DisplayName,\n\t\tCampaignGroup,\n\t\tAccount,\n\t\tCreated,\n\t\tModified,\n\t\tUnitAmount,\n\t\tDailyAmount,\n\t\tUnitCurrencyId,\n\t\tCostTypeId,\n\t\tObjectiveId,\n\t\tCampaignStatusId = CampaignStatusID,\n\t\tCampaignTypeId,\n\t\tDailyCurrencyId = CurrencyId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectAllCampaignColumns\nSelectAllCampaignColumns derive(CampaignGroupId = replace(CampaignGroup,'urn:li:sponsoredCampaignGroup:',''),\n\t\tAccountId = replace(Account, 'urn:li:sponsoredAccount:', ''),\n\t\tCreated = toTimestamp(Created, 'yyyy-MM-dd HH:mm:ss'),\n\t\tModified = toTimestamp(Modified, 'yyyy-MM-dd HH:mm:ss')) ~> PrepareCampaignColumns\nPrepareCampaignColumns sink(input(\n\t\tCampaignId as integer,\n\t\tName as string,\n\t\tDisplayName as string,\n\t\tCampaignGroupId as integer,\n\t\tTypeId as integer,\n\t\tAccountId as integer,\n\t\tStatusId as integer,\n\t\tCostTypeId as integer,\n\t\tObjectiveId as integer,\n\t\tCreated as timestamp,\n\t\tModified as timestamp,\n\t\tUnitCurrencyId as integer,\n\t\tUnitAmount as double,\n\t\tDailyCurrencyId as integer,\n\t\tDailyAmount as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tCampaignId,\n\t\tName,\n\t\tDisplayName,\n\t\tCampaignGroupId,\n\t\tTypeId = CampaignTypeId,\n\t\tAccountId,\n\t\tStatusId = CampaignStatusId,\n\t\tCostTypeId,\n\t\tObjectiveId,\n\t\tCreated,\n\t\tModified,\n\t\tUnitCurrencyId,\n\t\tUnitAmount,\n\t\tDailyCurrencyId,\n\t\tDailyAmount\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Campaign"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CampaignDetailLinkedinDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Linkedin"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CampaignDetailLinkedinStage",
+								"type": "DatasetReference"
+							},
+							"name": "CampaignDetailLinkedinStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CampaignDetailLinkedin",
+								"type": "DatasetReference"
+							},
+							"name": "CampaignDetailLinkedin"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\tCampaignId as string,\n\t\tCampaignDateDay as integer,\n\t\tCampaignDateMonth as integer,\n\t\tCampaignDateYear as integer,\n\t\tCampaignEndDay as integer,\n\t\tCampaignEndMonth as integer,\n\t\tCampaignEndYear as integer,\n\t\tTotalSpent as integer,\n\t\tactionClicks as integer,\n\t\tadUnitClicks as integer,\n\t\tapproximateUniqueImpressions as integer,\n\t\tcardClicks as integer,\n\t\tcardImpressions as integer,\n\t\tclicks as integer,\n\t\tcommentLikes as integer,\n\t\tcomments as integer,\n\t\tcompanyPageClicks as integer,\n\t\tconversionValueInLocalCurrency as integer,\n\t\tcostInLocalCurrency as string,\n\t\tcostInUsd as string,\n\t\texternalWebsiteConversions as integer,\n\t\texternalWebsitePostClickConversions as integer,\n\t\texternalWebsitePostViewConversions as integer,\n\t\tfollows as integer,\n\t\tfullScreenPlays as integer,\n\t\timpressions as integer,\n\t\tlandingPageClicks as integer,\n\t\tleadGenerationMailContactInfoShares as integer,\n\t\tleadGenerationMailInterestedClicks as integer,\n\t\tlikes as integer,\n\t\toneClickLeadFormOpens as integer,\n\t\toneClickLeads as integer,\n\t\topens as integer,\n\t\totherEngagements as integer,\n\t\treturnOnAreactionsdSpend as integer,\n\t\tsends as integer,\n\t\tshares as integer,\n\t\ttextUrlClicks as integer,\n\t\ttotalEngagements as integer,\n\t\tvideoCompletions as integer,\n\t\tvideoFirstQuartileCompletions as integer,\n\t\tvideoMidpointCompletions as integer,\n\t\tvideoStarts as integer,\n\t\tvideoThirdQuartileCompletions as integer,\n\t\tvideoViews as integer,\n\t\tviralCardClicks as integer,\n\t\tviralCardImpressions as integer,\n\t\tviralClicks as integer,\n\t\tviralCommentLikes as integer,\n\t\tviralComments as integer,\n\t\tviralCompanyPageClicks as integer,\n\t\tviralExternalWebsiteConversions as integer,\n\t\tviralExternalWebsitePostClickConversions as integer,\n\t\tviralExternalWebsitePostViewConversions as integer,\n\t\tviralFollows as integer,\n\t\tviralFullScreenPlays as integer,\n\t\tviralImpressions as integer,\n\t\tviralLandingPageClicks as integer,\n\t\tviralLikes as integer,\n\t\tviralOneClickLeadFormOpens as integer,\n\t\tviralOneClickLeads as integer,\n\t\tviralOtherEngagements as integer,\n\t\tviralReactions as integer,\n\t\tviralShares as integer,\n\t\tviralTotalEngagements as integer,\n\t\tviralVideoCompletions as integer,\n\t\tviralVideoFirstQuartileCompletions as integer,\n\t\tviralVideoMidpointCompletions as integer,\n\t\tviralVideoStarts as integer,\n\t\tviralVideoThirdQuartileCompletions as integer,\n\t\tviralVideoViews as integer,\n\t\treactions as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignDetailLinkedinStage\nCampaignDetailLinkedinStage derive(CampaignId = replace(replace(CampaignId, '[\"urn:li:sponsoredCampaign:',''),'\"]',''),\n\t\tCampaignStartDate = toDate(toString(CampaignDateYear) + '-' + toString(CampaignDateMonth) +  '-'+ toString(CampaignDateDay) , 'yyyy-MM-dd'),\n\t\tCampaignEndDate = toDate(toString(CampaignEndYear) + '-' + toString(CampaignEndMonth) +  '-'+ toString(CampaignEndDay) , 'yyyy-MM-dd')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tCampaignId as integer,\n\t\tCampaignStartDate as timestamp,\n\t\tCampaignEndDate as timestamp,\n\t\tTotalSpent as integer,\n\t\tactionClicks as integer,\n\t\tadUnitClicks as integer,\n\t\tapproximateUniqueImpressions as integer,\n\t\tcardClicks as integer,\n\t\tcardImpressions as integer,\n\t\tclicks as integer,\n\t\tcommentLikes as integer,\n\t\tcomments as integer,\n\t\tcompanyPageClicks as integer,\n\t\tconversionValueInLocalCurrency as integer,\n\t\tcostInLocalCurrency as string,\n\t\tcostInUsd as string,\n\t\texternalWebsiteConversions as integer,\n\t\texternalWebsitePostClickConversions as integer,\n\t\texternalWebsitePostViewConversions as integer,\n\t\tfollows as integer,\n\t\tfullScreenPlays as integer,\n\t\timpressions as integer,\n\t\tlandingPageClicks as integer,\n\t\tleadGenerationMailContactInfoShares as integer,\n\t\tleadGenerationMailInterestedClicks as integer,\n\t\tlikes as integer,\n\t\toneClickLeadFormOpens as integer,\n\t\toneClickLeads as integer,\n\t\topens as integer,\n\t\totherEngagements as integer,\n\t\treturnOnAreactionsdSpend as integer,\n\t\tsends as integer,\n\t\tshares as integer,\n\t\ttextUrlClicks as integer,\n\t\ttotalEngagements as integer,\n\t\tvideoCompletions as integer,\n\t\tvideoFirstQuartileCompletions as integer,\n\t\tvideoMidpointCompletions as integer,\n\t\tvideoStarts as integer,\n\t\tvideoThirdQuartileCompletions as integer,\n\t\tvideoViews as integer,\n\t\tviralCardClicks as integer,\n\t\tviralCardImpressions as integer,\n\t\tviralClicks as integer,\n\t\tviralCommentLikes as integer,\n\t\tviralComments as integer,\n\t\tviralCompanyPageClicks as integer,\n\t\tviralExternalWebsiteConversions as integer,\n\t\tviralExternalWebsitePostClickConversions as integer,\n\t\tviralExternalWebsitePostViewConversions as integer,\n\t\tviralFollows as integer,\n\t\tviralFullScreenPlays as integer,\n\t\tviralImpressions as integer,\n\t\tviralLandingPageClicks as integer,\n\t\tviralLikes as integer,\n\t\tviralOneClickLeadFormOpens as integer,\n\t\tviralOneClickLeads as integer,\n\t\tviralOtherEngagements as integer,\n\t\tviralReactions as integer,\n\t\tviralShares as integer,\n\t\tviralTotalEngagements as integer,\n\t\tviralVideoCompletions as integer,\n\t\tviralVideoFirstQuartileCompletions as integer,\n\t\tviralVideoMidpointCompletions as integer,\n\t\tviralVideoStarts as integer,\n\t\tviralVideoThirdQuartileCompletions as integer,\n\t\tviralVideoViews as integer,\n\t\treactions as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tCampaignId,\n\t\tCampaignStartDate,\n\t\tCampaignEndDate,\n\t\tTotalSpent,\n\t\tactionClicks,\n\t\tadUnitClicks,\n\t\tapproximateUniqueImpressions,\n\t\tcardClicks,\n\t\tcardImpressions,\n\t\tclicks,\n\t\tcommentLikes,\n\t\tcomments,\n\t\tcompanyPageClicks,\n\t\tconversionValueInLocalCurrency,\n\t\tcostInLocalCurrency,\n\t\tcostInUsd,\n\t\texternalWebsiteConversions,\n\t\texternalWebsitePostClickConversions,\n\t\texternalWebsitePostViewConversions,\n\t\tfollows,\n\t\tfullScreenPlays,\n\t\timpressions,\n\t\tlandingPageClicks,\n\t\tleadGenerationMailContactInfoShares,\n\t\tleadGenerationMailInterestedClicks,\n\t\tlikes,\n\t\toneClickLeadFormOpens,\n\t\toneClickLeads,\n\t\topens,\n\t\totherEngagements,\n\t\treturnOnAreactionsdSpend,\n\t\tsends,\n\t\tshares,\n\t\ttextUrlClicks,\n\t\ttotalEngagements,\n\t\tvideoCompletions,\n\t\tvideoFirstQuartileCompletions,\n\t\tvideoMidpointCompletions,\n\t\tvideoStarts,\n\t\tvideoThirdQuartileCompletions,\n\t\tvideoViews,\n\t\tviralCardClicks,\n\t\tviralCardImpressions,\n\t\tviralClicks,\n\t\tviralCommentLikes,\n\t\tviralComments,\n\t\tviralCompanyPageClicks,\n\t\tviralExternalWebsiteConversions,\n\t\tviralExternalWebsitePostClickConversions,\n\t\tviralExternalWebsitePostViewConversions,\n\t\tviralFollows,\n\t\tviralFullScreenPlays,\n\t\tviralImpressions,\n\t\tviralLandingPageClicks,\n\t\tviralLikes,\n\t\tviralOneClickLeadFormOpens,\n\t\tviralOneClickLeads,\n\t\tviralOtherEngagements,\n\t\tviralReactions,\n\t\tviralShares,\n\t\tviralTotalEngagements,\n\t\tviralVideoCompletions,\n\t\tviralVideoFirstQuartileCompletions,\n\t\tviralVideoMidpointCompletions,\n\t\tviralVideoStarts,\n\t\tviralVideoThirdQuartileCompletions,\n\t\tviralVideoViews,\n\t\treactions\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> CampaignDetailLinkedin"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CampaignGroupDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Linkedin"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CampaignGroupStage",
+								"type": "DatasetReference"
+							},
+							"name": "CampaignGroupStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CampaignGroup",
+								"type": "DatasetReference"
+							},
+							"name": "CampaignGroup"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\tCampaignGroupId as integer,\n\t\tName as string,\n\t\tDisplayName as string,\n\t\tAccountId as string,\n\t\tCreated as long,\n\t\tModified as long,\n\t\tStatus as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignGroupStage\nCampaignGroupStage derive(Created = toTimestamp(Created, 'yyyy-MM-dd HH:mm:ss'),\n\t\tModified = toTimestamp(Modified, 'yyyy-MM-dd HH:mm:ss'),\n\t\tAccountId = replace(AccountId, 'urn:li:sponsoredAccount:', '')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tCampaignGroupId as integer,\n\t\tName as string,\n\t\tDisplayName as string,\n\t\tAccountId as integer,\n\t\tCreated as timestamp,\n\t\tModified as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> CampaignGroup"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ContactsDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Hubspot"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "HubspotContactStage",
+								"type": "DatasetReference"
+							},
+							"name": "HubspotContactStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "HubspotContact",
+								"type": "DatasetReference"
+							},
+							"name": "HubspotContact"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\ths_object_id as string,\n\t\tchannel as string,\n\t\tacquistion_date_from_import as string,\n\t\trecent_deal_close_date as string,\n\t\ths_lifecyclestage_marketingqualifiedlead_date as string,\n\t\tclosedate as string,\n\t\tnum_associated_deals as string,\n\t\trecent_deal_amount as string,\n\t\tnum_contacted_notes as string,\n\t\tnum_notes as string,\n\t\tdate_of_birth as string,\n\t\ths_analytics_source as string,\n\t\tlead_is_probably_relevant_for_dfo as string,\n\t\tdetailed_source as string,\n\t\ths_lifecyclestage_salesqualifiedlead_date as string,\n\t\tassigned_rm as string,\n\t\tassigned_to as string,\n\t\tmeeting_booked as string,\n\t\twork_email as string,\n\t\tquestions_embed_url_utm_medium as string,\n\t\tactive_sal_or_not as string,\n\t\ths_lifecyclestage_opportunity_date as string,\n\t\ths_analytics_source_data_1 as string,\n\t\tbrighttalk_webcast_title as string,\n\t\ths_analytics_source_data_2 as string,\n\t\tlifecyclestage as string,\n\t\tquestions_embed_url_utm_source as string,\n\t\tis_this_lead_already_found_in_an_internal_database as string,\n\t\tcountry as string,\n\t\ths_persona as string,\n\t\ths_lifecyclestage_customer_date as string,\n\t\tsource_of_sign_up as string,\n\t\twebcast_activity as string,\n\t\tdays_to_close as string,\n\t\tage_range as string,\n\t\tip_country as string,\n\t\tage as string,\n\t\tupdated as string,\n\t\tcreated as string,\n\t\thasMore as string,\n\t\tVidOffset as string,\n\t\tInsertedDate as timestamp,\n\t\tcontact_type as string,\n\t\ths_analytics_first_url as string,\n\t\tgender as string,\n\t\ton24utm as string,\n\t\tfirstname as string,\n\t\tlastname as string,\n\t\tmobilephone as string,\n\t\tphone as string,\n\t\tfax as string,\n\t\taddress_line_1 as string,\n\t\taddress_line_2 as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\thubspot_owner_id as string,\n\t\tlifecycle_stage_status as string,\n\t\t{time-offset} as long,\n\t\trecent_conversion_event_name as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> HubspotContactStage\nHubspotContactStage derive(acquistion_date_from_import = toTimestamp(toLong(acquistion_date_from_import),'yyyy-MM-dd HH:mm:ss'),\n\t\ths_lifecyclestage_marketingqualifiedlead_date = toTimestamp(toLong(hs_lifecyclestage_marketingqualifiedlead_date),'yyyy-MM-dd HH:mm:ss'),\n\t\ths_lifecyclestage_salesqualifiedlead_date = toTimestamp(toLong(hs_lifecyclestage_salesqualifiedlead_date),'yyyy-MM-dd HH:mm:ss'),\n\t\ths_lifecyclestage_opportunity_date = toTimestamp(toLong(hs_lifecyclestage_opportunity_date),'yyyy-MM-dd HH:mm:ss'),\n\t\ths_lifecyclestage_customer_date = toTimestamp(toLong(hs_lifecyclestage_customer_date),'yyyy-MM-dd HH:mm:ss'),\n\t\tcreated = toTimestamp(toLong(created),'yyyy-MM-dd HH:mm:ss'),\n\t\tupdated = toTimestamp(toLong(updated),'yyyy-MM-dd HH:mm:ss'),\n\t\tclosedate = toTimestamp(toLong(closedate),'yyyy-MM-dd HH:mm:ss'),\n\t\trecent_deal_close_date = toTimestamp(toLong(recent_deal_close_date),'yyyy-MM-dd HH:mm:ss')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tContactId as integer,\n\t\tFirstName as string,\n\t\tLastName as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tState as string,\n\t\tCountry as string,\n\t\tMobilePhone as string,\n\t\tPhone as string,\n\t\tFax as string,\n\t\tDateOfBirth as string,\n\t\tContactType as string,\n\t\tAge as string,\n\t\tAgeRange as string,\n\t\tGender as string,\n\t\tChannel as string,\n\t\tHubspotOwnerId as long,\n\t\tAcquistionDateFromImport as timestamp,\n\t\tRecentDealCloseDate as timestamp,\n\t\tBecameMarketingQualifiedLeadDate as timestamp,\n\t\tCloseDate as timestamp,\n\t\tAssociatedDeals as integer,\n\t\tRecentDealAmount as decimal(18,0),\n\t\tNumberOfTimesContacted as string,\n\t\tNumberOfSalesActivities as string,\n\t\tOriginalSource as string,\n\t\tLeadsProbablyRelevantForDFOAndARMShouldTalkToHimFirstAssessmentOfLeadStatus as string,\n\t\tDetailedSource as string,\n\t\tBecameASalesQualifiedLeadDate as timestamp,\n\t\tAssignedRm as string,\n\t\tAssignedTo as string,\n\t\tMeetingBooked as string,\n\t\tWorkEmail as string,\n\t\tEmbedUrlUtmMedium as string,\n\t\tActiveSalOrNot as string,\n\t\tBecameAnOpportunityDate as timestamp,\n\t\tOriginalSourceDrillDown1 as string,\n\t\tBrighttalkWebcastTitle as string,\n\t\tOriginalSourceDrillDown2 as string,\n\t\tLifecycleStage as string,\n\t\tEmbedUrlUtmSource as string,\n\t\tIsThisLeadAlreadyFoundInInternalDatabase as string,\n\t\tPersona as string,\n\t\tBecameACustomerDate as timestamp,\n\t\tSourceOfSignUp as string,\n\t\tWebcastActivity as string,\n\t\tDaysToClose as string,\n\t\tIPCountry as string,\n\t\tupdated as timestamp,\n\t\tcreated as timestamp,\n\t\tFirstPageSeen as string,\n\t\tOn24UTM as string,\n\t\tDFOLifeCycleStage as string,\n\t\tRecentConversion as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tContactId = hs_object_id,\n\t\tChannel = channel,\n\t\tAcquistionDateFromImport = acquistion_date_from_import,\n\t\tRecentDealCloseDate = recent_deal_close_date,\n\t\tBecameMarketingQualifiedLeadDate = hs_lifecyclestage_marketingqualifiedlead_date,\n\t\tCloseDate = closedate,\n\t\tAssociatedDeals = num_associated_deals,\n\t\tRecentDealAmount = recent_deal_amount,\n\t\tNumberOfTimesContacted = num_contacted_notes,\n\t\tNumberOfSalesActivities = num_notes,\n\t\tDateOfBirth = date_of_birth,\n\t\tOriginalSource = hs_analytics_source,\n\t\tLeadsProbablyRelevantForDFOAndARMShouldTalkToHimFirstAssessmentOfLeadStatus = lead_is_probably_relevant_for_dfo,\n\t\tDetailedSource = detailed_source,\n\t\tBecameASalesQualifiedLeadDate = hs_lifecyclestage_salesqualifiedlead_date,\n\t\tAssignedRm = assigned_rm,\n\t\tAssignedTo = assigned_to,\n\t\tMeetingBooked = meeting_booked,\n\t\tWorkEmail = work_email,\n\t\tEmbedUrlUtmMedium = questions_embed_url_utm_medium,\n\t\tActiveSalOrNot = active_sal_or_not,\n\t\tBecameAnOpportunityDate = hs_lifecyclestage_opportunity_date,\n\t\tOriginalSourceDrillDown1 = hs_analytics_source_data_1,\n\t\tBrighttalkWebcastTitle = brighttalk_webcast_title,\n\t\tOriginalSourceDrillDown2 = hs_analytics_source_data_2,\n\t\tLifecycleStage = lifecyclestage,\n\t\tEmbedUrlUtmSource = questions_embed_url_utm_source,\n\t\tIsThisLeadAlreadyFoundInInternalDatabase = is_this_lead_already_found_in_an_internal_database,\n\t\tCountry = country,\n\t\tPersona = hs_persona,\n\t\tBecameACustomerDate = hs_lifecyclestage_customer_date,\n\t\tSourceOfSignUp = source_of_sign_up,\n\t\tWebcastActivity = webcast_activity,\n\t\tDaysToClose = days_to_close,\n\t\tAgeRange = age_range,\n\t\tIPCountry = ip_country,\n\t\tAge = age,\n\t\tupdated,\n\t\tcreated,\n\t\tContactType = contact_type,\n\t\tFirstPageSeen = hs_analytics_first_url,\n\t\tGender = gender,\n\t\tOn24UTM = on24utm,\n\t\tFirstName = firstname,\n\t\tLastName = lastname,\n\t\tMobilePhone = mobilephone,\n\t\tPhone = phone,\n\t\tFax = fax,\n\t\tAddressLine1 = address_line_1,\n\t\tAddressLine2 = address_line_2,\n\t\tCity = city,\n\t\tHubspotOwnerId = hubspot_owner_id,\n\t\tState = state,\n\t\tDFOLifeCycleStage = lifecycle_stage_status,\n\t\tRecentConversion = recent_conversion_event_name\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> HubspotContact"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DV360CampaignDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "DV360"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "GoogleDV360CampaignStage",
+								"type": "DatasetReference"
+							},
+							"name": "GoogleDV360CampaignStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "GoogleDV360Campaign",
+								"type": "DatasetReference"
+							},
+							"name": "GoogleDV360Campaign"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\tCampaignId as string,\n\t\tCampaignName as string,\n\t\tCreative as string,\n\t\tDate as string,\n\t\tImpressions as string,\n\t\tClicks as string,\n\t\tClickRate as string,\n\t\tTotalConversions as string,\n\t\tClickThroughConversions as string,\n\t\tTfocoComDetailSubmitTotalConversions as string,\n\t\tNewTfocoComGlobalTagTotalConversions as string,\n\t\tNewTfocoComHomePageVisitTotalConversions as string,\n\t\tNewTfocoComInvestmentPlannerVisitTotalConversions as string,\n\t\tNewTfocoComPortfolioPlannerVisitTotalConversions as string,\n\t\tNewTfocoComWebinarSignupTotalConversions as string,\n\t\tNewTfocoComDetailSubmitTotalConversions as string,\n\t\tTfocoComHomePageVisitTotalConversions as string,\n\t\tTfocoComWealthPlanningTotalConversions as string,\n\t\tTfocoComWhoWeAreTotalConversions as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> GoogleDV360CampaignStage\nGoogleDV360CampaignStage derive(Date = toDate(Date, 'yyyy-MM-dd')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tCampaignId as integer,\n\t\tCampaignName as string,\n\t\tCreative as string,\n\t\tDate as date,\n\t\tImpressions as double,\n\t\tClicks as double,\n\t\tClickRate as double,\n\t\tTotalConversions as double,\n\t\tClickThroughConversions as double,\n\t\tTfocoComDetailSubmitTotalConversions as double,\n\t\tNewTfocoComGlobalTagTotalConversions as double,\n\t\tNewTfocoComHomePageVisitTotalConversions as double,\n\t\tNewTfocoComInvestmentPlannerVisitTotalConversions as double,\n\t\tNewTfocoComPortfolioPlannerVisitTotalConversions as double,\n\t\tNewTfocoComWebinarSignupTotalConversions as double,\n\t\tNewTfocoComDetailSubmitTotalConversions as double,\n\t\tTfocoComHomePageVisitTotalConversions as double,\n\t\tTfocoComWealthPlanningTotalConversions as double,\n\t\tTfocoComWhoWeAreTotalConversions as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tCampaignId,\n\t\tCampaignName,\n\t\tCreative,\n\t\tDate,\n\t\tImpressions,\n\t\tClicks,\n\t\tClickRate,\n\t\tTotalConversions,\n\t\tClickThroughConversions,\n\t\tTfocoComDetailSubmitTotalConversions,\n\t\tNewTfocoComGlobalTagTotalConversions,\n\t\tNewTfocoComHomePageVisitTotalConversions,\n\t\tNewTfocoComInvestmentPlannerVisitTotalConversions,\n\t\tNewTfocoComPortfolioPlannerVisitTotalConversions,\n\t\tNewTfocoComWebinarSignupTotalConversions,\n\t\tNewTfocoComDetailSubmitTotalConversions,\n\t\tTfocoComHomePageVisitTotalConversions,\n\t\tTfocoComWealthPlanningTotalConversions,\n\t\tTfocoComWhoWeAreTotalConversions\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> GoogleDV360Campaign"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DV360CostMetricsDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "DV360"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Currency",
+								"type": "DatasetReference"
+							},
+							"name": "Currency"
+						},
+						{
+							"dataset": {
+								"referenceName": "GoogleDV360CostMetricsStage",
+								"type": "DatasetReference"
+							},
+							"name": "GoogleDV360CostMetricsStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "GoogleDV360CostMetrics",
+								"type": "DatasetReference"
+							},
+							"name": "GoogleDV360CostMetrics"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumns"
+						},
+						{
+							"name": "SelectMetricsColumns"
+						},
+						{
+							"name": "JoinCurrency"
+						}
+					],
+					"script": "source(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nsource(output(\n\t\tAdvertiserId as string,\n\t\tAdvertiser as string,\n\t\tAdvertiserCurrency as string,\n\t\tInsertionOrder as string,\n\t\tInsertionOrderId as string,\n\t\tLineItem as string,\n\t\tLineItemId as string,\n\t\tCampaignId as string,\n\t\tCampaign as string,\n\t\tCreative as string,\n\t\tDate as string,\n\t\tImpressions as string,\n\t\tBillableImpressions as string,\n\t\tClicks as string,\n\t\tClickRateCTR as string,\n\t\tTotalConversions as string,\n\t\tPostClickConversions as string,\n\t\tPostViewConversions as string,\n\t\tRevenueAdvCurrency as string,\n\t\tMediaCostAdvetiserCurrency as string,\n\t\tBillableCostAdvertiserCurrency as string,\n\t\tPlatformFeeAdvertiserCurrency as string,\n\t\tPlatformFeeRate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> GoogleDV360CostMetricsStage\nSelectMetricsColumns derive(Date = toDate(Date, 'yyyy/MM/dd'),\n\t\tClickRateCTR = replace(ClickRateCTR,'%',''),\n\t\tPlatformFeeRate = replace(PlatformFeeRate,'%','')) ~> PrepareColumns\nJoinCurrency select(mapColumn(\n\t\tAdvertiserId,\n\t\tAdvertiser,\n\t\tAdvertiserCurrency,\n\t\tInsertionOrder,\n\t\tInsertionOrderId,\n\t\tLineItem,\n\t\tLineItemId,\n\t\tCampaignId,\n\t\tCampaign,\n\t\tCreative,\n\t\tDate,\n\t\tImpressions,\n\t\tBillableImpressions,\n\t\tClicks,\n\t\tClickRateCTR,\n\t\tTotalConversions,\n\t\tPostClickConversions,\n\t\tPostViewConversions,\n\t\tRevenueAdvCurrency,\n\t\tMediaCostAdvetiserCurrency,\n\t\tBillableCostAdvertiserCurrency,\n\t\tPlatformFeeAdvertiserCurrency,\n\t\tPlatformFeeRate,\n\t\tCurrencyId,\n\t\tName,\n\t\tDisplayName\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectMetricsColumns\nGoogleDV360CostMetricsStage, Currency join(AdvertiserCurrency == Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCurrency\nPrepareColumns sink(input(\n\t\tAdvertiserId as integer,\n\t\tAdvertiser as string,\n\t\tAdvertiserCurrencyId as integer,\n\t\tCampaignId as integer,\n\t\tInsertionOrder as string,\n\t\tInsertionOrderId as integer,\n\t\tLineItem as string,\n\t\tLineItemId as integer,\n\t\tCampaign as string,\n\t\tCreative as string,\n\t\tDate as timestamp,\n\t\tImpressions as integer,\n\t\tBillableImpressions as double,\n\t\tClicks as integer,\n\t\tClickRateCTR as double,\n\t\tTotalConversions as double,\n\t\tPostClickConversions as double,\n\t\tPostViewConversions as double,\n\t\tRevenueAdvCurrency as double,\n\t\tMediaCostAdvetiserCurrency as double,\n\t\tBillableCostAdvertiserCurrency as double,\n\t\tPlatformFeeAdvertiserCurrency as double,\n\t\tPlatformFeeRate as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAdvertiserId,\n\t\tAdvertiser,\n\t\tAdvertiserCurrencyId = CurrencyId,\n\t\tCampaignId,\n\t\tInsertionOrder,\n\t\tInsertionOrderId,\n\t\tLineItem,\n\t\tLineItemId,\n\t\tCampaign,\n\t\tCreative,\n\t\tDate,\n\t\tImpressions,\n\t\tBillableImpressions,\n\t\tClicks,\n\t\tClickRateCTR,\n\t\tTotalConversions,\n\t\tPostClickConversions,\n\t\tPostViewConversions,\n\t\tRevenueAdvCurrency,\n\t\tMediaCostAdvetiserCurrency,\n\t\tBillableCostAdvertiserCurrency,\n\t\tPlatformFeeAdvertiserCurrency,\n\t\tPlatformFeeRate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> GoogleDV360CostMetrics"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
