@@ -1,0 +1,32 @@
+{
+	"name": "trigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "runLogicAppTrigger",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2020-12-15T09:59:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						34
+					],
+					"hours": [
+						15
+					]
+				}
+			}
+		}
+	}
+}
