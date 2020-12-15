@@ -15,6 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"url": "https://prod-57.eastus.logic.azure.com:443/workflows/2a64b1b5087b47c087660e393f031c86/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=SHMPrSmTjjB1VWDVkIbZCEfx4L-JQnsldpYnd6cDCn8",
 					"method": "POST",
 					"headers": {
 						"Content-Type": "application/json"
