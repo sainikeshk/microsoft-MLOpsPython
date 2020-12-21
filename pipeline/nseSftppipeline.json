@@ -21,7 +21,7 @@
 							"type": "SftpReadSettings",
 							"recursive": true,
 							"wildcardFolderPath": {
-								"value": "@concat('CM30/DATA/December182020')",
+								"value": "@concat('CM30/SECURITY/December182020')",
 								"type": "Expression"
 							},
 							"wildcardFileName": "*.gz",
