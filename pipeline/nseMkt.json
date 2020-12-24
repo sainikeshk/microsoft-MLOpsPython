@@ -52,7 +52,10 @@
 								"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'))",
 								"type": "Expression"
 							},
-							"wildcardFileName": "*.gz",
+							"wildcardFileName": {
+								"value": "@concat(activity('mktTrig').output.fileNo,'.mkt.gz')",
+								"type": "Expression"
+							},
 							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
