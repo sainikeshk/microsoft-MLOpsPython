@@ -1,0 +1,1491 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "nseLiveData"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ProdTwitterEnagagementMetrics')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "LineItemId",
+						"type": "varchar"
+					},
+					{
+						"name": "MetricDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Impressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TweetsSend",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "QualifiedImpressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Follows",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "AppClicks",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Retweets",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Unfollows",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Likes",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Engagements",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Clicks",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "CardEngagements",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "PollCardVote",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Replies",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "BilledChargeLocalMicro",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "BilledEngagements",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "prod",
+					"table": "TwitterEnagagementMetrics"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ProdTwitterOrganicTweetMetrics')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TweetId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "MetricDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Impressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TweetsSend",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "QualifiedImpressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Follows",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "AppClicks",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Retweets",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Unfollows",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Likes",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Engagements",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Clicks",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "CardEngagements",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "PollCardVote",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Replies",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "prod",
+					"table": "TwitterOrganicTweetMetrics"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ProductType')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "DisplayName",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "ProductType"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterAccount')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountId",
+						"type": "varchar"
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "Updated",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "BusinessName",
+						"type": "varchar"
+					},
+					{
+						"name": "IndustryTypeId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "ApprovalStatusId",
+						"type": "smallint",
+						"precision": 5
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterAccount"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterAccountStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountId",
+						"type": "varchar"
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "varchar"
+					},
+					{
+						"name": "Updated",
+						"type": "varchar"
+					},
+					{
+						"name": "BusinessName",
+						"type": "varchar"
+					},
+					{
+						"name": "IndustryType",
+						"type": "varchar"
+					},
+					{
+						"name": "ApprovalStatus",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterAccountStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterCampaign')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountId",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignId",
+						"type": "varchar"
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Modified",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "StatusId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "CurrencyID",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "TotalBudgetAmount",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "DailyBudgetAmount",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "Servable",
+						"type": "bit"
+					},
+					{
+						"name": "StartDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "EndDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterCampaign"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterCampaignStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountId",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignId",
+						"type": "varchar"
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "varchar"
+					},
+					{
+						"name": "Modified",
+						"type": "varchar"
+					},
+					{
+						"name": "Status",
+						"type": "varchar"
+					},
+					{
+						"name": "Currency",
+						"type": "varchar"
+					},
+					{
+						"name": "TotalBudgetAmount",
+						"type": "varchar"
+					},
+					{
+						"name": "DailyBudgetAmount",
+						"type": "varchar"
+					},
+					{
+						"name": "Servable",
+						"type": "varchar"
+					},
+					{
+						"name": "StartDate",
+						"type": "varchar"
+					},
+					{
+						"name": "EndDate",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterCampaignStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterEnagagementMetrics')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "LineItemId",
+						"type": "varchar"
+					},
+					{
+						"name": "MetricDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Impressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TweetsSend",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "QualifiedImpressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Follows",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "AppClicks",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Retweets",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Unfollows",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Likes",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Engagements",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Clicks",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "CardEngagements",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "PollCardVote",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Replies",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "BilledChargeLocalMicro",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "BilledEngagements",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterEnagagementMetrics"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterEnagagementMetricsStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "LineItemId",
+						"type": "varchar"
+					},
+					{
+						"name": "StartDate",
+						"type": "varchar"
+					},
+					{
+						"name": "EndDate",
+						"type": "varchar"
+					},
+					{
+						"name": "impressions",
+						"type": "varchar"
+					},
+					{
+						"name": "tweets_send",
+						"type": "varchar"
+					},
+					{
+						"name": "qualified_impressions",
+						"type": "varchar"
+					},
+					{
+						"name": "follows",
+						"type": "varchar"
+					},
+					{
+						"name": "app_clicks",
+						"type": "varchar"
+					},
+					{
+						"name": "retweets",
+						"type": "varchar"
+					},
+					{
+						"name": "unfollows",
+						"type": "varchar"
+					},
+					{
+						"name": "likes",
+						"type": "varchar"
+					},
+					{
+						"name": "engagements",
+						"type": "varchar"
+					},
+					{
+						"name": "clicks",
+						"type": "varchar"
+					},
+					{
+						"name": "card_engagements",
+						"type": "varchar"
+					},
+					{
+						"name": "poll_card_vote",
+						"type": "varchar"
+					},
+					{
+						"name": "replies",
+						"type": "varchar"
+					},
+					{
+						"name": "billed_charge_local_micro",
+						"type": "varchar"
+					},
+					{
+						"name": "billed_engagements",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterEnagagementMetricsStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterLineItem')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountId",
+						"type": "varchar"
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "BidTypeId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "AdvertiserUserId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "StartDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "BidAmountLocalMicro",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "AutomaticallySelectBid",
+						"type": "bit"
+					},
+					{
+						"name": "AdvertiserDomain",
+						"type": "varchar"
+					},
+					{
+						"name": "TargetCPALocalMicro",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "PrimaryWebEventTag",
+						"type": "varchar"
+					},
+					{
+						"name": "ChargeById",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "ProductTypeId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "EndDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "BidUnitId",
+						"type": "varchar"
+					},
+					{
+						"name": "TotalBudgetAmountLocalMicro",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TwitterObjectiveId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Id",
+						"type": "varchar"
+					},
+					{
+						"name": "EntityStatusId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Optimization",
+						"type": "varchar"
+					},
+					{
+						"name": "CurrencyId",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "Updated",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "CreativeSource",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignId",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterLineItem"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterLineItemStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountId",
+						"type": "varchar"
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "BidType",
+						"type": "varchar"
+					},
+					{
+						"name": "AdvertiserUserId",
+						"type": "varchar"
+					},
+					{
+						"name": "StartDate",
+						"type": "varchar"
+					},
+					{
+						"name": "BidAmountLocalMicro",
+						"type": "varchar"
+					},
+					{
+						"name": "AutomaticallySelectBid",
+						"type": "varchar"
+					},
+					{
+						"name": "AdvertiserDomain",
+						"type": "varchar"
+					},
+					{
+						"name": "TargetCPALocalMicro",
+						"type": "varchar"
+					},
+					{
+						"name": "PrimaryWebEventTag",
+						"type": "varchar"
+					},
+					{
+						"name": "ChargeBy",
+						"type": "varchar"
+					},
+					{
+						"name": "ProductType",
+						"type": "varchar"
+					},
+					{
+						"name": "EndDate",
+						"type": "varchar"
+					},
+					{
+						"name": "BidUnit",
+						"type": "varchar"
+					},
+					{
+						"name": "TotalBudgetAmountLocalMicro",
+						"type": "varchar"
+					},
+					{
+						"name": "Objective",
+						"type": "varchar"
+					},
+					{
+						"name": "Id",
+						"type": "varchar"
+					},
+					{
+						"name": "EntityStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "Optimization",
+						"type": "varchar"
+					},
+					{
+						"name": "Currency",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "varchar"
+					},
+					{
+						"name": "Updated",
+						"type": "varchar"
+					},
+					{
+						"name": "CreativeSource",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignId",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterLineItemStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterLineItemString')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "LineItemString",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterLineItemString"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterLineItemTweet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TweetId",
+						"type": "varchar"
+					},
+					{
+						"name": "LineItemId",
+						"type": "varchar"
+					},
+					{
+						"name": "Created",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "Updated",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "EntityStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "ApprovalStatus",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterLineItemTweet"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterLineItemTweetStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TweetId",
+						"type": "varchar"
+					},
+					{
+						"name": "LineItemId",
+						"type": "varchar"
+					},
+					{
+						"name": "created_at",
+						"type": "varchar"
+					},
+					{
+						"name": "updated_at",
+						"type": "varchar"
+					},
+					{
+						"name": "entity_status",
+						"type": "varchar"
+					},
+					{
+						"name": "approval_status",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterLineItemTweetStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterObjective')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "DisplayName",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterObjective"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterOrganicTweet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TweetId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "FullText",
+						"type": "varchar"
+					},
+					{
+						"name": "FavoriteCount",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "RetweetCount",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Created",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "Favorited",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "InReplyToStatusId",
+						"type": "varchar"
+					},
+					{
+						"name": "AccountId",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterOrganicTweet"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterOrganicTweetMetrics')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TweetId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "MetricDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "Impressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TweetsSend",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "QualifiedImpressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Follows",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "AppClicks",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Retweets",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Unfollows",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Likes",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Engagements",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Clicks",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "CardEngagements",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "PollCardVote",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Replies",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "BilledChargeLocalMicro",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "BilledEngagements",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterOrganicTweetMetrics"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterOrganicTweetMetricsStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TweetId",
+						"type": "varchar"
+					},
+					{
+						"name": "StartDate",
+						"type": "varchar"
+					},
+					{
+						"name": "EndDate",
+						"type": "varchar"
+					},
+					{
+						"name": "impressions",
+						"type": "varchar"
+					},
+					{
+						"name": "tweets_send",
+						"type": "varchar"
+					},
+					{
+						"name": "qualified_impressions",
+						"type": "varchar"
+					},
+					{
+						"name": "follows",
+						"type": "varchar"
+					},
+					{
+						"name": "app_clicks",
+						"type": "varchar"
+					},
+					{
+						"name": "retweets",
+						"type": "varchar"
+					},
+					{
+						"name": "unfollows",
+						"type": "varchar"
+					},
+					{
+						"name": "likes",
+						"type": "varchar"
+					},
+					{
+						"name": "engagements",
+						"type": "varchar"
+					},
+					{
+						"name": "clicks",
+						"type": "varchar"
+					},
+					{
+						"name": "card_engagements",
+						"type": "varchar"
+					},
+					{
+						"name": "poll_card_vote",
+						"type": "varchar"
+					},
+					{
+						"name": "replies",
+						"type": "varchar"
+					},
+					{
+						"name": "billed_charge_local_micro",
+						"type": "varchar"
+					},
+					{
+						"name": "billed_engagements",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterOrganicTweetMetricsStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterOrganicTweetStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "tweet_id",
+						"type": "varchar"
+					},
+					{
+						"name": "full_text",
+						"type": "varchar"
+					},
+					{
+						"name": "favorite_count",
+						"type": "varchar"
+					},
+					{
+						"name": "retweet_count",
+						"type": "varchar"
+					},
+					{
+						"name": "created_at",
+						"type": "varchar"
+					},
+					{
+						"name": "favorited",
+						"type": "varchar"
+					},
+					{
+						"name": "in_reply_to_status_id",
+						"type": "varchar"
+					},
+					{
+						"name": "account_id",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterOrganicTweetStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterOrganicTweetString')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "OrganicTweetString",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TwitterOrganicTweetString"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

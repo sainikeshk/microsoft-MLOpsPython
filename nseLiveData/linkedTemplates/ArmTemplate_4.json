@@ -1,0 +1,1782 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "nseLiveData"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/DynamicRESTDataSet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DynamicRESTAPI",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"Url": {
+							"value": "@dataset().Url",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"Url": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EntityStatus')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Twitter"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "DisplayName",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "EntityStatus"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleAnalyticsAPI')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GoogleAnalyticsAPI",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleAnalytics"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleAnalyticsData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleAnalytics"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "GroupId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "GroupValue",
+						"type": "varchar"
+					},
+					{
+						"name": "SourceDate",
+						"type": "date"
+					},
+					{
+						"name": "Users",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "NewUsers",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Pageviews",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "SessionsPerUser",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Sessions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "BounceRate",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "AvgSessionDuration",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Goal1ConversionRate",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Goal1Completions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Goal1Value",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GoogleAnalyticsData"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleAnalyticsStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleAnalytics"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "GroupId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "MetricsArr",
+						"type": "varchar"
+					},
+					{
+						"name": "ValuesArr",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GoogleAnalyticsStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleAnalyticsToken')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleAnalytics"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "APIName",
+						"type": "varchar"
+					},
+					{
+						"name": "Token",
+						"type": "varchar"
+					},
+					{
+						"name": "AccessTime",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GoogleAnalyticsToken"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleDV360API')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GoogleDV360API",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"Url": {
+							"value": "@dataset().Url",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"Url": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleDV360Campaign')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DV360"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CampaignId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CampaignName",
+						"type": "varchar"
+					},
+					{
+						"name": "Creative",
+						"type": "varchar"
+					},
+					{
+						"name": "Date",
+						"type": "date"
+					},
+					{
+						"name": "Impressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Clicks",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ClickRate",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ClickThroughConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TfocoComDetailSubmitTotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "NewTfocoComGlobalTagTotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "NewTfocoComHomePageVisitTotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "NewTfocoComInvestmentPlannerVisitTotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "NewTfocoComPortfolioPlannerVisitTotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "NewTfocoComWebinarSignupTotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "NewTfocoComDetailSubmitTotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TfocoComHomePageVisitTotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TfocoComWealthPlanningTotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TfocoComWhoWeAreTotalConversions",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GoogleDV360Campaign"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleDV360CampaignStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DV360"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CampaignId",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignName",
+						"type": "varchar"
+					},
+					{
+						"name": "Creative",
+						"type": "varchar"
+					},
+					{
+						"name": "Date",
+						"type": "varchar"
+					},
+					{
+						"name": "Impressions",
+						"type": "varchar"
+					},
+					{
+						"name": "Clicks",
+						"type": "varchar"
+					},
+					{
+						"name": "ClickRate",
+						"type": "varchar"
+					},
+					{
+						"name": "TotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "ClickThroughConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "TfocoComDetailSubmitTotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "NewTfocoComGlobalTagTotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "NewTfocoComHomePageVisitTotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "NewTfocoComInvestmentPlannerVisitTotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "NewTfocoComPortfolioPlannerVisitTotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "NewTfocoComWebinarSignupTotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "NewTfocoComDetailSubmitTotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "TfocoComHomePageVisitTotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "TfocoComWealthPlanningTotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "TfocoComWhoWeAreTotalConversions",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GoogleDV360CampaignStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleDV360CostMetrics')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DV360"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AdvertiserId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Advertiser",
+						"type": "varchar"
+					},
+					{
+						"name": "AdvertiserCurrencyId",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "CampaignId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "InsertionOrder",
+						"type": "varchar"
+					},
+					{
+						"name": "InsertionOrderId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LineItem",
+						"type": "varchar"
+					},
+					{
+						"name": "LineItemId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Campaign",
+						"type": "varchar"
+					},
+					{
+						"name": "Creative",
+						"type": "varchar"
+					},
+					{
+						"name": "Date",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "Impressions",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "BillableImpressions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Clicks",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ClickRateCTR",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "TotalConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "PostClickConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "PostViewConversions",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "RevenueAdvCurrency",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "MediaCostAdvetiserCurrency",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "BillableCostAdvertiserCurrency",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "PlatformFeeAdvertiserCurrency",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "PlatformFeeRate",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GoogleDV360CostMetrics"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleDV360CostMetricsStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DV360"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AdvertiserId",
+						"type": "varchar"
+					},
+					{
+						"name": "Advertiser",
+						"type": "varchar"
+					},
+					{
+						"name": "AdvertiserCurrency",
+						"type": "varchar"
+					},
+					{
+						"name": "InsertionOrder",
+						"type": "varchar"
+					},
+					{
+						"name": "InsertionOrderId",
+						"type": "varchar"
+					},
+					{
+						"name": "LineItem",
+						"type": "varchar"
+					},
+					{
+						"name": "LineItemId",
+						"type": "varchar"
+					},
+					{
+						"name": "CampaignId",
+						"type": "varchar"
+					},
+					{
+						"name": "Campaign",
+						"type": "varchar"
+					},
+					{
+						"name": "Creative",
+						"type": "varchar"
+					},
+					{
+						"name": "Date",
+						"type": "varchar"
+					},
+					{
+						"name": "Impressions",
+						"type": "varchar"
+					},
+					{
+						"name": "BillableImpressions",
+						"type": "varchar"
+					},
+					{
+						"name": "Clicks",
+						"type": "varchar"
+					},
+					{
+						"name": "ClickRateCTR",
+						"type": "varchar"
+					},
+					{
+						"name": "TotalConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "PostClickConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "PostViewConversions",
+						"type": "varchar"
+					},
+					{
+						"name": "RevenueAdvCurrency",
+						"type": "varchar"
+					},
+					{
+						"name": "MediaCostAdvetiserCurrency",
+						"type": "varchar"
+					},
+					{
+						"name": "BillableCostAdvertiserCurrency",
+						"type": "varchar"
+					},
+					{
+						"name": "PlatformFeeAdvertiserCurrency",
+						"type": "varchar"
+					},
+					{
+						"name": "PlatformFeeRate",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GoogleDV360CostMetricsStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleDV360Data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GoogleDV360Data"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleDV360QueryFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DV360"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "QueryId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "varchar"
+					},
+					{
+						"name": "StoragePath",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GoogleDV360QueryFile"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GoogleDV360ReportFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "FileId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "FileName",
+						"type": "varchar"
+					},
+					{
+						"name": "StartDate",
+						"type": "varchar"
+					},
+					{
+						"name": "EndDate",
+						"type": "varchar"
+					},
+					{
+						"name": "GeneratedTimeStamp",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "GoogleDV360ReportFile"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HubspotContact')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Hubspot"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ContactId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FirstName",
+						"type": "varchar"
+					},
+					{
+						"name": "LastName",
+						"type": "varchar"
+					},
+					{
+						"name": "AddressLine1",
+						"type": "varchar"
+					},
+					{
+						"name": "AddressLine2",
+						"type": "varchar"
+					},
+					{
+						"name": "City",
+						"type": "varchar"
+					},
+					{
+						"name": "State",
+						"type": "varchar"
+					},
+					{
+						"name": "Country",
+						"type": "varchar"
+					},
+					{
+						"name": "MobilePhone",
+						"type": "varchar"
+					},
+					{
+						"name": "Phone",
+						"type": "varchar"
+					},
+					{
+						"name": "Fax",
+						"type": "varchar"
+					},
+					{
+						"name": "DateOfBirth",
+						"type": "varchar"
+					},
+					{
+						"name": "ContactType",
+						"type": "varchar"
+					},
+					{
+						"name": "Age",
+						"type": "varchar"
+					},
+					{
+						"name": "AgeRange",
+						"type": "varchar"
+					},
+					{
+						"name": "Gender",
+						"type": "varchar"
+					},
+					{
+						"name": "Channel",
+						"type": "varchar"
+					},
+					{
+						"name": "HubspotOwnerId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "AcquistionDateFromImport",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "RecentDealCloseDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "BecameMarketingQualifiedLeadDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "CloseDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "AssociatedDeals",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RecentDealAmount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "NumberOfTimesContacted",
+						"type": "varchar"
+					},
+					{
+						"name": "NumberOfSalesActivities",
+						"type": "varchar"
+					},
+					{
+						"name": "OriginalSource",
+						"type": "varchar"
+					},
+					{
+						"name": "LeadsProbablyRelevantForDFOAndARMShouldTalkToHimFirstAssessmentOfLeadStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "DetailedSource",
+						"type": "varchar"
+					},
+					{
+						"name": "BecameASalesQualifiedLeadDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "AssignedRm",
+						"type": "varchar"
+					},
+					{
+						"name": "AssignedTo",
+						"type": "varchar"
+					},
+					{
+						"name": "MeetingBooked",
+						"type": "varchar"
+					},
+					{
+						"name": "WorkEmail",
+						"type": "varchar"
+					},
+					{
+						"name": "EmbedUrlUtmMedium",
+						"type": "varchar"
+					},
+					{
+						"name": "ActiveSalOrNot",
+						"type": "varchar"
+					},
+					{
+						"name": "BecameAnOpportunityDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "OriginalSourceDrillDown1",
+						"type": "varchar"
+					},
+					{
+						"name": "BrighttalkWebcastTitle",
+						"type": "varchar"
+					},
+					{
+						"name": "OriginalSourceDrillDown2",
+						"type": "varchar"
+					},
+					{
+						"name": "LifecycleStage",
+						"type": "varchar"
+					},
+					{
+						"name": "EmbedUrlUtmSource",
+						"type": "varchar"
+					},
+					{
+						"name": "IsThisLeadAlreadyFoundInInternalDatabase",
+						"type": "varchar"
+					},
+					{
+						"name": "Persona",
+						"type": "varchar"
+					},
+					{
+						"name": "BecameACustomerDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "SourceOfSignUp",
+						"type": "varchar"
+					},
+					{
+						"name": "WebcastActivity",
+						"type": "varchar"
+					},
+					{
+						"name": "DaysToClose",
+						"type": "varchar"
+					},
+					{
+						"name": "IPCountry",
+						"type": "varchar"
+					},
+					{
+						"name": "updated",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "created",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "FirstPageSeen",
+						"type": "varchar"
+					},
+					{
+						"name": "On24UTM",
+						"type": "varchar"
+					},
+					{
+						"name": "DFOLifeCycleStage",
+						"type": "varchar"
+					},
+					{
+						"name": "RecentConversion",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "HubspotContact"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HubspotContactStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Hubspot"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "hs_object_id",
+						"type": "varchar"
+					},
+					{
+						"name": "channel",
+						"type": "varchar"
+					},
+					{
+						"name": "acquistion_date_from_import",
+						"type": "varchar"
+					},
+					{
+						"name": "recent_deal_close_date",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_lifecyclestage_marketingqualifiedlead_date",
+						"type": "varchar"
+					},
+					{
+						"name": "closedate",
+						"type": "varchar"
+					},
+					{
+						"name": "num_associated_deals",
+						"type": "varchar"
+					},
+					{
+						"name": "recent_deal_amount",
+						"type": "varchar"
+					},
+					{
+						"name": "num_contacted_notes",
+						"type": "varchar"
+					},
+					{
+						"name": "num_notes",
+						"type": "varchar"
+					},
+					{
+						"name": "date_of_birth",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_analytics_source",
+						"type": "varchar"
+					},
+					{
+						"name": "lead_is_probably_relevant_for_dfo",
+						"type": "varchar"
+					},
+					{
+						"name": "detailed_source",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_lifecyclestage_salesqualifiedlead_date",
+						"type": "varchar"
+					},
+					{
+						"name": "assigned_rm",
+						"type": "varchar"
+					},
+					{
+						"name": "assigned_to",
+						"type": "varchar"
+					},
+					{
+						"name": "meeting_booked",
+						"type": "varchar"
+					},
+					{
+						"name": "work_email",
+						"type": "varchar"
+					},
+					{
+						"name": "questions_embed_url_utm_medium",
+						"type": "varchar"
+					},
+					{
+						"name": "active_sal_or_not",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_lifecyclestage_opportunity_date",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_analytics_source_data_1",
+						"type": "varchar"
+					},
+					{
+						"name": "brighttalk_webcast_title",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_analytics_source_data_2",
+						"type": "varchar"
+					},
+					{
+						"name": "lifecyclestage",
+						"type": "varchar"
+					},
+					{
+						"name": "questions_embed_url_utm_source",
+						"type": "varchar"
+					},
+					{
+						"name": "is_this_lead_already_found_in_an_internal_database",
+						"type": "varchar"
+					},
+					{
+						"name": "country",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_persona",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_lifecyclestage_customer_date",
+						"type": "varchar"
+					},
+					{
+						"name": "source_of_sign_up",
+						"type": "varchar"
+					},
+					{
+						"name": "webcast_activity",
+						"type": "varchar"
+					},
+					{
+						"name": "days_to_close",
+						"type": "varchar"
+					},
+					{
+						"name": "age_range",
+						"type": "varchar"
+					},
+					{
+						"name": "ip_country",
+						"type": "varchar"
+					},
+					{
+						"name": "age",
+						"type": "varchar"
+					},
+					{
+						"name": "updated",
+						"type": "varchar"
+					},
+					{
+						"name": "created",
+						"type": "varchar"
+					},
+					{
+						"name": "hasMore",
+						"type": "varchar"
+					},
+					{
+						"name": "VidOffset",
+						"type": "varchar"
+					},
+					{
+						"name": "InsertedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "contact_type",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_analytics_first_url",
+						"type": "varchar"
+					},
+					{
+						"name": "gender",
+						"type": "varchar"
+					},
+					{
+						"name": "on24utm",
+						"type": "varchar"
+					},
+					{
+						"name": "firstname",
+						"type": "varchar"
+					},
+					{
+						"name": "lastname",
+						"type": "varchar"
+					},
+					{
+						"name": "mobilephone",
+						"type": "varchar"
+					},
+					{
+						"name": "phone",
+						"type": "varchar"
+					},
+					{
+						"name": "fax",
+						"type": "varchar"
+					},
+					{
+						"name": "address_line_1",
+						"type": "varchar"
+					},
+					{
+						"name": "address_line_2",
+						"type": "varchar"
+					},
+					{
+						"name": "city",
+						"type": "varchar"
+					},
+					{
+						"name": "state",
+						"type": "varchar"
+					},
+					{
+						"name": "hubspot_owner_id",
+						"type": "varchar"
+					},
+					{
+						"name": "lifecycle_stage_status",
+						"type": "varchar"
+					},
+					{
+						"name": "time-offset",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "recent_conversion_event_name",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "HubspotContactStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HubspotDeal')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Hubspot"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "DealId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DealStage",
+						"type": "varchar"
+					},
+					{
+						"name": "ClosedLostReason",
+						"type": "varchar"
+					},
+					{
+						"name": "LastModifiedDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "Amount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "AmountSource",
+						"type": "varchar"
+					},
+					{
+						"name": "Pipeline",
+						"type": "varchar"
+					},
+					{
+						"name": "TFOLifecycleStage",
+						"type": "varchar"
+					},
+					{
+						"name": "CreateDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "DealOwnerId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LeadStatus",
+						"type": "varchar"
+					},
+					{
+						"name": "AssociatedContactIds",
+						"type": "varchar"
+					},
+					{
+						"name": "ClosedDate",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "DealType",
+						"type": "varchar"
+					},
+					{
+						"name": "NumberOfTimesContacted",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "NumberOfSalesActivities",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "HubspotDeal"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HubspotDealStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Hubspot"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "hs_object_id",
+						"type": "varchar"
+					},
+					{
+						"name": "closedate",
+						"type": "varchar"
+					},
+					{
+						"name": "dealtype",
+						"type": "varchar"
+					},
+					{
+						"name": "num_contacted_notes",
+						"type": "varchar"
+					},
+					{
+						"name": "num_notes",
+						"type": "varchar"
+					},
+					{
+						"name": "hubspot_owner_id",
+						"type": "varchar"
+					},
+					{
+						"name": "dealstage",
+						"type": "varchar"
+					},
+					{
+						"name": "amount",
+						"type": "varchar"
+					},
+					{
+						"name": "lead_status_status",
+						"type": "varchar"
+					},
+					{
+						"name": "Offset",
+						"type": "varchar"
+					},
+					{
+						"name": "HasMore",
+						"type": "varchar"
+					},
+					{
+						"name": "InsertedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "closed_lost_reason",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_lastmodifieddate",
+						"type": "varchar"
+					},
+					{
+						"name": "amount_source",
+						"type": "varchar"
+					},
+					{
+						"name": "pipeline",
+						"type": "varchar"
+					},
+					{
+						"name": "lifecyclestage",
+						"type": "varchar"
+					},
+					{
+						"name": "createdate",
+						"type": "varchar"
+					},
+					{
+						"name": "hs_lead_status",
+						"type": "varchar"
+					},
+					{
+						"name": "associatedVids",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "HubspotDealStage"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HubspotEngagement')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Hubspot"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "EngagementId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "Type",
+						"type": "varchar"
+					},
+					{
+						"name": "TimeStamp",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "TeamId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "Created",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "Updated",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					},
+					{
+						"name": "OwnerId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "Source",
+						"type": "varchar"
+					},
+					{
+						"name": "SourceId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "AllAccessibleTeamIds",
+						"type": "varchar"
+					},
+					{
+						"name": "BodyPreview",
+						"type": "varchar"
+					},
+					{
+						"name": "CreatedBy",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "ModifiedBy",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "PortalId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "Active",
+						"type": "bit"
+					},
+					{
+						"name": "ContactAssociations",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "HubspotEngagement"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HubspotEngagementStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DashboardDb",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Hubspot"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "EngagementId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "createdAt",
+						"type": "varchar"
+					},
+					{
+						"name": "lastUpdated",
+						"type": "varchar"
+					},
+					{
+						"name": "ownerId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "type",
+						"type": "varchar"
+					},
+					{
+						"name": "timestamp",
+						"type": "varchar"
+					},
+					{
+						"name": "teamId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "source",
+						"type": "varchar"
+					},
+					{
+						"name": "sourceId",
+						"type": "varchar"
+					},
+					{
+						"name": "allAccessibleTeamIds",
+						"type": "varchar"
+					},
+					{
+						"name": "bodyPreview",
+						"type": "varchar"
+					},
+					{
+						"name": "createdBy",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "modifiedBy",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "portalId",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "active",
+						"type": "varchar"
+					},
+					{
+						"name": "contactAssosications",
+						"type": "varchar"
+					},
+					{
+						"name": "HasMore",
+						"type": "varchar"
+					},
+					{
+						"name": "Offset",
+						"type": "varchar"
+					},
+					{
+						"name": "InsertedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "HubspotEngagementStage"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

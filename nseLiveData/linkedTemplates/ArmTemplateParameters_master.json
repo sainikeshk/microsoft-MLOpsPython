@@ -1,0 +1,174 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "nseLiveData"
+		},
+		"AzureBatch1_accessKey": {
+			"value": ""
+		},
+		"AzureDatabricks1_accessToken": {
+			"value": ""
+		},
+		"AzureMySql1_connectionString": {
+			"value": ""
+		},
+		"DashboardBlobStorage_connectionString": {
+			"value": ""
+		},
+		"DashboardDb_connectionString": {
+			"value": ""
+		},
+		"DashboardTableStorage_connectionString": {
+			"value": ""
+		},
+		"GetGoogleAdsBearerToken_functionKey": {
+			"value": ""
+		},
+		"GetGoogleDoubleClickBidManagerToken_functionKey": {
+			"value": ""
+		},
+		"GetHubspotBearerToken_functionKey": {
+			"value": ""
+		},
+		"GetTwitterAuthenticationHeader_functionKey": {
+			"value": ""
+		},
+		"GoogleAnalyticsFunction_functionKey": {
+			"value": ""
+		},
+		"GoogleDV360Function_functionKey": {
+			"value": ""
+		},
+		"MSDynamicsAXLiveService_servicePrincipalKey": {
+			"value": ""
+		},
+		"PythonBatch_accessKey": {
+			"value": ""
+		},
+		"SaveDV360MetricCSV_functionKey": {
+			"value": ""
+		},
+		"SaveDV360ReportFunction_functionKey": {
+			"value": ""
+		},
+		"SftpConnLs_privateKeyContent": {
+			"value": ""
+		},
+		"SftpConnLs_passPhrase": {
+			"value": ""
+		},
+		"TwitterAnalyticsRequestDatesCheck_functionKey": {
+			"value": ""
+		},
+		"batchnse_accessKey": {
+			"value": ""
+		},
+		"bintoasciiAdb_accessToken": {
+			"value": ""
+		},
+		"indblobToindSql_connectionString": {
+			"value": ""
+		},
+		"sftpbinaryBlob_connectionString": {
+			"value": ""
+		},
+		"mktTrigFunc_functionKey": {
+			"value": ""
+		},
+		"AzureBatch1_properties_typeProperties_accountName": {
+			"value": "nse"
+		},
+		"AzureBatch1_properties_typeProperties_batchUri": {
+			"value": "https://nse.eastus.batch.azure.com"
+		},
+		"AzureBatch1_properties_typeProperties_poolName": {
+			"value": "nse123"
+		},
+		"DynamicRESTAPI_properties_typeProperties_url": {
+			"value": "@{linkedService().Url}"
+		},
+		"GetGoogleAdsBearerToken_properties_typeProperties_functionAppUrl": {
+			"value": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"GetGoogleDoubleClickBidManagerToken_properties_typeProperties_functionAppUrl": {
+			"value": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"GetHubspotBearerToken_properties_typeProperties_functionAppUrl": {
+			"value": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"GetTwitterAuthenticationHeader_properties_typeProperties_functionAppUrl": {
+			"value": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"GoogleAnalyticsAPI_properties_typeProperties_url": {
+			"value": "https://analyticsreporting.googleapis.com/v4/reports:batchGet"
+		},
+		"GoogleAnalyticsFunction_properties_typeProperties_functionAppUrl": {
+			"value": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"GoogleDV360API_properties_typeProperties_url": {
+			"value": "@{linkedService().Url}"
+		},
+		"GoogleDV360Function_properties_typeProperties_functionAppUrl": {
+			"value": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"LinkedinAPI_properties_typeProperties_url": {
+			"value": "@{linkedService().Url}"
+		},
+		"MSDynamicsAXLiveService_properties_typeProperties_url": {
+			"value": "https://tfo-live.operations.dynamics.com/data"
+		},
+		"MSDynamicsAXLiveService_properties_typeProperties_tenant": {
+			"value": "722fb109-13f1-4aa0-9a39-dd9440082369"
+		},
+		"MSDynamicsAXLiveService_properties_typeProperties_aadResourceId": {
+			"value": "https://tfo-live.operations.dynamics.com"
+		},
+		"MSDynamicsAXLiveService_properties_typeProperties_servicePrincipalId": {
+			"value": "7d55aa19-d4ad-4447-ac83-e17200bfa898"
+		},
+		"PythonBatch_properties_typeProperties_accountName": {
+			"value": "nse"
+		},
+		"PythonBatch_properties_typeProperties_batchUri": {
+			"value": "https://nse.eastus.batch.azure.com"
+		},
+		"PythonBatch_properties_typeProperties_poolName": {
+			"value": "1234567"
+		},
+		"SaveDV360MetricCSV_properties_typeProperties_functionAppUrl": {
+			"value": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"SaveDV360ReportFunction_properties_typeProperties_functionAppUrl": {
+			"value": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"SftpConnLs_properties_typeProperties_host": {
+			"value": "121.241.2.65"
+		},
+		"SftpConnLs_properties_typeProperties_userName": {
+			"value": "MAVRCM15"
+		},
+		"TwitterAnalyticsRequestDatesCheck_properties_typeProperties_functionAppUrl": {
+			"value": "https://tfocodashboardfunctions.azurewebsites.net"
+		},
+		"batchnse_properties_typeProperties_accountName": {
+			"value": "nsebatch"
+		},
+		"batchnse_properties_typeProperties_batchUri": {
+			"value": "https://nsebatch.eastus.batch.azure.com"
+		},
+		"batchnse_properties_typeProperties_poolName": {
+			"value": "nsePool"
+		},
+		"mktTrigFunc_properties_typeProperties_functionAppUrl": {
+			"value": "https://mkttrig.azurewebsites.net"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

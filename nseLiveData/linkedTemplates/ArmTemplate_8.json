@@ -1,0 +1,465 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "nseLiveData"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ShareDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Linkedin"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "LinkedinShareStage",
+								"type": "DatasetReference"
+							},
+							"name": "LinkedinShareStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "LinkedinShare",
+								"type": "DatasetReference"
+							},
+							"name": "LinkedinShare"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\towner as string,\n\t\tagent as string,\n\t\tactivity as string,\n\t\tsubject as string,\n\t\tcreatedby as string,\n\t\tcreated as string,\n\t\tid as string,\n\t\tlastModifiedby as string,\n\t\tlastModified as string,\n\t\ttext as string,\n\t\tlandingPageTitle as string,\n\t\tdescription as string,\n\t\tentityLocation as string,\n\t\ttitle as string,\n\t\tlandingPageUrl as string,\n\t\tentity as string,\n\t\tshareMediaCategory as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> LinkedinShareStage\nLinkedinShareStage derive(created = toTimestamp(toLong(created), 'yyyy-MM-dd HH:mm:ss'),\n\t\tlastModified = toTimestamp(toLong(lastModified), 'yyyy-MM-dd HH:mm:ss')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tOwner as string,\n\t\tAgent as string,\n\t\tActivity as string,\n\t\tSubject as string,\n\t\tCreatedBy as string,\n\t\tCreated as timestamp,\n\t\tId as string,\n\t\tLastModifiedBy as string,\n\t\tLastModified as timestamp,\n\t\tText as string,\n\t\tLandingPageTitle as string,\n\t\tDescription as string,\n\t\tEntityLocation as string,\n\t\tTitle as string,\n\t\tLandingPageUrl as string,\n\t\tEntity as string,\n\t\tShareMediaCategory as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tOwner = owner,\n\t\tAgent = agent,\n\t\tActivity = activity,\n\t\tSubject = subject,\n\t\tCreatedBy = createdby,\n\t\tCreated = created,\n\t\tId = id,\n\t\tLastModifiedBy = lastModifiedby,\n\t\tLastModified = lastModified,\n\t\tText = text,\n\t\tLandingPageTitle = landingPageTitle,\n\t\tDescription = description,\n\t\tEntityLocation = entityLocation,\n\t\tTitle = title,\n\t\tLandingPageUrl = landingPageUrl,\n\t\tEntity = entity,\n\t\tShareMediaCategory = shareMediaCategory\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> LinkedinShare"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterAccountDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Twitter"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "TwitterAccountStage",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterAccountStage"
+						},
+						{
+							"dataset": {
+								"referenceName": "IndustryType",
+								"type": "DatasetReference"
+							},
+							"name": "InustryType"
+						},
+						{
+							"dataset": {
+								"referenceName": "ApprovalStatus",
+								"type": "DatasetReference"
+							},
+							"name": "ApprovalStatus"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "TwitterAccount",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterAccount"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinApprovalStatus"
+						},
+						{
+							"name": "JoinIndustryType"
+						},
+						{
+							"name": "SelectAccountColumns"
+						},
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\tAccountId as string,\n\t\tName as string,\n\t\tCreated as string,\n\t\tUpdated as string,\n\t\tBusinessName as string,\n\t\tIndustryType as string,\n\t\tApprovalStatus as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterAccountStage\nsource(output(\n\t\tIndustryTypeId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> InustryType\nsource(output(\n\t\tApprovalStatusId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ApprovalStatus\nJoinIndustryType, ApprovalStatus join(ApprovalStatus == ApprovalStatus@Name,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinApprovalStatus\nTwitterAccountStage, InustryType join(IndustryType == InustryType@Name,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinIndustryType\nPrepareColumns select(mapColumn(\n\t\tAccountId,\n\t\tName = TwitterAccountStage@Name,\n\t\tCreated,\n\t\tUpdated,\n\t\tBusinessName,\n\t\tIndustryTypeId,\n\t\tApprovalStatusId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectAccountColumns\nJoinApprovalStatus derive(Created = toTimestamp(Created, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tUpdated = toTimestamp(Updated, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3')) ~> PrepareColumns\nSelectAccountColumns sink(input(\n\t\tAccountId as string,\n\t\tName as string,\n\t\tCreated as timestamp,\n\t\tUpdated as timestamp,\n\t\tBusinessName as string,\n\t\tIndustryTypeId as integer,\n\t\tApprovalStatusId as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAccountId,\n\t\tName,\n\t\tCreated,\n\t\tUpdated,\n\t\tBusinessName,\n\t\tIndustryTypeId,\n\t\tApprovalStatusId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterAccount"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterCampaignDataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Twitter"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "TwitterCampaignStage",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterCampaignStage"
+						},
+						{
+							"dataset": {
+								"referenceName": "Currency",
+								"type": "DatasetReference"
+							},
+							"name": "Currency"
+						},
+						{
+							"dataset": {
+								"referenceName": "CampaignStatus",
+								"type": "DatasetReference"
+							},
+							"name": "CampaignStatus"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "TwitterCampaign",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterCampaign"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinCurrency"
+						},
+						{
+							"name": "JoinStatus"
+						},
+						{
+							"name": "PrepareColumns"
+						},
+						{
+							"name": "SelectCampaignColumns"
+						}
+					],
+					"script": "source(output(\n\t\tAccountId as string,\n\t\tCampaignId as string,\n\t\tName as string,\n\t\tCreated as string,\n\t\tModified as string,\n\t\tStatus as string,\n\t\tCurrency as string,\n\t\tTotalBudgetAmount as string,\n\t\tDailyBudgetAmount as string,\n\t\tServable as string,\n\t\tStartDate as string,\n\t\tEndDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterCampaignStage\nsource(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nsource(output(\n\t\tCampaignStatusID as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CampaignStatus\nJoinStatus, Currency join(Currency == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCurrency\nTwitterCampaignStage, CampaignStatus join(Status == CampaignStatus@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinStatus\nJoinCurrency derive(Created = toTimestamp(Created, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tModified = toTimestamp(Modified, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tStartDate = toTimestamp(StartDate, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tEndDate = toTimestamp(EndDate, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3')) ~> PrepareColumns\nPrepareColumns select(mapColumn(\n\t\tAccountId,\n\t\tCampaignId,\n\t\tName = TwitterCampaignStage@Name,\n\t\tCreated,\n\t\tModified,\n\t\tStatus,\n\t\tCurrency,\n\t\tTotalBudgetAmount,\n\t\tDailyBudgetAmount,\n\t\tServable,\n\t\tStartDate,\n\t\tEndDate,\n\t\tCampaignStatusID,\n\t\tCurrencyId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCampaignColumns\nSelectCampaignColumns sink(input(\n\t\tAccountId as string,\n\t\tCampaignId as string,\n\t\tName as string,\n\t\tCreated as timestamp,\n\t\tModified as timestamp,\n\t\tStatusId as integer,\n\t\tCurrencyID as integer,\n\t\tTotalBudgetAmount as long,\n\t\tDailyBudgetAmount as long,\n\t\tServable as boolean,\n\t\tStartDate as timestamp,\n\t\tEndDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAccountId,\n\t\tCampaignId,\n\t\tName,\n\t\tCreated,\n\t\tModified,\n\t\tStatusId = CampaignStatusID,\n\t\tCurrencyID = CurrencyId,\n\t\tTotalBudgetAmount,\n\t\tDailyBudgetAmount,\n\t\tServable,\n\t\tStartDate,\n\t\tEndDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterCampaign"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterLineItemDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Twitter"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "TwitterLineItemStage",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterLineItemStage"
+						},
+						{
+							"dataset": {
+								"referenceName": "BidType",
+								"type": "DatasetReference"
+							},
+							"name": "BidType"
+						},
+						{
+							"dataset": {
+								"referenceName": "ChargeBy",
+								"type": "DatasetReference"
+							},
+							"name": "ChargeBy"
+						},
+						{
+							"dataset": {
+								"referenceName": "ProductType",
+								"type": "DatasetReference"
+							},
+							"name": "ProductType"
+						},
+						{
+							"dataset": {
+								"referenceName": "EntityStatus",
+								"type": "DatasetReference"
+							},
+							"name": "EntityStatus"
+						},
+						{
+							"dataset": {
+								"referenceName": "BidUnit",
+								"type": "DatasetReference"
+							},
+							"name": "BidUnit"
+						},
+						{
+							"dataset": {
+								"referenceName": "TwitterObjective",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterObjetive"
+						},
+						{
+							"dataset": {
+								"referenceName": "Currency",
+								"type": "DatasetReference"
+							},
+							"name": "Currency"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "TwitterLineItem",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterLineItem"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinBidType"
+						},
+						{
+							"name": "JoinChargeBy"
+						},
+						{
+							"name": "JoinProductType"
+						},
+						{
+							"name": "JoinEntityStatus"
+						},
+						{
+							"name": "JoinBidUnit"
+						},
+						{
+							"name": "JoinObjective"
+						},
+						{
+							"name": "JoinCurrency"
+						},
+						{
+							"name": "SelectColumns"
+						},
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\tAccountId as string,\n\t\tName as string,\n\t\tBidType as string,\n\t\tAdvertiserUserId as string,\n\t\tStartDate as string,\n\t\tBidAmountLocalMicro as string,\n\t\tAutomaticallySelectBid as string,\n\t\tAdvertiserDomain as string,\n\t\tTargetCPALocalMicro as string,\n\t\tPrimaryWebEventTag as string,\n\t\tChargeBy as string,\n\t\tProductType as string,\n\t\tEndDate as string,\n\t\tBidUnit as string,\n\t\tTotalBudgetAmountLocalMicro as string,\n\t\tObjective as string,\n\t\tId as string,\n\t\tEntityStatus as string,\n\t\tOptimization as string,\n\t\tCurrency as string,\n\t\tCreated as string,\n\t\tUpdated as string,\n\t\tCreativeSource as string,\n\t\tCampaignId as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterLineItemStage\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> BidType\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ChargeBy\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ProductType\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> EntityStatus\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> BidUnit\nsource(output(\n\t\tId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterObjetive\nsource(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nJoinChargeBy, BidType join(BidType == BidType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinBidType\nJoinProductType, ChargeBy join(ChargeBy == ChargeBy@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinChargeBy\nJoinEntityStatus, ProductType join(ProductType == ProductType@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinProductType\nJoinBidUnit, EntityStatus join(EntityStatus == EntityStatus@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinEntityStatus\nJoinObjective, BidUnit join(BidUnit == BidUnit@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinBidUnit\nJoinCurrency, TwitterObjetive join(Objective == TwitterObjetive@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinObjective\nTwitterLineItemStage, Currency join(Currency == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCurrency\nJoinBidType select(mapColumn(\n\t\tAccountId,\n\t\tName = TwitterLineItemStage@Name,\n\t\tBidType,\n\t\tAdvertiserUserId,\n\t\tStartDate,\n\t\tBidAmountLocalMicro,\n\t\tAutomaticallySelectBid,\n\t\tAdvertiserDomain,\n\t\tTargetCPALocalMicro,\n\t\tPrimaryWebEventTag,\n\t\tChargeBy,\n\t\tProductType,\n\t\tEndDate,\n\t\tBidUnit,\n\t\tTotalBudgetAmountLocalMicro,\n\t\tObjective,\n\t\tId = TwitterLineItemStage@Id,\n\t\tEntityStatus,\n\t\tOptimization,\n\t\tCurrency,\n\t\tCreated,\n\t\tUpdated,\n\t\tCreativeSource,\n\t\tCampaignId,\n\t\tCurrencyId,\n\t\tName = Currency@Name,\n\t\tDisplayName = Currency@DisplayName,\n\t\tTwitterObjectiveId = TwitterObjetive@Id,\n\t\tBidUnitId = BidUnit@Id,\n\t\tEntityStatusId = EntityStatus@Id,\n\t\tProductTypeId = ProductType@Id,\n\t\tChargeById = ChargeBy@Id,\n\t\tBidTypeId = BidType@Id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectColumns\nSelectColumns derive(StartDate = toTimestamp(StartDate, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tEndDate = toTimestamp(EndDate, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tCreated = toTimestamp(Created, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tUpdated = toTimestamp(Updated, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tAccountId as string,\n\t\tName as string,\n\t\tBidTypeId as integer,\n\t\tAdvertiserUserId as long,\n\t\tStartDate as timestamp,\n\t\tBidAmountLocalMicro as double,\n\t\tAutomaticallySelectBid as boolean,\n\t\tAdvertiserDomain as string,\n\t\tTargetCPALocalMicro as double,\n\t\tPrimaryWebEventTag as string,\n\t\tChargeById as integer,\n\t\tProductTypeId as integer,\n\t\tEndDate as timestamp,\n\t\tBidUnitId as string,\n\t\tTotalBudgetAmountLocalMicro as double,\n\t\tTwitterObjectiveId as integer,\n\t\tId as string,\n\t\tEntityStatusId as integer,\n\t\tOptimization as string,\n\t\tCurrencyId as string,\n\t\tCreated as timestamp,\n\t\tUpdated as timestamp,\n\t\tCreativeSource as string,\n\t\tCampaignId as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tAccountId,\n\t\tName,\n\t\tBidTypeId,\n\t\tAdvertiserUserId,\n\t\tStartDate,\n\t\tBidAmountLocalMicro,\n\t\tAutomaticallySelectBid,\n\t\tAdvertiserDomain,\n\t\tTargetCPALocalMicro,\n\t\tPrimaryWebEventTag,\n\t\tChargeById,\n\t\tProductTypeId,\n\t\tEndDate,\n\t\tBidUnitId,\n\t\tTotalBudgetAmountLocalMicro,\n\t\tTwitterObjectiveId,\n\t\tId,\n\t\tEntityStatusId,\n\t\tOptimization,\n\t\tCurrencyId,\n\t\tCreated,\n\t\tUpdated,\n\t\tCreativeSource,\n\t\tCampaignId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterLineItem"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterLineItemTweetDataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Twitter"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "TwitterLineItemTweetStage",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterLineItemTweetStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "TwitterLineItemTweet",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterLineItemTweet"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\tTweetId as string,\n\t\tLineItemId as string,\n\t\tcreated_at as string,\n\t\tupdated_at as string,\n\t\tentity_status as string,\n\t\tapproval_status as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterLineItemTweetStage\nTwitterLineItemTweetStage derive(created_at = toTimestamp(created_at, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3'),\n\t\tupdated_at = toTimestamp(updated_at, 'yyyy-MM-dd\\'T\\'HH:mm:ss','UTC+3')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tTweetId as string,\n\t\tLineItemId as string,\n\t\tCreated as timestamp,\n\t\tUpdated as timestamp,\n\t\tEntityStatus as string,\n\t\tApprovalStatus as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tTweetId,\n\t\tLineItemId,\n\t\tCreated = created_at,\n\t\tUpdated = updated_at,\n\t\tEntityStatus = entity_status,\n\t\tApprovalStatus = approval_status\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterLineItemTweet"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterOrganicTweetFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Twitter"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "TwitterOrganicTweetStage",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterOrganicTweetStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "TwitterOrganicTweet",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterOrganicTweet"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\ttweet_id as string,\n\t\tfull_text as string,\n\t\tfavorite_count as string,\n\t\tretweet_count as string,\n\t\tcreated_at as string,\n\t\tfavorited as string,\n\t\tin_reply_to_status_id as string,\n\t\taccount_id as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterOrganicTweetStage\nTwitterOrganicTweetStage derive(created_at = toDate(trim(concat(substring(substring(replace(created_at, '+0000', ''),4),1,7), substring(substring(replace(created_at, '+0000', ''),4),17))),'MMM dd yyyy')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tTweetId as long,\n\t\tFullText as string,\n\t\tFavoriteCount as double,\n\t\tRetweetCount as double,\n\t\tCreated as timestamp,\n\t\tFavorited as double,\n\t\tInReplyToStatusId as string,\n\t\tAccountId as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tTweetId = tweet_id,\n\t\tFullText = full_text,\n\t\tFavoriteCount = favorite_count,\n\t\tRetweetCount = retweet_count,\n\t\tCreated = created_at,\n\t\tFavorited = favorited,\n\t\tInReplyToStatusId = in_reply_to_status_id,\n\t\tAccountId = account_id\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterOrganicTweet"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TwitterTweetDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Twitter"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "TwitterTweetStage",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterTweetStage"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "TwitterTweet",
+								"type": "DatasetReference"
+							},
+							"name": "TwitterTweet"
+						}
+					],
+					"transformations": [
+						{
+							"name": "PrepareColumn"
+						}
+					],
+					"script": "source(output(\n\t\taccount_id as string,\n\t\ttweet_type as string,\n\t\thashtags as string,\n\t\tin_reply_to_status_id_str as string,\n\t\tgeo as string,\n\t\tin_reply_to_user_id as string,\n\t\tcreated_at as string,\n\t\tfull_text as string,\n\t\tcard_uri as string,\n\t\tretweet_count as string,\n\t\tin_reply_to_screen_name as string,\n\t\ttweet_id as string,\n\t\tsource as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> TwitterTweetStage\nTwitterTweetStage derive(created_at = toDate(trim(concat(substring(substring(replace(created_at, '+0000', ''),4),1,7), substring(substring(replace(created_at, '+0000', ''),4),17))),'MMM dd yyyy')) ~> PrepareColumn\nPrepareColumn sink(input(\n\t\tTweetId as string,\n\t\tAccountId as string,\n\t\tFullText as string,\n\t\tTweetType as string,\n\t\tHashtags as string,\n\t\tInReplyToStatusIdStr as string,\n\t\tGeo as string,\n\t\tInReplyToUserId as string,\n\t\tCreated as timestamp,\n\t\tCardUri as string,\n\t\tRetweetCount as string,\n\t\tInReplyToScreenName as string,\n\t\tSource as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tTweetId = tweet_id,\n\t\tAccountId = account_id,\n\t\tFullText = full_text,\n\t\tTweetType = tweet_type,\n\t\tHashtags = hashtags,\n\t\tInReplyToStatusIdStr = in_reply_to_status_id_str,\n\t\tGeo = geo,\n\t\tInReplyToUserId = in_reply_to_status_id_str,\n\t\tCreated = created_at,\n\t\tCardUri = card_uri,\n\t\tRetweetCount = retweet_count,\n\t\tInReplyToScreenName = in_reply_to_screen_name,\n\t\tSource = source\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> TwitterTweet"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VoucherServicesDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "VoucherServicesStage",
+								"type": "DatasetReference"
+							},
+							"name": "VoucherServicesStage"
+						},
+						{
+							"dataset": {
+								"referenceName": "Currency",
+								"type": "DatasetReference"
+							},
+							"name": "Currency"
+						},
+						{
+							"dataset": {
+								"referenceName": "MainAccountCategory",
+								"type": "DatasetReference"
+							},
+							"name": "MainAccountCategory"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "VoucherServices",
+								"type": "DatasetReference"
+							},
+							"name": "VoucherServices"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinTransactionCurrency"
+						},
+						{
+							"name": "JoinMainAccountCategory"
+						},
+						{
+							"name": "SelectVoucherService"
+						},
+						{
+							"name": "JoinCurrency"
+						},
+						{
+							"name": "SelectVourceServiceColumns"
+						},
+						{
+							"name": "PrepareColumns"
+						}
+					],
+					"script": "source(output(\n\t\tCustomerLedgerDimension as string,\n\t\tTransactionType as string,\n\t\tDepartmentLedgerDimension as string,\n\t\tSPVLedgerDimension as string,\n\t\tTransactionCurrencyAmount as decimal(18,0),\n\t\tText as string,\n\t\tName as string,\n\t\tReportingCurrencyAmount as string,\n\t\tClassLedgerDimension as string,\n\t\tJournalId as string,\n\t\tTransDate as string,\n\t\tProjectLedgerDimension as string,\n\t\tEmployeeLedgerDimension as string,\n\t\tTransactionCurrencyCode as string,\n\t\tExchRate as decimal(18,0),\n\t\tMainAccountId as string,\n\t\tTaxGroup as string,\n\t\tVoucher as string,\n\t\tMainAccountCategory as string,\n\t\tCurrency as string,\n\t\tAccountingCurrencyAmount as string,\n\t\tDescription as string,\n\t\tSerialNumber as string,\n\t\tTaxItemGroup as string,\n\t\tClientsLedgerDimension as string,\n\t\tVendorLedgerDimension as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> VoucherServicesStage\nsource(output(\n\t\tCurrencyId as short,\n\t\tName as string,\n\t\tDisplayName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Currency\nsource(output(\n\t\tMainAccountCategoryId as short,\n\t\tName as string,\n\t\tDisplayName as binary\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> MainAccountCategory\nJoinMainAccountCategory, Currency join(TransactionCurrencyCode == Currency@Name,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> JoinTransactionCurrency\nVoucherServicesStage, MainAccountCategory join(MainAccountCategory == MainAccountCategory@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinMainAccountCategory\nJoinTransactionCurrency select(mapColumn(\n\t\tCustomerLedgerDimension,\n\t\tTransactionType,\n\t\tDepartmentLedgerDimension,\n\t\tSPVLedgerDimension,\n\t\tTransactionCurrencyAmount,\n\t\tText,\n\t\tName = VoucherServicesStage@Name,\n\t\tReportingCurrencyAmount,\n\t\tClassLedgerDimension,\n\t\tJournalId,\n\t\tTransDate,\n\t\tProjectLedgerDimension,\n\t\tEmployeeLedgerDimension,\n\t\tExchRate,\n\t\tMainAccountId,\n\t\tTaxGroup,\n\t\tVoucher,\n\t\tCurrency,\n\t\tAccountingCurrencyAmount,\n\t\tDescription,\n\t\tSerialNumber,\n\t\tTaxItemGroup,\n\t\tClientsLedgerDimension,\n\t\tVendorLedgerDimension,\n\t\tMainAccountCategoryId,\n\t\tTransactionCurrencyId = CurrencyId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectVoucherService\nSelectVoucherService, Currency join(Currency == Currency@Name,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinCurrency\nJoinCurrency select(mapColumn(\n\t\tCustomerLedgerDimension,\n\t\tTransactionType,\n\t\tDepartmentLedgerDimension,\n\t\tSPVLedgerDimension,\n\t\tTransactionCurrencyAmount,\n\t\tText,\n\t\tName = SelectVoucherService@Name,\n\t\tReportingCurrencyAmount,\n\t\tClassLedgerDimension,\n\t\tJournalId,\n\t\tTransDate,\n\t\tProjectLedgerDimension,\n\t\tEmployeeLedgerDimension,\n\t\tExchRate,\n\t\tMainAccountId,\n\t\tTaxGroup,\n\t\tVoucher,\n\t\tAccountingCurrencyAmount,\n\t\tDescription,\n\t\tSerialNumber,\n\t\tTaxItemGroup,\n\t\tClientsLedgerDimension,\n\t\tVendorLedgerDimension,\n\t\tMainAccountCategoryId,\n\t\tTransactionCurrencyId,\n\t\tCurrencyId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectVourceServiceColumns\nSelectVourceServiceColumns derive(TransDate = toTimestamp(replace(TransDate,' +00:00',''), 'MM/dd/yyyy HH:mm:ss')) ~> PrepareColumns\nPrepareColumns sink(input(\n\t\tJournalId as string,\n\t\tMainAccountId as integer,\n\t\tMainAccountCategoryId as integer,\n\t\tSerialNumber as long,\n\t\tTransactionCurrencyId as integer,\n\t\tCurrencyId as integer,\n\t\tTransactionType as string,\n\t\tTransactionCurrencyAmount as decimal(18,0),\n\t\tAccountingCurrencyAmount as decimal(18,0),\n\t\tReportingCurrencyAmount as decimal(18,0),\n\t\tExchangeRate as decimal(18,0),\n\t\tTransactionDate as timestamp,\n\t\tEmployeeLedgerDimension as string,\n\t\tCustomerLedgerDimension as string,\n\t\tVendorLedgerDimension as string,\n\t\tClassLedgerDimension as string,\n\t\tClientsLedgerDimension as string,\n\t\tDepartmentLedgerDimension as string,\n\t\tProjectLedgerDimension as string,\n\t\tSPVLedgerDimension as string,\n\t\tTaxGroup as string,\n\t\tTaxItemGroup as string,\n\t\tName as string,\n\t\tDescription as string,\n\t\tText as string,\n\t\tVoucher as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tJournalId,\n\t\tMainAccountId,\n\t\tMainAccountCategoryId,\n\t\tSerialNumber,\n\t\tTransactionCurrencyId,\n\t\tCurrencyId,\n\t\tTransactionType,\n\t\tTransactionCurrencyAmount,\n\t\tAccountingCurrencyAmount,\n\t\tReportingCurrencyAmount,\n\t\tExchangeRate = ExchRate,\n\t\tTransactionDate = TransDate,\n\t\tEmployeeLedgerDimension,\n\t\tCustomerLedgerDimension,\n\t\tVendorLedgerDimension,\n\t\tClassLedgerDimension,\n\t\tClientsLedgerDimension,\n\t\tDepartmentLedgerDimension,\n\t\tProjectLedgerDimension,\n\t\tSPVLedgerDimension,\n\t\tTaxGroup,\n\t\tTaxItemGroup,\n\t\tName,\n\t\tDescription,\n\t\tText,\n\t\tVoucher\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> VoucherServices"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
