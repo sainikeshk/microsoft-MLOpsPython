@@ -1,0 +1,29 @@
+{
+	"name": "nseMkt",
+	"properties": {
+		"activities": [
+			{
+				"name": "mktTrig",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "mktHttpTrig",
+					"method": "GET"
+				},
+				"linkedServiceName": {
+					"referenceName": "mktTrigFunc",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
