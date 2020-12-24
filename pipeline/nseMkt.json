@@ -28,7 +28,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "fileNo",
+						"activity": "mktTrig",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -82,34 +82,8 @@
 						"type": "DatasetReference"
 					}
 				]
-			},
-			{
-				"name": "fileNo",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "mktTrig",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "fileNo",
-					"value": {
-						"value": "@activity('mktTrig').output.fileNo",
-						"type": "Expression"
-					}
-				}
 			}
 		],
-		"variables": {
-			"fileNo": {
-				"type": "String",
-				"defaultValue": "1"
-			}
-		},
 		"annotations": []
 	}
 }
