@@ -28,7 +28,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "mktTrig",
+						"activity": "fileNo",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -48,6 +48,11 @@
 						"storeSettings": {
 							"type": "SftpReadSettings",
 							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'),'/',activity('mktTrig').output.fileNo)",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*mkt.gz",
 							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
@@ -74,8 +79,34 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "fileNo",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "mktTrig",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileNo",
+					"value": {
+						"value": "@activity('mktTrig').output.fileNo",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"fileNo": {
+				"type": "String",
+				"defaultValue": "1"
+			}
+		},
 		"annotations": []
 	}
 }
