@@ -22,6 +22,66 @@
 					"referenceName": "mktTrigFunc",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "sftp to blob",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "mktTrig",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'))",
+								"type": "Expression"
+							},
+							"wildcardFileName": {
+								"value": "@concat(activity('mktTrig').output,'.mkt.gz')",
+								"type": "Expression"
+							},
+							"deleteFilesAfterCompletion": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "sftpBinary",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "binaryBlobStorage",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"annotations": []
