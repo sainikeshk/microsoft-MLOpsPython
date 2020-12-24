@@ -47,10 +47,12 @@
 						"type": "BinarySource",
 						"storeSettings": {
 							"type": "SftpReadSettings",
-							"fileListPath": {
-								"value": "@concat('/CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'),'/',activity('mktTrig').output.fileNo,'.mkt.gz')",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'),'/',activity('mktTrig').output.fileNo,'.mkt')",
 								"type": "Expression"
 							},
+							"wildcardFileName": "*.gz",
 							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
