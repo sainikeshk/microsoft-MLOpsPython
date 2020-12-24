@@ -32,7 +32,7 @@
 								"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'))",
 								"type": "Expression"
 							},
-							"wildcardFileName": "*.ca1.gz",
+							"wildcardFileName": "*.gz",
 							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
