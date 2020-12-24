@@ -49,10 +49,10 @@
 							"type": "SftpReadSettings",
 							"recursive": true,
 							"wildcardFolderPath": {
-								"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'),'/',activity('mktTrig').output.fileNo,'.mkt')",
+								"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'),'/',activity('mktTrig').output.fileNo)",
 								"type": "Expression"
 							},
-							"wildcardFileName": "*.gz",
+							"wildcardFileName": "*.mkt.gz",
 							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
