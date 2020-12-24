@@ -47,13 +47,8 @@
 						"type": "BinarySource",
 						"storeSettings": {
 							"type": "SftpReadSettings",
-							"recursive": true,
-							"wildcardFolderPath": {
-								"value": "@concat('CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'))",
-								"type": "Expression"
-							},
-							"wildcardFileName": {
-								"value": "@concat(activity('mktTrig').output.fileNo,'.mkt.gz')",
+							"fileListPath": {
+								"value": "@concat('/CM30/DATA/',formatDateTime(utcnow(),'MMMMddyyyy'),'/',activity('mktTrig').output.fileNo,'.mkt.gz')",
 								"type": "Expression"
 							},
 							"deleteFilesAfterCompletion": false
