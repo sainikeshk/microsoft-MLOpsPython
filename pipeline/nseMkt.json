@@ -78,7 +78,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "binaryBlobStorage",
+						"referenceName": "sftpbinBlob",
 						"type": "DatasetReference"
 					}
 				]
